@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 1.4
+ * Version: 1.41
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -19,6 +19,7 @@ define("key_ga_admin", "ga_admin_status", true);
 define("key_ga_extra", "ga_extra", true);
 define("key_ga_outbound", "ga_outbound", true);
 define("key_ga_downloads", "ga_downloads", true);
+define("key_ga_footer", "ga_footer", true);
 
 define("ga_uid_default", "XX-XXXXX-X", true);
 define("ga_status_default", ga_disabled, true);
@@ -26,6 +27,7 @@ define("ga_admin_default", ga_enabled, true);
 define("ga_extra_default", "", true);
 define("ga_outbound_default", ga_enabled, true);
 define("ga_downloads_default", "", true);
+define("ga_footer_default", ga_disabled, true);
 
 // Create the default key and status
 add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
@@ -34,6 +36,7 @@ add_option(key_ga_admin, ga_admin_default, 'If WordPress admins are counted in G
 add_option(key_ga_extra, ga_extra_default, 'Addition Google Analytics tracking options');
 add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links');
 add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track with Google Analyticator');
+add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputting in the footer');
 
 // Create a option page for settings
 add_action('admin_menu', 'add_ga_option_page');
@@ -80,6 +83,12 @@ function ga_options_page() {
 		// Update the download tracking code
 		$ga_downloads = $_POST[key_ga_downloads];
 		update_option(key_ga_downloads, $ga_downloads);
+		
+		// Update the footer
+		$ga_footer = $_POST[key_ga_footer];
+		if (($ga_footer != ga_enabled) && ($ga_footer != ga_disabled))
+			$ga_footer = ga_footer_default;
+		update_option(key_ga_footer, $ga_footer);
 
 		// Give an updated message
 		echo "<div class='updated'><p><strong>Google Analyticator options updated</strong></p></div>";
@@ -192,6 +201,29 @@ function ga_options_page() {
 						</td>
 					</tr>
 					<tr>
+						<th width="30%" valign="top" style="padding-top: 10px;">
+							<label for="<?php echo key_ga_footer ?>">Footer tracking code:</label>
+						</th>
+						<td>
+							<?php
+							echo "<select name='".key_ga_footer."' id='".key_ga_footer."'>\n";
+							
+							echo "<option value='".ga_enabled."'";
+							if(get_option(key_ga_footer) == ga_enabled)
+								echo " selected='selected'";
+							echo ">Enabled</option>\n";
+							
+							echo "<option value='".ga_disabled."'";
+							if(get_option(key_ga_footer) == ga_disabled)
+								echo" selected='selected'";
+							echo ">Disabled</option>\n";
+							
+							echo "</select>\n";
+							?>
+							<p style="margin: 5px 10px;">Enabling this option will insert the Google Analytics tracking code in your site's footer instead of your header. This will speed up your page loading if turned on. Not all themes support code in the footer, so if you turn this option on, be sure to check the Analytics code is still displayed on your site.</p>
+						</td>
+					</tr>
+					<tr>
 						<th valign="top" style="padding-top: 10px;">
 							<label for="<?php echo key_ga_extra; ?>">Additional tracking code:</label>
 						</th>
@@ -231,7 +263,11 @@ function ga_options_page() {
 }
 
 // Add the script
-add_action('wp_head', 'add_google_analytics');
+if (get_option(key_ga_footer) == ga_enabled) {
+	add_action('wp_footer', 'add_google_analytics');
+} else {
+	add_action('wp_head', 'add_google_analytics');
+}
 
 // Add the ougoing links script
 function outgoing_links() {
