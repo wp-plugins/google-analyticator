@@ -11,6 +11,8 @@ In your WordPress administration page go to Options > Google Analytics. From the
 Once you save your settings, the JavaScript code should now be appearing on all of your WordPress pages.
 
 == Version History ==
+1.41 - Adds the option to insert tracking code in the footer instead of the header.
+
 1.4 - Adds download tracking.
 
 1.31 - Fixes a small bug with backslashes in the additional tracking code box.
@@ -28,5 +30,5 @@ Once you save your settings, the JavaScript code should now be appearing on all 
 1.0 - Initial Release
 
 == Credits ==
-Copyright (c) 2005 Ronald Heft, Jr. (ron@cavemonkey50.com)
+Copyright (c) 2006 Ronald Heft, Jr. (ron@cavemonkey50.com)
 Released under the terms of the GPL
