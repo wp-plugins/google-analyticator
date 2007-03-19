@@ -1,34 +1,50 @@
-== Google Analyticator ==
+=== Plugin Name ===
+Contributors: cavemonkey50
+Donate link: http://cavemonkey50.com/code/
+Tags: stats, google, analytics, tracking
+Requires at least: 2.0
+Tested up to: 2.1
+Stable tag: 1.5
 
-Google Analyticator adds the necessary JavaScript code to enable Google Analytics (http://google.com/analytics) logging. This eliminates the need to edit your template code to begin logging.
+Adds the necessary JavaScript code to enable Google Analytics.
 
-== Installation ==
-Drop the google-analyticator.php file into /wp-content/plugins/, and activate the plugin.
+== Description ==
 
-== Usage ==
+Google Analyticator adds the necessary JavaScript code to enable Google Analytics logging on any WordPress blog. This eliminates the need to edit your template code to begin logging.
+
+**Features**
+
+Google Analyticator Has the Following Features:
+
+    * Inserts tracking code on all pages WordPress manages.
+    * Automatically tracks outbound links.
+    * Provides support for download link tracking.
+    * Easy install: only need to know your tracking UID.
+    * Expandable: can insert additional tracking code if needed, while maintaining ease of use.
+    * Option to disable tracking of WordPress administrators.
+    * Can include tracking code in the footer, speeding up load times.
+    * Complete control over options; disable any feature if needed.
+
+**Usage**
+
 In your WordPress administration page go to Options > Google Analytics. From there enter your UID and enable logging. Information on how to obtain your UID can be found on the options page.
 
-Once you save your settings, the JavaScript code should now be appearing on all of your WordPress pages.
+Once you save your settings the JavaScript code should now be appearing on all of your WordPress pages.
 
-== Version History ==
-1.41 - Adds the option to insert tracking code in the footer instead of the header.
+== Installation ==
 
-1.4 - Adds download tracking.
+Drop the google_analyticator folder into /wp-content/plugins/, and activate the plugin.
 
-1.31 - Fixes a small bug with backslashes in the additional tracking code box.
+== Frequently Asked Questions ==
 
-1.3 - WordPress 2.0 beta is now supported. Also, the missing options page bug should be fixed for good.
+=Where is the Google Analytics code displayed?=
 
-1.2 - Added support for outbound links.
+The Google Analytics code is added to the <head> section of your theme by default. It should be somewhere near the bottom of that section.
 
-1.12 - Try number two at fixing missing option page bug.
+=Why don’t I see the Google Analytics code on my website?=
 
-1.11 - Hopefully fixed a bug where options page would sometimes not display.
+If you have switched off admin logging, you will not see the code. You can try enabling it temporarily or log out of your WordPress account to see if the code is displaying.
 
-1.1 - Added an option to disable administrator logging, and added an option to add additional tracking code that Google has.
+=Why is Google saying my tracking code isn’t installed?=
 
-1.0 - Initial Release
-
-== Credits ==
-Copyright (c) 2006 Ronald Heft, Jr. (ron@cavemonkey50.com)
-Released under the terms of the GPL
+Google’s servers are slow at crawling for the tracking code. While the code may be visible on your site, it takes Google a number of days to realize it. The good news is hits are being recorded during this time; they just won’t be visible until Google acknowledges your tracking code.

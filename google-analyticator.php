@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 1.41
+ * Version: 1.5
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -269,88 +269,40 @@ if (get_option(key_ga_footer) == ga_enabled) {
 	add_action('wp_head', 'add_google_analytics');
 }
 
-// Add the ougoing links script
-function outgoing_links() {
-	if (get_option(key_ga_outbound) == ga_enabled) {
-		add_filter('comment_text', 'ga_outgoing');
-		add_filter('get_comment_author_link', 'ga_outgoing_comment_author');
-		add_filter('the_content', 'ga_outgoing');
-		add_filter('the_excerpt', 'ga_outgoing');
-	}
-}
-
 // The guts of the Google Analytics script
 function add_google_analytics() {
 	global $user_level;
 	$uid = get_option(key_ga_uid);
 	$extra = stripslashes(get_option(key_ga_extra));
+	$extensions = str_replace (",", "|", get_option(key_ga_downloads));
+	
+	// If GA is enabled and has a valid key
 	if ((get_option(key_ga_status) != ga_disabled) && ($uid != "XX-XXXXX-X")) {
+		
+		// Track if admin tracking is enabled or disabled and less than user level 8
 		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ($user_level < 8))) {
+			
 			echo "<!-- Google Analytics Tracking by Google Analyticator: http://cavemonkey50.com/code/google-analyticator/ -->\n";
-			echo "	<script src=\"http://www.google-analytics.com/urchin.js\" type=\"text/javascript\"></script><script type=\"text/javascript\"> _uacct=\"$uid\"; $extra urchinTracker(); </script>\n";
-			outgoing_links();
-		}
-	}
-}
-
-// Finds all the links contained in a post or comment
-function ga_outgoing($input) {
-	static $link_pattern = '/<a (.*?)href="(.*?)\/\/(.*?)"(.*?)>(.*?)<\/a>/i';
-	static $link_pattern_2 = '/<a (.*?)href=\'(.*?)\/\/(.*?)\'(.*?)>(.*?)<\/a>/i';
-	$input = preg_replace_callback($link_pattern, ga_parse_link, $input);
-	$input = preg_replace_callback($link_pattern_2, ga_parse_link, $input);
-	return $input;
-}
-
-// Takes the comment author link and adds the Google outgoing tracking code
-function ga_outgoing_comment_author($input) {
-	static $link_pattern = '(.*href\s*=\s*)[\"\']*(.*)[\"\'] (.*)';
-	ereg($link_pattern, $input, $matches);
-	if ($matches[2] == "") return $input;
-	
-	$target = ga_find_domain($matches[2]);
-	$local_host = ga_find_domain($_SERVER["HTTP_HOST"]);
-	if ( $target["domain"] != $local_host["domain"]  ){
-		$tracker_code .= " onclick=\"javascript:urchinTracker ('/outbound/".$target["host"]."');\" ";
-	} 
-	return $matches[1] . "\"" . $matches[2] . "\"" . $tracker_code . $matches[3];
-}
-
-// Takes a link and adds the Google outgoing tracking code
-function ga_parse_link($matches){
-	$local_host = ga_find_domain($_SERVER["HTTP_HOST"]);
-	$target = ga_find_domain($matches[3]);
-	$url = $matches[3];
-	$file_extension = strtolower(substr(strrchr($url,"."),1));
-	if ( $target["domain"] != $local_host["domain"]  ){
-		$tracker_code .= " onclick=\"javascript:urchinTracker ('/outbound/".$target["host"]."');\"";
-	}
-	if ( ($target["domain"] == $local_host["domain"])  && (ga_check_download($file_extension)) ){
-		$url = strtolower(substr(strrchr($url,"/"),1));
-		$tracker_code .= " onclick=\"javascript:urchinTracker ('/downloads/".$file_extension."/".$url."');\"";
-	}
-	return '<a href="' . $matches[2] . '//' . $matches[3] . '"' . $matches[1] . $matches[4].$tracker_code.'>' . $matches[5] . '</a>';    
-}
-
-// Checks to see if the link is on your site
-function ga_find_domain($url){
-	$host_pattern = "/^(http:\/\/)?([^\/]+)/i";
-	$domain_pattern = "/[^\.\/]+\.[^\.\/]+$/";
-
-	preg_match($host_pattern, $url, $matches);
-	$host = $matches[2];
-	preg_match($domain_pattern, $host, $matches);
-	return array("domain"=>$matches[0],"host"=>$host);    
-}
-
-// Checks to see if the requested URL is a download
-function ga_check_download($file_extension){
-	if (get_option(key_ga_downloads)){
-		$extensions = explode(',', get_option(key_ga_downloads));
-	
-		foreach ($extensions as $extension) {
-			if ($extension == $file_extension)
-				return true;
+			echo "	<script src=\"http://www.google-analytics.com/urchin.js\" type=\"text/javascript\"></script>\n";
+			// If outbound tracking is enabled
+			if ( get_option (key_ga_outbound) == ga_enabled )
+				echo "	<script src=\"" . get_option('siteurl') . "/wp-content/plugins/google-analyticator/ga_external-links.js\" type=\"text/javascript\"></script>\n";
+			echo "	<script type=\"text/javascript\">\n";
+			// If outbound tracking is enabled
+			if ( get_option (key_ga_outbound) == ga_enabled ) {
+				// If in the header
+				if ( get_option (key_ga_footer) != ga_enabled )
+					echo "		onContent(function() {\n";
+				echo "		urchin = new urchin();\n";
+				echo "		urchin.trackDownload = \"$extensions\";\n";
+				echo "		urchin.trackLinks();\n";
+				// If in the header
+				if ( get_option (key_ga_footer) != ga_enabled )
+					echo "		} );\n";
+			}
+			echo "		_uacct=\"$uid\"; $extra urchinTracker();\n";
+			echo "	</script>\n";
+					
 		}
 	}
 }
