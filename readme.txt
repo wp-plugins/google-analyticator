@@ -16,14 +16,14 @@ Google Analyticator adds the necessary JavaScript code to enable Google Analytic
 
 Google Analyticator Has the Following Features:
 
-    * Inserts tracking code on all pages WordPress manages.
-    * Automatically tracks outbound links.
-    * Provides support for download link tracking.
-    * Easy install: only need to know your tracking UID.
-    * Expandable: can insert additional tracking code if needed, while maintaining ease of use.
-    * Option to disable tracking of WordPress administrators.
-    * Can include tracking code in the footer, speeding up load times.
-    * Complete control over options; disable any feature if needed.
+- Inserts tracking code on all pages WordPress manages.
+- Automatically tracks outbound links.
+- Provides support for download link tracking.
+- Easy install: only need to know your tracking UID.
+- Expandable: can insert additional tracking code if needed, while maintaining ease of use.
+- Option to disable tracking of WordPress administrators.
+- Can include tracking code in the footer, speeding up load times.
+- Complete control over options; disable any feature if needed.
 
 **Usage**
 
