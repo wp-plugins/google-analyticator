@@ -33,7 +33,7 @@ Once you save your settings the JavaScript code should now be appearing on all o
 
 == Installation ==
 
-Drop the google_analyticator folder into /wp-content/plugins/, and activate the plugin.
+Drop the google-analyticator folder into /wp-content/plugins/, and activate the plugin.
 
 == Frequently Asked Questions ==
 
