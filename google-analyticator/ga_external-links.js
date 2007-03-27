@@ -1,5 +1,5 @@
 /****** GA urchin.trackLinks 0.2
-Docs: http://www.terenzani.it/54/urchintrack-utility-tracciare-link-esterni-e-download-con-google-analytics
+Docs: http://www.terenzani.it/54/urchintrack-utility-tracciare-link-esterni-e-download-con-google-analytics 
 Author: Francesco Terenzani http://www.terenzani.it/ ******/
 
 function urchin(){
