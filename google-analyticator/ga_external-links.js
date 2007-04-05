@@ -12,12 +12,12 @@ function urchin(){
 		for(var i = 0; i < a.length; i++){
 			if(internalLink.test(a[i].href)){
 				if(this.trackDownload && isDownload.test(a[i].href))
-					a[i].onclick = function(){
+					a[i].onclick.append = function(){
 						urchinTracker('/download/'+this.href.replace(/^(http|https):\/\/([a-z-.0-9]+)\//i, '').split('/').join('--'));
 					};
 			}
 			else
-				a[i].onclick = function(){
+				a[i].onclick.append = function(){
 					urchinTracker('/outgoing/'+this.href.replace(/^http:\/\/|https:\/\//i, '').split('/').join('--'));
 				};
 		};
