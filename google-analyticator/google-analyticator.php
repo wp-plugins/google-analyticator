@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 1.52
+ * Version: 1.53
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -47,10 +47,19 @@ function add_ga_option_page() {
 	add_options_page('Google Analyticator Options', 'Google Analytics', 8, basename(__FILE__), 'ga_options_page');
 }
 
+// wp_nonce
+if ( !function_exists('wp_nonce_field') ) {
+	function ga_nonce_field($action = -1) { return; }
+	$ga_nonce = -1;
+} else {
+	function ga_nonce_field($action = -1) { return wp_nonce_field($action); }
+	$ga_nonce = 'ga-update-key';
+}
+
 function ga_options_page() {
 	// If we are a postback, store the options
  	if (isset($_POST['info_update'])) {
-		check_admin_referer();
+		check_admin_referer('$ga_nonce', $ga_nonce);
 		
 		// Update the status
 		$ga_status = $_POST[key_ga_status];
@@ -98,6 +107,7 @@ function ga_options_page() {
 	?>
 
 		<form method="post" action="options-general.php?page=google-analyticator.php">
+		<?php ga_nonce_field('$ga_nonce', $ga_nonce); ?>
 		<div class="wrap">
 			<h2>Google Analyticator Options</h2>
 			<fieldset class='options'>
