@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 1.53
+ * Version: 1.54
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -184,7 +184,7 @@ function ga_options_page() {
 							
 							echo "</select>\n";
 							?>
-							<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level 8 or higher. Your user level is <?php global $user_level; echo $user_level; ?>.</p>
+							<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level 8 or higher. Your user level is <?php global $userdata; get_currentuserinfo(); echo $userdata->user_level; ?>.</p>
 						</td>
 					</tr>
 					<tr>
@@ -281,7 +281,8 @@ if (get_option(key_ga_footer) == ga_enabled) {
 
 // The guts of the Google Analytics script
 function add_google_analytics() {
-	global $user_level;
+	global $userdata;
+	get_currentuserinfo();
 	$uid = get_option(key_ga_uid);
 	$extra = stripslashes(get_option(key_ga_extra));
 	$extensions = str_replace (",", "|", get_option(key_ga_downloads));
@@ -290,7 +291,7 @@ function add_google_analytics() {
 	if ((get_option(key_ga_status) != ga_disabled) && ($uid != "XX-XXXXX-X")) {
 		
 		// Track if admin tracking is enabled or disabled and less than user level 8
-		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ($user_level < 8))) {
+		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ($userdata->user_level < 8))) {
 			
 			echo "<!-- Google Analytics Tracking by Google Analyticator: http://cavemonkey50.com/code/google-analyticator/ -->\n";
 			echo "	<script src=\"http://www.google-analytics.com/urchin.js\" type=\"text/javascript\"></script>\n";
