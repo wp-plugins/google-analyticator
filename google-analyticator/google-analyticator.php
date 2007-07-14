@@ -185,6 +185,7 @@ function ga_options_page() {
 							echo "</select>\n";
 							?>
 							<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level 8 or higher. Your user level is <?php global $userdata; get_currentuserinfo(); echo $userdata->user_level; ?>.</p>
+							<pre><?php print_r($userdata); ?></pre>
 						</td>
 					</tr>
 					<tr>
