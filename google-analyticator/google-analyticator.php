@@ -184,8 +184,7 @@ function ga_options_page() {
 							
 							echo "</select>\n";
 							?>
-							<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level 8 or higher. Your user level is <?php global $userdata; get_currentuserinfo(); echo $userdata->user_level; ?>.</p>
-							<pre><?php print_r($userdata); ?></pre>
+							<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level 8 or higher. Your user level <?php if ( current_user_can('level_8') ) echo 'is at least 8'; else echo 'is less than 8'; ?>.</p>
 						</td>
 					</tr>
 					<tr>
@@ -282,8 +281,6 @@ if (get_option(key_ga_footer) == ga_enabled) {
 
 // The guts of the Google Analytics script
 function add_google_analytics() {
-	global $userdata;
-	get_currentuserinfo();
 	$uid = get_option(key_ga_uid);
 	$extra = stripslashes(get_option(key_ga_extra));
 	$extensions = str_replace (",", "|", get_option(key_ga_downloads));
@@ -292,7 +289,7 @@ function add_google_analytics() {
 	if ((get_option(key_ga_status) != ga_disabled) && ($uid != "XX-XXXXX-X")) {
 		
 		// Track if admin tracking is enabled or disabled and less than user level 8
-		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ($userdata->user_level < 8))) {
+		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
 			
 			echo "<!-- Google Analytics Tracking by Google Analyticator: http://cavemonkey50.com/code/google-analyticator/ -->\n";
 			echo "	<script src=\"http://www.google-analytics.com/urchin.js\" type=\"text/javascript\"></script>\n";
