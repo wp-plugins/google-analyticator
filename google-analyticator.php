@@ -44,6 +44,9 @@ add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputti
 // Create a option page for settings
 add_action('admin_menu', 'add_ga_option_page');
 
+// Initialize outbound link tracking
+add_action('init', 'ga_outgoing_links');
+
 // Hook in the options page function
 function add_ga_option_page() {
 	global $wpdb;
@@ -300,11 +303,6 @@ if (get_option(key_ga_footer) == ga_enabled) {
 	add_action('wp_head', 'add_google_analytics');
 }
 
-// Start tracking outbound links and downloads
-if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
-	outgoing_links();
-}
-
 // The guts of the Google Analytics script
 function add_google_analytics() {
 	$uid = stripslashes(get_option(key_ga_uid));
@@ -345,12 +343,14 @@ function add_google_analytics() {
 }
 
 // Add the ougoing links script
-function outgoing_links() {
+function ga_outgoing_links() {
 	if (get_option(key_ga_outbound) == ga_enabled) {
-		add_filter('comment_text', 'ga_outgoing');
-		add_filter('get_comment_author_link', 'ga_outgoing_comment_author');
-		add_filter('the_content', 'ga_outgoing');
-		add_filter('the_excerpt', 'ga_outgoing');
+		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
+			add_filter('comment_text', 'ga_outgoing');
+			add_filter('get_comment_author_link', 'ga_outgoing_comment_author');
+			add_filter('the_content', 'ga_outgoing');
+			add_filter('the_excerpt', 'ga_outgoing');
+		}
 	}
 }
 
