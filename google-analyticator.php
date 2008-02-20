@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.01
+ * Version: 2.02
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -346,10 +346,10 @@ function add_google_analytics() {
 function ga_outgoing_links() {
 	if (get_option(key_ga_outbound) == ga_enabled) {
 		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
-			add_filter('comment_text', 'ga_outgoing');
-			add_filter('get_comment_author_link', 'ga_outgoing_comment_author');
-			add_filter('the_content', 'ga_outgoing');
-			add_filter('the_excerpt', 'ga_outgoing');
+			add_filter('comment_text', 'ga_outgoing', 1000);
+			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', 1000);
+			add_filter('the_content', 'ga_outgoing', 1000);
+			add_filter('the_excerpt', 'ga_outgoing', 1000);
 		}
 	}
 }
@@ -372,9 +372,9 @@ function ga_outgoing_comment_author($input) {
 	$target = ga_find_domain($matches[2]);
 	$local_host = ga_find_domain($_SERVER["HTTP_HOST"]);
 	if ( $target["domain"] != $local_host["domain"]  ){
-		$tracker_code .= " onclick=\"javascript:pageTracker._trackPageview ('/outbound/".$target["host"]."');\" ";
-	} 
-	return $matches[1] . "\"" . $matches[2] . "\"" . $tracker_code . $matches[3];
+		$tracker_code .= "onclick=\"javascript:pageTracker._trackPageview ('/outbound/".$target["host"]."');\"";
+	}
+	return $matches[1] . "\"" . $matches[2] . "\" " . $tracker_code . " " . $matches[3];
 }
 
 // Takes a link and adds the Google outgoing tracking code
@@ -390,6 +390,14 @@ function ga_parse_link($matches){
 		$url = strtolower(substr(strrchr($url,"/"),1));
 		$tracker_code .= " onclick=\"javascript:pageTracker._trackPageview ('/downloads/".$file_extension."/".$url."');\"";
 	}
+	// Properly format additional code
+	if ( $matches[1] != '' ) {
+		$matches[1] = ' '. trim($matches[1]);
+	}
+	if ( $matches[4] != '' ) {
+		$matches[4] = ' '. trim($matches[4]);
+	}	
+	
 	return '<a href="' . $matches[2] . '//' . $matches[3] . '"' . $matches[1] . $matches[4].$tracker_code.'>' . $matches[5] . '</a>';    
 }
 
