@@ -1,10 +1,10 @@
-=== Plugin Name ===
+=== Google Analyticator ===
 Contributors: cavemonkey50
 Donate link: http://cavemonkey50.com/code/
 Tags: stats, google, analytics, tracking
 Requires at least: 2.0
 Tested up to: 2.3
-Stable tag: 1.54
+Stable tag: 2.02
 
 Adds the necessary JavaScript code to enable Google Analytics.
 
@@ -16,6 +16,7 @@ Google Analyticator adds the necessary JavaScript code to enable Google Analytic
 
 Google Analyticator Has the Following Features:
 
+- Full support for the latest version of Google Analytics tracking code (ga.js).
 - Inserts tracking code on all pages WordPress manages.
 - Automatically tracks outbound links.
 - Provides support for download link tracking.
