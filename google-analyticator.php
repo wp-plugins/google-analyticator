@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.02
+ * Version: 2.1
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -54,241 +54,234 @@ function add_ga_option_page() {
 }
 
 // wp_nonce
-if ( !function_exists('wp_nonce_field') ) {
-	function ga_nonce_field($action = -1) { return; }
-	$ga_nonce = -1;
-} else {
-	function ga_nonce_field($action = -1) { return wp_nonce_field($action); }
-	$ga_nonce = 'ga-update-key';
+function ga_nonce_field() {
+	echo "<input type='hidden' name='ga-nonce-key' value='" . wp_create_nonce('google-analyticator') . "' />";
 }
 
 function ga_options_page() {
 	// If we are a postback, store the options
  	if (isset($_POST['info_update'])) {
-		check_admin_referer('$ga_nonce', $ga_nonce);
-		
-		// Update the status
-		$ga_status = $_POST[key_ga_status];
-		if (($ga_status != ga_enabled) && ($ga_status != ga_disabled))
-			$ga_status = ga_status_default;
-		update_option(key_ga_status, $ga_status);
+		if ( wp_verify_nonce($_POST['ga-nonce-key'], 'google-analyticator') ) {
+			
+			// Update the status
+			$ga_status = $_POST[key_ga_status];
+			if (($ga_status != ga_enabled) && ($ga_status != ga_disabled))
+				$ga_status = ga_status_default;
+			update_option(key_ga_status, $ga_status);
 
-		// Update the UID
-		$ga_uid = $_POST[key_ga_uid];
-		if ($ga_uid == '')
-			$ga_uid = ga_uid_default;
-		update_option(key_ga_uid, $ga_uid);
+			// Update the UID
+			$ga_uid = $_POST[key_ga_uid];
+			if ($ga_uid == '')
+				$ga_uid = ga_uid_default;
+			update_option(key_ga_uid, $ga_uid);
 
-		// Update the admin logging
-		$ga_admin = $_POST[key_ga_admin];
-		if (($ga_admin != ga_enabled) && ($ga_admin != ga_disabled))
-			$ga_admin = ga_admin_default;
-		update_option(key_ga_admin, $ga_admin);
-		
-		// Update the extra tracking code
-		$ga_extra = $_POST[key_ga_extra];
-		update_option(key_ga_extra, $ga_extra);
-		
-		// Update the extra after tracking code
-		$ga_extra_after = $_POST[key_ga_extra_after];
-		update_option(key_ga_extra_after, $ga_extra_after);
+			// Update the admin logging
+			$ga_admin = $_POST[key_ga_admin];
+			if (($ga_admin != ga_enabled) && ($ga_admin != ga_disabled))
+				$ga_admin = ga_admin_default;
+			update_option(key_ga_admin, $ga_admin);
 
-		// Update the outbound tracking
-		$ga_outbound = $_POST[key_ga_outbound];
-		if (($ga_outbound != ga_enabled) && ($ga_outbound != ga_disabled))
-			$ga_outbound = ga_outbound_default;
-		update_option(key_ga_outbound, $ga_outbound);
-		
-		// Update the download tracking code
-		$ga_downloads = $_POST[key_ga_downloads];
-		update_option(key_ga_downloads, $ga_downloads);
-		
-		// Update the footer
-		$ga_footer = $_POST[key_ga_footer];
-		if (($ga_footer != ga_enabled) && ($ga_footer != ga_disabled))
-			$ga_footer = ga_footer_default;
-		update_option(key_ga_footer, $ga_footer);
+			// Update the extra tracking code
+			$ga_extra = $_POST[key_ga_extra];
+			update_option(key_ga_extra, $ga_extra);
 
-		// Give an updated message
-		echo "<div class='updated'><p><strong>Google Analyticator options updated</strong></p></div>";
+			// Update the extra after tracking code
+			$ga_extra_after = $_POST[key_ga_extra_after];
+			update_option(key_ga_extra_after, $ga_extra_after);
+
+			// Update the outbound tracking
+			$ga_outbound = $_POST[key_ga_outbound];
+			if (($ga_outbound != ga_enabled) && ($ga_outbound != ga_disabled))
+				$ga_outbound = ga_outbound_default;
+			update_option(key_ga_outbound, $ga_outbound);
+
+			// Update the download tracking code
+			$ga_downloads = $_POST[key_ga_downloads];
+			update_option(key_ga_downloads, $ga_downloads);
+
+			// Update the footer
+			$ga_footer = $_POST[key_ga_footer];
+			if (($ga_footer != ga_enabled) && ($ga_footer != ga_disabled))
+				$ga_footer = ga_footer_default;
+			update_option(key_ga_footer, $ga_footer);
+
+			// Give an updated message
+			echo "<div class='updated fade'><p><strong>Google Analyticator settings saved.</strong></p></div>";
+		}
 	}
 
 	// Output the options page
 	?>
 
 		<form method="post" action="options-general.php?page=google-analyticator.php">
-		<?php ga_nonce_field('$ga_nonce', $ga_nonce); ?>
+		<?php ga_nonce_field(); ?>
 		<div class="wrap">
 			<h2>Google Analyticator Options</h2>
-			<fieldset class='options'>
-				<legend>Basic Options</legend>
-				<?php if (get_option(key_ga_status) == ga_disabled) { ?>
-					<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
-					Google Analytics integration is currently <strong>DISABLED</strong>.
-					</div>
-				<?php } ?>
-				<?php if ((get_option(key_ga_uid) == "XX-XXXXX-X") && (get_option(key_ga_status) != ga_disabled)) { ?>
-					<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
-					Google Analytics integration is currently enabled, but you did not enter a UID. Tracking will not occur.
-					</div>
-				<?php } ?>
-				<table class="editform" cellspacing="2" cellpadding="5" width="100%">
-					<tr>
-						<th width="30%" valign="top" style="padding-top: 10px;">
-							<label for="<?php echo key_ga_status ?>">Google Analytics logging is:</label>
-						</th>
-						<td>
-							<?php
-							echo "<select name='".key_ga_status."' id='".key_ga_status."'>\n";
-							
-							echo "<option value='".ga_enabled."'";
-							if(get_option(key_ga_status) == ga_enabled)
-								echo " selected='selected'";
-							echo ">Enabled</option>\n";
-							
-							echo "<option value='".ga_disabled."'";
-							if(get_option(key_ga_status) == ga_disabled)
-								echo" selected='selected'";
-							echo ">Disabled</option>\n";
-							
-							echo "</select>\n";
-							?>
-						</td>
-					</tr>
-					<tr>
-						<th valign="top" style="padding-top: 10px;">
-							<label for="<?php echo key_ga_uid; ?>">Your Google Analytics' UID:</label>
-						</th>
-						<td>
-							<?php
-							echo "<input type='text' size='50' ";
-							echo "name='".key_ga_uid."' ";
-							echo "id='".key_ga_uid."' ";
-							echo "value='".get_option(key_ga_uid)."' />\n";
-							?>
-							<p style="margin: 5px 10px;">Enter your Google Analytics' UID in this box. The UID is needed for Google Analytics to log your website stats. Your UID can be found by looking in the JavaScript Google Analytics gives you to put on your page. Look for your UID in between <strong>_uacct = "UA-11111-1";</strong> in the JavaScript. In this example you would put <strong>UA-11111-1</strong> in the UID box.</p>
-						</td>
-					</tr>
+			<h3>Basic Options</h3>
+			<?php if (get_option(key_ga_status) == ga_disabled) { ?>
+				<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
+				Google Analytics integration is currently <strong>DISABLED</strong>.
+				</div>
+			<?php } ?>
+			<?php if ((get_option(key_ga_uid) == "XX-XXXXX-X") && (get_option(key_ga_status) != ga_disabled)) { ?>
+				<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
+				Google Analytics integration is currently enabled, but you did not enter a UID. Tracking will not occur.
+				</div>
+			<?php } ?>
+			<table class="niceblue" cellspacing="2" cellpadding="5" width="100%">
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_status ?>">Google Analytics logging is:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_status."' id='".key_ga_status."'>\n";
+						
+						echo "<option value='".ga_enabled."'";
+						if(get_option(key_ga_status) == ga_enabled)
+							echo " selected='selected'";
+						echo ">Enabled</option>\n";
+						
+						echo "<option value='".ga_disabled."'";
+						if(get_option(key_ga_status) == ga_disabled)
+							echo" selected='selected'";
+						echo ">Disabled</option>\n";
+						
+						echo "</select>\n";
+						?>
+					</td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_uid; ?>">Your Google Analytics' UID:</label>
+					</th>
+					<td>
+						<?php
+						echo "<input type='text' size='50' ";
+						echo "name='".key_ga_uid."' ";
+						echo "id='".key_ga_uid."' ";
+						echo "value='".get_option(key_ga_uid)."' />\n";
+						?>
+						<p style="margin: 5px 10px;">Enter your Google Analytics' UID in this box. The UID is needed for Google Analytics to log your website stats. Your UID can be found by looking in the JavaScript Google Analytics gives you to put on your page. Look for your UID in between <strong>_uacct = "UA-11111-1";</strong> in the JavaScript. In this example you would put <strong>UA-11111-1</strong> in the UID box.</p>
+					</td>
+				</tr>
+			</table>
+			<h3>Advanced Options</h3>
+				<table class="niceblue" cellspacing="2" cellpadding="5" width="100%">
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_admin ?>">WordPress admin logging:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_admin."' id='".key_ga_admin."'>\n";
+						
+						echo "<option value='".ga_enabled."'";
+						if(get_option(key_ga_admin) == ga_enabled)
+							echo " selected='selected'";
+						echo ">Enabled</option>\n";
+						
+						echo "<option value='".ga_disabled."'";
+						if(get_option(key_ga_admin) == ga_disabled)
+							echo" selected='selected'";
+						echo ">Disabled</option>\n";
+						
+						echo "</select>\n";
+						?>
+						<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level 8 or higher. Your user level <?php if ( current_user_can('level_8') ) echo 'is at least 8'; else echo 'is less than 8'; ?>.</p>
+					</td>
+				</tr>
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_footer ?>">Footer tracking code:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_footer."' id='".key_ga_footer."'>\n";
+						
+						echo "<option value='".ga_enabled."'";
+						if(get_option(key_ga_footer) == ga_enabled)
+							echo " selected='selected'";
+						echo ">Enabled</option>\n";
+						
+						echo "<option value='".ga_disabled."'";
+						if(get_option(key_ga_footer) == ga_disabled)
+							echo" selected='selected'";
+						echo ">Disabled</option>\n";
+						
+						echo "</select>\n";
+						?>
+						<p style="margin: 5px 10px;">Enabling this option will insert the Google Analytics tracking code in your site's footer instead of your header. This will speed up your page loading if turned on. Not all themes support code in the footer, so if you turn this option on, be sure to check the Analytics code is still displayed on your site.</p>
+					</td>
+				</tr>
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_outbound ?>">Outbound link tracking:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_outbound."' id='".key_ga_outbound."'>\n";
+						
+						echo "<option value='".ga_enabled."'";
+						if(get_option(key_ga_outbound) == ga_enabled)
+							echo " selected='selected'";
+						echo ">Enabled</option>\n";
+						
+						echo "<option value='".ga_disabled."'";
+						if(get_option(key_ga_outbound) == ga_disabled)
+							echo" selected='selected'";
+						echo ">Disabled</option>\n";
+						
+						echo "</select>\n";
+						?>
+						<p style="margin: 5px 10px;">Disabling this option will turn off the tracking of outbound links. It's recommended not to disable this option unless you're a privacy advocate (now why would you be using Google Analytics in the first place?) or it's causing some kind of weird issue.</p>
+					</td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_downloads; ?>">Download extensions to track:</label>
+					</th>
+					<td>
+						<?php
+						echo "<input type='text' size='50' ";
+						echo "name='".key_ga_downloads."' ";
+						echo "id='".key_ga_downloads."' ";
+						echo "value='".stripslashes(get_option(key_ga_downloads))."' />\n";
+						?>
+						<p style="margin: 5px 10px;">Enter any extensions of files you would like to be tracked as a download. For example to track all MP3s and PDFs enter <strong>mp3,pdf</strong>. <em>Outbound link tracking must be enabled for downloads to be tracked.</em></p>
+					</td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_extra; ?>">Additional tracking code<br />(before tracker initialization):</label>
+					</th>
+					<td>
+						<?php
+						echo "<textarea cols='50' rows='8' ";
+						echo "name='".key_ga_extra."' ";
+						echo "id='".key_ga_extra."'>";
+						echo stripslashes(get_option(key_ga_extra))."</textarea>\n";
+						?>
+						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Anayltics tracking script. The code in this section will be displayed <strong>before</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
+					</td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_extra_after; ?>">Additional tracking code<br />(after tracker initialization):</label>
+					</th>
+					<td>
+						<?php
+						echo "<textarea cols='50' rows='8' ";
+						echo "name='".key_ga_extra_after."' ";
+						echo "id='".key_ga_extra_after."'>";
+						echo stripslashes(get_option(key_ga_extra_after))."</textarea>\n";
+						?>
+						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Anayltics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
+					</td>
+				</tr>
 				</table>
-			</fieldset>
-			<fieldset class='options'>
-				<legend>Advanced Options</legend>
-					<table class="editform" cellspacing="2" cellpadding="5" width="100%">
-					<tr>
-						<th width="30%" valign="top" style="padding-top: 10px;">
-							<label for="<?php echo key_ga_admin ?>">WordPress admin logging:</label>
-						</th>
-						<td>
-							<?php
-							echo "<select name='".key_ga_admin."' id='".key_ga_admin."'>\n";
-							
-							echo "<option value='".ga_enabled."'";
-							if(get_option(key_ga_admin) == ga_enabled)
-								echo " selected='selected'";
-							echo ">Enabled</option>\n";
-							
-							echo "<option value='".ga_disabled."'";
-							if(get_option(key_ga_admin) == ga_disabled)
-								echo" selected='selected'";
-							echo ">Disabled</option>\n";
-							
-							echo "</select>\n";
-							?>
-							<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level 8 or higher. Your user level <?php if ( current_user_can('level_8') ) echo 'is at least 8'; else echo 'is less than 8'; ?>.</p>
-						</td>
-					</tr>
-					<tr>
-						<th width="30%" valign="top" style="padding-top: 10px;">
-							<label for="<?php echo key_ga_footer ?>">Footer tracking code:</label>
-						</th>
-						<td>
-							<?php
-							echo "<select name='".key_ga_footer."' id='".key_ga_footer."'>\n";
-							
-							echo "<option value='".ga_enabled."'";
-							if(get_option(key_ga_footer) == ga_enabled)
-								echo " selected='selected'";
-							echo ">Enabled</option>\n";
-							
-							echo "<option value='".ga_disabled."'";
-							if(get_option(key_ga_footer) == ga_disabled)
-								echo" selected='selected'";
-							echo ">Disabled</option>\n";
-							
-							echo "</select>\n";
-							?>
-							<p style="margin: 5px 10px;">Enabling this option will insert the Google Analytics tracking code in your site's footer instead of your header. This will speed up your page loading if turned on. Not all themes support code in the footer, so if you turn this option on, be sure to check the Analytics code is still displayed on your site.</p>
-						</td>
-					</tr>
-					<tr>
-						<th width="30%" valign="top" style="padding-top: 10px;">
-							<label for="<?php echo key_ga_outbound ?>">Outbound link tracking:</label>
-						</th>
-						<td>
-							<?php
-							echo "<select name='".key_ga_outbound."' id='".key_ga_outbound."'>\n";
-							
-							echo "<option value='".ga_enabled."'";
-							if(get_option(key_ga_outbound) == ga_enabled)
-								echo " selected='selected'";
-							echo ">Enabled</option>\n";
-							
-							echo "<option value='".ga_disabled."'";
-							if(get_option(key_ga_outbound) == ga_disabled)
-								echo" selected='selected'";
-							echo ">Disabled</option>\n";
-							
-							echo "</select>\n";
-							?>
-							<p style="margin: 5px 10px;">Disabling this option will turn off the tracking of outbound links. It's recommended not to disable this option unless you're a privacy advocate (now why would you be using Google Analytics in the first place?) or it's causing some kind of weird issue.</p>
-						</td>
-					</tr>
-					<tr>
-						<th valign="top" style="padding-top: 10px;">
-							<label for="<?php echo key_ga_downloads; ?>">Download extensions to track:</label>
-						</th>
-						<td>
-							<?php
-							echo "<input type='text' size='50' ";
-							echo "name='".key_ga_downloads."' ";
-							echo "id='".key_ga_downloads."' ";
-							echo "value='".stripslashes(get_option(key_ga_downloads))."' />\n";
-							?>
-							<p style="margin: 5px 10px;">Enter any extensions of files you would like to be tracked as a download. For example to track all MP3s and PDFs enter <strong>mp3,pdf</strong>. <em>Outbound link tracking must be enabled for downloads to be tracked.</em></p>
-						</td>
-					</tr>
-					<tr>
-						<th valign="top" style="padding-top: 10px;">
-							<label for="<?php echo key_ga_extra; ?>">Additional tracking code<br />(before tracker initialization):</label>
-						</th>
-						<td>
-							<?php
-							echo "<textarea cols='50' rows='8' ";
-							echo "name='".key_ga_extra."' ";
-							echo "id='".key_ga_extra."'>";
-							echo stripslashes(get_option(key_ga_extra))."</textarea>\n";
-							?>
-							<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Anayltics tracking script. The code in this section will be displayed <strong>before</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
-						</td>
-					</tr>
-					<tr>
-						<th valign="top" style="padding-top: 10px;">
-							<label for="<?php echo key_ga_extra_after; ?>">Additional tracking code<br />(after tracker initialization):</label>
-						</th>
-						<td>
-							<?php
-							echo "<textarea cols='50' rows='8' ";
-							echo "name='".key_ga_extra_after."' ";
-							echo "id='".key_ga_extra_after."'>";
-							echo stripslashes(get_option(key_ga_extra_after))."</textarea>\n";
-							?>
-							<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Anayltics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
-						</td>
-					</tr>
-					</table>
-			</fieldset>
 			<p class="submit">
-				<input type='submit' name='info_update' value='Update Options' />
+				<input type='submit' name='info_update' value='Save Changes' />
 			</p>
 		</div>
 		</form>

@@ -2,8 +2,8 @@
 Contributors: cavemonkey50
 Donate link: http://cavemonkey50.com/code/
 Tags: stats, google, analytics, tracking
-Requires at least: 2.0
-Tested up to: 2.3
+Requires at least: 2.3
+Tested up to: 2.5
 Stable tag: 2.02
 
 Adds the necessary JavaScript code to enable Google Analytics.
