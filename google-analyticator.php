@@ -113,9 +113,9 @@ function ga_options_page() {
 	// Output the options page
 	?>
 
+		<div class="wrap">
 		<form method="post" action="options-general.php?page=google-analyticator.php">
 		<?php ga_nonce_field(); ?>
-		<div class="wrap">
 			<h2>Google Analyticator Options</h2>
 			<h3>Basic Options</h3>
 			<?php if (get_option(key_ga_status) == ga_disabled) { ?>
@@ -128,7 +128,7 @@ function ga_options_page() {
 				Google Analytics integration is currently enabled, but you did not enter a UID. Tracking will not occur.
 				</div>
 			<?php } ?>
-			<table class="niceblue" cellspacing="2" cellpadding="5" width="100%">
+			<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_status ?>">Google Analytics logging is:</label>
@@ -167,7 +167,7 @@ function ga_options_page() {
 				</tr>
 			</table>
 			<h3>Advanced Options</h3>
-				<table class="niceblue" cellspacing="2" cellpadding="5" width="100%">
+				<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_admin ?>">WordPress admin logging:</label>
@@ -339,10 +339,10 @@ function add_google_analytics() {
 function ga_outgoing_links() {
 	if (get_option(key_ga_outbound) == ga_enabled) {
 		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
-			add_filter('comment_text', 'ga_outgoing', -10);
-			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', -10);
-			add_filter('the_content', 'ga_outgoing', -10);
-			add_filter('the_excerpt', 'ga_outgoing', -10);
+			add_filter('comment_text', 'ga_outgoing', 1000);
+			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', 1000);
+			add_filter('the_content', 'ga_outgoing', 1000);
+			add_filter('the_excerpt', 'ga_outgoing', 1000);
 		}
 	}
 }
