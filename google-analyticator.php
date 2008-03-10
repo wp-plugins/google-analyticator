@@ -339,10 +339,10 @@ function add_google_analytics() {
 function ga_outgoing_links() {
 	if (get_option(key_ga_outbound) == ga_enabled) {
 		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
-			add_filter('comment_text', 'ga_outgoing', 1000);
-			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', 1000);
-			add_filter('the_content', 'ga_outgoing', 1000);
-			add_filter('the_excerpt', 'ga_outgoing', 1000);
+			add_filter('comment_text', 'ga_outgoing', -10);
+			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', -10);
+			add_filter('the_content', 'ga_outgoing', -10);
+			add_filter('the_excerpt', 'ga_outgoing', -10);
 		}
 	}
 }
