@@ -34,8 +34,6 @@ Once you save your settings the JavaScript code should now be appearing on all o
 
 == Installation ==
 
-Drop the google-analyticator folder into /wp-content/plugins/ and activate the plugin.
-
 1. Upload the `google-analyticator` folder to your `/wp-content/plugins/` directory.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 1. Configure your tracking settings through the 'Settings' > 'Google Analytics' menu in WordPress.
