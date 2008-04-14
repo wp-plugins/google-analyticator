@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.1
+ * Version: 2.11
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -16,6 +16,7 @@ define("ga_disabled", "disabled", true);
 define("key_ga_uid", "ga_uid", true);
 define("key_ga_status", "ga_status", true);
 define("key_ga_admin", "ga_admin_status", true);
+define("key_ga_admin_level", "ga_admin_level", true);
 define("key_ga_extra", "ga_extra", true);
 define("key_ga_extra_after", "ga_extra_after", true);
 define("key_ga_outbound", "ga_outbound", true);
@@ -25,6 +26,7 @@ define("key_ga_footer", "ga_footer", true);
 define("ga_uid_default", "XX-XXXXX-X", true);
 define("ga_status_default", ga_disabled, true);
 define("ga_admin_default", ga_enabled, true);
+define("ga_admin_level_default", 8, true);
 define("ga_extra_default", "", true);
 define("ga_extra_after_default", "", true);
 define("ga_outbound_default", ga_enabled, true);
@@ -35,6 +37,7 @@ define("ga_footer_default", ga_disabled, true);
 add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
 add_option(key_ga_uid, ga_uid_default, 'Your Google Analytics UID.');
 add_option(key_ga_admin, ga_admin_default, 'If WordPress admins are counted in Google Analytics.');
+add_option(key_ga_admin_level, ga_admin_level_default, 'The level to consider a user a WordPress admin.');
 add_option(key_ga_extra, ga_extra_default, 'Addition Google Analytics tracking options');
 add_option(key_ga_extra_after, ga_extra_after_default, 'Addition Google Analytics tracking options');
 add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links');
@@ -80,6 +83,12 @@ function ga_options_page() {
 			if (($ga_admin != ga_enabled) && ($ga_admin != ga_disabled))
 				$ga_admin = ga_admin_default;
 			update_option(key_ga_admin, $ga_admin);
+			
+			// Update the admin level
+			$ga_admin_level = $_POST[key_ga_admin_level];
+			if ( $ga_admin_level == '' )
+				$ga_admin_level = ga_admin_level_default;
+			update_option(key_ga_admin_level, $ga_admin_level);
 
 			// Update the extra tracking code
 			$ga_extra = $_POST[key_ga_extra];
@@ -188,7 +197,35 @@ function ga_options_page() {
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level 8 or higher. Your user level <?php if ( current_user_can('level_8') ) echo 'is at least 8'; else echo 'is less than 8'; ?>.</p>
+						<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level <?php
+						echo "<input type='text' size='2' ";
+						echo "name='".key_ga_admin_level."' ";
+						echo "id='".key_ga_admin_level."' ";
+						echo "value='".stripslashes(get_option(key_ga_admin_level))."' />\n";
+						?> or higher. Your user level is <?php
+						if ( current_user_can('level_10') )
+							echo '10';
+						elseif ( current_user_can('level_9') )
+							echo '9';
+						elseif ( current_user_can('level_8') )
+							echo '8';
+						elseif ( current_user_can('level_7') )
+							echo '7';
+						elseif ( current_user_can('level_6') )
+							echo '6';
+						elseif ( current_user_can('level_5') )
+							echo '5';
+						elseif ( current_user_can('level_4') )
+							echo '4';
+						elseif ( current_user_can('level_3') )
+							echo '3';
+						elseif ( current_user_can('level_2') )
+							echo '2';
+						elseif ( current_user_can('level_1') )
+							echo '1';
+						else
+							echo '0';
+						?>.</p>
 					</td>
 				</tr>
 				<tr>
@@ -307,7 +344,7 @@ function add_google_analytics() {
 	if ((get_option(key_ga_status) != ga_disabled) && ($uid != "XX-XXXXX-X")) {
 		
 		// Track if admin tracking is enabled or disabled and less than user level 8
-		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
+		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_' . get_option(key_ga_admin_level)) ))) {
 			
 			echo "<!-- Google Analytics Tracking by Google Analyticator: http://cavemonkey50.com/code/google-analyticator/ -->\n";
 			echo "	<script type=\"text/javascript\">\n";
@@ -339,10 +376,10 @@ function add_google_analytics() {
 function ga_outgoing_links() {
 	if (get_option(key_ga_outbound) == ga_enabled) {
 		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
-			add_filter('comment_text', 'ga_outgoing', -10);
-			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', -10);
-			add_filter('the_content', 'ga_outgoing', -10);
-			add_filter('the_excerpt', 'ga_outgoing', -10);
+			add_filter('comment_text', 'ga_outgoing', 1000);
+			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', 1000);
+			add_filter('the_content', 'ga_outgoing', 1000);
+			add_filter('the_excerpt', 'ga_outgoing', 1000);
 		}
 	}
 }
