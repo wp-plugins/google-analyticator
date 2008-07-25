@@ -123,7 +123,7 @@ function ga_options_page() {
 	?>
 
 		<div class="wrap">
-		<form method="post" action="options-general.php?page=google-analyticator.php">
+		<form method="post" action="<?php echo get_option('root'); ?>/wp-admin/options-general.php?page=google-analyticator.php">
 		<?php ga_nonce_field(); ?>
 			<h2>Google Analyticator Options</h2>
 			<h3>Basic Options</h3>
