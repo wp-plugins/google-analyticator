@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.11
+ * Version: 2.14
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -299,7 +299,7 @@ function ga_options_page() {
 						echo "id='".key_ga_extra."'>";
 						echo stripslashes(get_option(key_ga_extra))."</textarea>\n";
 						?>
-						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Anayltics tracking script. The code in this section will be displayed <strong>before</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
+						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>before</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
 					</td>
 				</tr>
 				<tr>
@@ -313,7 +313,7 @@ function ga_options_page() {
 						echo "id='".key_ga_extra_after."'>";
 						echo stripslashes(get_option(key_ga_extra_after))."</textarea>\n";
 						?>
-						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Anayltics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
+						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
 					</td>
 				</tr>
 				</table>
@@ -375,21 +375,23 @@ function add_google_analytics() {
 // Add the ougoing links script
 function ga_outgoing_links() {
 	if (get_option(key_ga_outbound) == ga_enabled) {
-		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_8') ))) {
-			add_filter('comment_text', 'ga_outgoing', 1000);
-			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', 1000);
-			add_filter('the_content', 'ga_outgoing', 1000);
-			add_filter('the_excerpt', 'ga_outgoing', 1000);
+		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_' . get_option(key_ga_admin_level)) ))) {
+			add_filter('comment_text', 'ga_outgoing', -10);
+			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', -10);
+			add_filter('the_content', 'ga_outgoing', -10);
+			add_filter('the_excerpt', 'ga_outgoing', -10);
 		}
 	}
 }
 
 // Finds all the links contained in a post or comment
 function ga_outgoing($input) {
-	static $link_pattern = '/<a (.*?)href="(.*?)\/\/(.*?)"(.*?)>(.*?)<\/a>/i';
-	static $link_pattern_2 = '/<a (.*?)href=\'(.*?)\/\/(.*?)\'(.*?)>(.*?)<\/a>/i';
-	$input = preg_replace_callback($link_pattern, ga_parse_link, $input);
-	$input = preg_replace_callback($link_pattern_2, ga_parse_link, $input);
+	if ( !is_feed() ) {
+		static $link_pattern = '/<a (.*?)href="(.*?)\/\/(.*?)"(.*?)>(.*?)<\/a>/i';
+		static $link_pattern_2 = '/<a (.*?)href=\'(.*?)\/\/(.*?)\'(.*?)>(.*?)<\/a>/i';
+		$input = preg_replace_callback($link_pattern, ga_parse_link, $input);
+		$input = preg_replace_callback($link_pattern_2, ga_parse_link, $input);
+	}
 	return $input;
 }
 
