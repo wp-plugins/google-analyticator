@@ -55,6 +55,10 @@ Google's servers are slow at crawling for the tracking code. While the code may 
 
 == Changelog ==
 
+**2.14** - Bug Fix
+- Stops the external link tracking code from appearing in feeds, breaking feed validation.
+- Adds compatibility for a very rare few users who cannot save options.
+
 **2.13** - Bug Fix
 - Stops the external link tracking code from appearing in feeds, breaking feed validation.
 
