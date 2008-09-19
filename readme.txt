@@ -3,8 +3,8 @@ Contributors: cavemonkey50
 Donate link: http://cavemonkey50.com/code/
 Tags: stats, google, analytics, tracking
 Requires at least: 2.3
-Tested up to: 2.5
-Stable tag: 2.11
+Tested up to: 2.6
+Stable tag: 2.2
 
 Adds the necessary JavaScript code to enable Google Analytics.
 
@@ -54,6 +54,21 @@ If you have switched off admin logging, you will not see the code. You can try e
 Google's servers are slow at crawling for the tracking code. While the code may be visible on your site, it takes Google a number of days to realize it. The good news is hits are being recorded during this time; they just will not be visible until Google acknowledges your tracking code.
 
 == Changelog ==
+
+**2.2** - Minor Update
+- Adds an option to specify the GA script location instead of relying on Google's auto detect code. This may resolve the _gat is undefined errors.
+
+**2.14** - Bug Fix
+- Stops the external link tracking code from appearing in feeds, breaking feed validation.
+- Adds compatibility for a very rare few users who could not save options.
+
+**2.13** - Bug Fix
+- Stops the external link tracking code from appearing in feeds, breaking feed validation.
+
+**2.12** - Bug Fix
+
+- Applies the new administrator level selection to outbound tracking (I forgot to that in the last release).
+- Fixes a potential plugin conflict.
 
 **2.11** - Minor Update
 
