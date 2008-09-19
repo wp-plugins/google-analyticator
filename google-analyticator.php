@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.14
+ * Version: 2.2
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -22,6 +22,7 @@ define("key_ga_extra_after", "ga_extra_after", true);
 define("key_ga_outbound", "ga_outbound", true);
 define("key_ga_downloads", "ga_downloads", true);
 define("key_ga_footer", "ga_footer", true);
+define("key_ga_specify_http", "ga_specify_http", true);
 
 define("ga_uid_default", "XX-XXXXX-X", true);
 define("ga_status_default", ga_disabled, true);
@@ -32,6 +33,7 @@ define("ga_extra_after_default", "", true);
 define("ga_outbound_default", ga_enabled, true);
 define("ga_downloads_default", "", true);
 define("ga_footer_default", ga_disabled, true);
+define("ga_specify_http_default", "auto", true);
 
 // Create the default key and status
 add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
@@ -43,6 +45,7 @@ add_option(key_ga_extra_after, ga_extra_after_default, 'Addition Google Analytic
 add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links');
 add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track with Google Analyticator');
 add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputting in the footer');
+add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');
 
 // Create a option page for settings
 add_action('admin_menu', 'add_ga_option_page');
@@ -113,6 +116,12 @@ function ga_options_page() {
 			if (($ga_footer != ga_enabled) && ($ga_footer != ga_disabled))
 				$ga_footer = ga_footer_default;
 			update_option(key_ga_footer, $ga_footer);
+			
+			// Update the HTTP status
+			$ga_specify_http = $_POST[key_ga_specify_http];
+			if ( $ga_specify_http == '' )
+				$ga_specify_http = 'auto';
+			update_option(key_ga_specify_http, $ga_specify_http);
 
 			// Give an updated message
 			echo "<div class='updated fade'><p><strong>Google Analyticator settings saved.</strong></p></div>";
@@ -316,6 +325,34 @@ function ga_options_page() {
 						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
 					</td>
 				</tr>
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_specify_http; ?>">Specify HTTP detection:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_specify_http."' id='".key_ga_specify_http."'>\n";
+						
+						echo "<option value='auto'";
+						if(get_option(key_ga_specify_http) == 'auto')
+							echo " selected='selected'";
+						echo ">Auto Detect</option>\n";
+						
+						echo "<option value='http'";
+						if(get_option(key_ga_specify_http) == 'http')
+							echo " selected='selected'";
+						echo ">HTTP</option>\n";
+						
+						echo "<option value='https'";
+						if(get_option(key_ga_specify_http) == 'https')
+							echo " selected='selected'";
+						echo ">HTTPS</option>\n";
+						
+						echo "</select>\n";
+						?>
+						<p style="margin: 5px 10px;">Explicitly set the type of HTTP connection your website uses. Setting this option instead of relying on the auto detect may resolve the _gat is undefined error message.</p>
+					</td>
+				</tr>
 				</table>
 			<p class="submit">
 				<input type='submit' name='info_update' value='Save Changes' />
@@ -347,10 +384,17 @@ function add_google_analytics() {
 		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_' . get_option(key_ga_admin_level)) ))) {
 			
 			echo "<!-- Google Analytics Tracking by Google Analyticator: http://cavemonkey50.com/code/google-analyticator/ -->\n";
-			echo "	<script type=\"text/javascript\">\n";
-			echo "		var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
-			echo "		document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
-			echo "	</script>\n\n";
+			// Pick the HTTP connection
+			if ( get_option(key_ga_specify_http) == 'http' ) {
+				echo "	<script type=\"text/javascript\" src=\"http://www.google-analytics.com/ga.js\"></script>\n\n";
+			} elseif ( get_option(key_ga_specify_http) == 'https' ) {
+				echo "	<script type=\"text/javascript\" src=\"https://ssl.google-analytics.com/ga.js\"></script>\n\n";
+			} else {
+				echo "	<script type=\"text/javascript\">\n";
+				echo "		var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
+				echo "		document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
+				echo "	</script>\n\n";
+			}
 			
 			echo "	<script type=\"text/javascript\">\n";
 			echo "		var pageTracker = _gat._getTracker(\"$uid\");\n";
