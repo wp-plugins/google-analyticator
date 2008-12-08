@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.2
+ * Version: 2.21
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -36,7 +36,7 @@ define("ga_footer_default", ga_disabled, true);
 define("ga_specify_http_default", "auto", true);
 
 // Create the default key and status
-add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
+/*add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
 add_option(key_ga_uid, ga_uid_default, 'Your Google Analytics UID.');
 add_option(key_ga_admin, ga_admin_default, 'If WordPress admins are counted in Google Analytics.');
 add_option(key_ga_admin_level, ga_admin_level_default, 'The level to consider a user a WordPress admin.');
@@ -45,10 +45,28 @@ add_option(key_ga_extra_after, ga_extra_after_default, 'Addition Google Analytic
 add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links');
 add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track with Google Analyticator');
 add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputting in the footer');
-add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');
+add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');*/
 
 // Create a option page for settings
+add_action('admin_init', 'ga_admin_init');
 add_action('admin_menu', 'add_ga_option_page');
+
+// Initialize the options
+function ga_admin_init() {
+	// Register out options so WordPress knows about them
+	if ( function_exists('register_setting') ) {
+		register_setting('google-analyticator', key_ga_status, '');
+		register_setting('google-analyticator', key_ga_uid, '');
+		register_setting('google-analyticator', key_ga_admin, '');
+		register_setting('google-analyticator', key_ga_admin_level, '');
+		register_setting('google-analyticator', key_ga_extra, '');
+		register_setting('google-analyticator', key_ga_extra_after, '');
+		register_setting('google-analyticator', key_ga_outbound, '');
+		register_setting('google-analyticator', key_ga_downloads, '');
+		register_setting('google-analyticator', key_ga_footer, '');
+		register_setting('google-analyticator', key_ga_specify_http, '');
+	}
+}
 
 // Initialize outbound link tracking
 add_action('init', 'ga_outgoing_links');
@@ -59,15 +77,10 @@ function add_ga_option_page() {
 	add_options_page('Google Analyticator Options', 'Google Analytics', 8, basename(__FILE__), 'ga_options_page');
 }
 
-// wp_nonce
-function ga_nonce_field() {
-	echo "<input type='hidden' name='ga-nonce-key' value='" . wp_create_nonce('google-analyticator') . "' />";
-}
-
 function ga_options_page() {
 	// If we are a postback, store the options
- 	if (isset($_POST['info_update'])) {
-		if ( wp_verify_nonce($_POST['ga-nonce-key'], 'google-analyticator') ) {
+	if (isset($_POST['info_update'])) {
+//		if ( wp_verify_nonce($_POST['ga-nonce-key'], 'google-analyticator') ) {
 			
 			// Update the status
 			$ga_status = $_POST[key_ga_status];
@@ -125,7 +138,7 @@ function ga_options_page() {
 
 			// Give an updated message
 			echo "<div class='updated fade'><p><strong>Google Analyticator settings saved.</strong></p></div>";
-		}
+//		}
 	}
 
 	// Output the options page
@@ -133,8 +146,7 @@ function ga_options_page() {
 
 		<div class="wrap">
 		<form method="post" action="options-general.php?page=google-analyticator.php">
-		<?php ga_nonce_field(); ?>
-			<h2>Google Analyticator Options</h2>
+			<h2>Google Analyticator Settings</h2>
 			<h3>Basic Options</h3>
 			<?php if (get_option(key_ga_status) == ga_disabled) { ?>
 				<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
@@ -180,7 +192,7 @@ function ga_options_page() {
 						echo "id='".key_ga_uid."' ";
 						echo "value='".get_option(key_ga_uid)."' />\n";
 						?>
-						<p style="margin: 5px 10px;">Enter your Google Analytics' UID in this box. The UID is needed for Google Analytics to log your website stats. Your UID can be found by looking in the JavaScript Google Analytics gives you to put on your page. Look for your UID in between <strong>_uacct = "UA-11111-1";</strong> in the JavaScript. In this example you would put <strong>UA-11111-1</strong> in the UID box.</p>
+						<p style="margin: 5px 10px;" class="setting-description">Enter your Google Analytics' UID in this box. The UID is needed for Google Analytics to log your website stats. Your UID can be found by looking in the JavaScript Google Analytics gives you to put on your page. Look for your UID in between <strong>_uacct = "UA-11111-1";</strong> in the JavaScript. In this example you would put <strong>UA-11111-1</strong> in the UID box.</p>
 					</td>
 				</tr>
 			</table>
@@ -206,7 +218,7 @@ function ga_options_page() {
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level <?php
+						<p style="margin: 5px 10px;" class="setting-description">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level <?php
 						echo "<input type='text' size='2' ";
 						echo "name='".key_ga_admin_level."' ";
 						echo "id='".key_ga_admin_level."' ";
@@ -257,7 +269,7 @@ function ga_options_page() {
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;">Enabling this option will insert the Google Analytics tracking code in your site's footer instead of your header. This will speed up your page loading if turned on. Not all themes support code in the footer, so if you turn this option on, be sure to check the Analytics code is still displayed on your site.</p>
+						<p style="margin: 5px 10px;" class="setting-description">Enabling this option will insert the Google Analytics tracking code in your site's footer instead of your header. This will speed up your page loading if turned on. Not all themes support code in the footer, so if you turn this option on, be sure to check the Analytics code is still displayed on your site.</p>
 					</td>
 				</tr>
 				<tr>
@@ -280,7 +292,7 @@ function ga_options_page() {
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;">Disabling this option will turn off the tracking of outbound links. It's recommended not to disable this option unless you're a privacy advocate (now why would you be using Google Analytics in the first place?) or it's causing some kind of weird issue.</p>
+						<p style="margin: 5px 10px;" class="setting-description">Disabling this option will turn off the tracking of outbound links. It's recommended not to disable this option unless you're a privacy advocate (now why would you be using Google Analytics in the first place?) or it's causing some kind of weird issue.</p>
 					</td>
 				</tr>
 				<tr>
@@ -294,7 +306,7 @@ function ga_options_page() {
 						echo "id='".key_ga_downloads."' ";
 						echo "value='".stripslashes(get_option(key_ga_downloads))."' />\n";
 						?>
-						<p style="margin: 5px 10px;">Enter any extensions of files you would like to be tracked as a download. For example to track all MP3s and PDFs enter <strong>mp3,pdf</strong>. <em>Outbound link tracking must be enabled for downloads to be tracked.</em></p>
+						<p style="margin: 5px 10px;" class="setting-description">Enter any extensions of files you would like to be tracked as a download. For example to track all MP3s and PDFs enter <strong>mp3,pdf</strong>. <em>Outbound link tracking must be enabled for downloads to be tracked.</em></p>
 					</td>
 				</tr>
 				<tr>
@@ -308,7 +320,7 @@ function ga_options_page() {
 						echo "id='".key_ga_extra."'>";
 						echo stripslashes(get_option(key_ga_extra))."</textarea>\n";
 						?>
-						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>before</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
+						<p style="margin: 5px 10px;" class="setting-description">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>before</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
 					</td>
 				</tr>
 				<tr>
@@ -322,7 +334,7 @@ function ga_options_page() {
 						echo "id='".key_ga_extra_after."'>";
 						echo stripslashes(get_option(key_ga_extra_after))."</textarea>\n";
 						?>
-						<p style="margin: 5px 10px;">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
+						<p style="margin: 5px 10px;" class="setting-description">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
 					</td>
 				</tr>
 				<tr>
@@ -350,11 +362,12 @@ function ga_options_page() {
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;">Explicitly set the type of HTTP connection your website uses. Setting this option instead of relying on the auto detect may resolve the _gat is undefined error message.</p>
+						<p style="margin: 5px 10px;" class="setting-description">Explicitly set the type of HTTP connection your website uses. Setting this option instead of relying on the auto detect may resolve the _gat is undefined error message.</p>
 					</td>
 				</tr>
 				</table>
 			<p class="submit">
+				<?php if ( function_exists('settings_fields') ) settings_fields('google-analyticator'); ?>
 				<input type='submit' name='info_update' value='Save Changes' />
 			</p>
 		</div>
