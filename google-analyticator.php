@@ -1,11 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
-<<<<<<< .mine
- * Version: 2.23
-=======
- * Version: 2.22
->>>>>>> .r78429
+ * Version: 2.24
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -438,7 +434,7 @@ function ga_outgoing_links() {
 	if (get_option(key_ga_outbound) == ga_enabled) {
 		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_' . get_option(key_ga_admin_level)) ))) {
 			add_filter('comment_text', 'ga_outgoing', -10);
-			add_filter('get_comment_author_link', 'ga_outgoing_comment_author', -10);
+			add_filter('get_comment_author_link', 'ga_outgoing', -10);
 			add_filter('the_content', 'ga_outgoing', -10);
 			add_filter('the_excerpt', 'ga_outgoing', -10);
 		}
@@ -454,20 +450,6 @@ function ga_outgoing($input) {
 		$input = preg_replace_callback($link_pattern_2, ga_parse_link, $input);
 	}
 	return $input;
-}
-
-// Takes the comment author link and adds the Google outgoing tracking code
-function ga_outgoing_comment_author($input) {
-	static $link_pattern = '(.*href\s*=\s*)[\"\']*(.*?)[\"\'] (.*)';
-	ereg($link_pattern, $input, $matches);
-	if ($matches[2] == "") return $input;
-	
-	$target = ga_find_domain($matches[2]);
-	$local_host = ga_find_domain($_SERVER["HTTP_HOST"]);
-	if ( $target["domain"] != $local_host["domain"]  ){
-		$tracker_code .= "onclick=\"javascript:pageTracker._trackPageview ('/outbound/".$target["host"]."');\"";
-	}
-	return $matches[1] . "\"" . $matches[2] . "\" " . $tracker_code . " " . $matches[3];
 }
 
 // Takes a link and adds the Google outgoing tracking code
