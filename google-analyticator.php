@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.21
+ * Version: 2.22
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -36,7 +36,7 @@ define("ga_footer_default", ga_disabled, true);
 define("ga_specify_http_default", "auto", true);
 
 // Create the default key and status
-/*add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
+add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
 add_option(key_ga_uid, ga_uid_default, 'Your Google Analytics UID.');
 add_option(key_ga_admin, ga_admin_default, 'If WordPress admins are counted in Google Analytics.');
 add_option(key_ga_admin_level, ga_admin_level_default, 'The level to consider a user a WordPress admin.');
@@ -45,7 +45,7 @@ add_option(key_ga_extra_after, ga_extra_after_default, 'Addition Google Analytic
 add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links');
 add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track with Google Analyticator');
 add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputting in the footer');
-add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');*/
+add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');
 
 // Create a option page for settings
 add_action('admin_init', 'ga_admin_init');
@@ -454,7 +454,7 @@ function ga_outgoing($input) {
 
 // Takes the comment author link and adds the Google outgoing tracking code
 function ga_outgoing_comment_author($input) {
-	static $link_pattern = '(.*href\s*=\s*)[\"\']*(.*)[\"\'] (.*)';
+	static $link_pattern = '(.*href\s*=\s*)[\"\']*(.*?)[\"\'] (.*)';
 	ereg($link_pattern, $input, $matches);
 	if ($matches[2] == "") return $input;
 	
