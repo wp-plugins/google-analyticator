@@ -59,6 +59,9 @@ Google's servers are slow at crawling for the tracking code. While the code may 
 
 == Changelog ==
 
+**2.23** - Bug Fix
+- Reverting last version as it caused issues.
+
 **2.22** - Bug Fix
 - Improves comment author regex causing some issues in WordPress 2.7. Props  jdub.
 
