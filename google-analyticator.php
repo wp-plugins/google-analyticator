@@ -1,7 +1,11 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
+<<<<<<< .mine
+ * Version: 2.23
+=======
  * Version: 2.22
+>>>>>>> .r78429
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
