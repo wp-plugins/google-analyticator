@@ -4,7 +4,7 @@ Donate link: http://cavemonkey50.com/code/
 Tags: stats, google, analytics, tracking
 Requires at least: 2.3
 Tested up to: 2.7
-Stable tag: 2.21
+Stable tag: 2.22
 
 Adds the necessary JavaScript code to enable Google Analytics.
 
@@ -54,6 +54,9 @@ If you have switched off admin logging, you will not see the code. You can try e
 Google's servers are slow at crawling for the tracking code. While the code may be visible on your site, it takes Google a number of days to realize it. The good news is hits are being recorded during this time; they just will not be visible until Google acknowledges your tracking code.
 
 == Changelog ==
+
+**2.22** - Bug Fix
+- Improves comment author regex causing some issues in WordPress 2.7. Props  jdub.
 
 **2.21** - Minor Update
 - Adds compatibility with WordPress 2.7.
