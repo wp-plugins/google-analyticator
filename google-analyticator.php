@@ -426,6 +426,14 @@ function add_google_analytics() {
 				echo "		" . $extra_after . "\n";
 			
 			echo "	} catch(err) {}</script>\n";
+			
+			
+			$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
+			foreach ( $extensions AS $extension )
+				$ext .= "'$extension',";
+			$ext = substr($ext, 0, -1); ?>
+			<script type="text/javascript">var fileTypes = [<?php echo $ext; ?>];</script>
+			<?php
 		}
 	}
 }
