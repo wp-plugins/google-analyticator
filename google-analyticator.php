@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.3
+ * Version: 2.4
  * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft, Jr.
@@ -430,74 +430,47 @@ function add_google_analytics() {
 	}
 }
 
-// Add the ougoing links script
-function ga_outgoing_links() {
+/**
+ * Adds outbound link tracking to Google Analyticator
+ *
+ * @author Ronald Heft
+ **/
+function ga_outgoing_links()
+{
+	// If outbound tracking is enabled
 	if (get_option(key_ga_outbound) == ga_enabled) {
+		// If admin tracking is enabled or not an admin user
 		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_' . get_option(key_ga_admin_level)) ))) {
-			add_filter('comment_text', 'ga_outgoing', -10);
-			add_filter('get_comment_author_link', 'ga_outgoing', -10);
-			add_filter('the_content', 'ga_outgoing', -10);
-			add_filter('the_excerpt', 'ga_outgoing', -10);
+			add_action('wp_print_scripts', 'ga_external_tracking_js');
+			add_action('wp_head', 'ga_file_extensions');
 		}
 	}
 }
 
-// Finds all the links contained in a post or comment
-function ga_outgoing($input) {
-	if ( !is_feed() ) {
-		static $link_pattern = '/<a (.*?)href="(.*?)\/\/(.*?)"(.*?)>(.*?)<\/a>/i';
-		static $link_pattern_2 = '/<a (.*?)href=\'(.*?)\/\/(.*?)\'(.*?)>(.*?)<\/a>/i';
-		$input = preg_replace_callback($link_pattern, ga_parse_link, $input);
-		$input = preg_replace_callback($link_pattern_2, ga_parse_link, $input);
-	}
-	return $input;
+/**
+ * Adds the scripts required for outbound link tracking
+ *
+ * @author Ronald Heft
+ **/
+function ga_external_tracking_js()
+{
+	wp_enqueue_script('jquery');
+	wp_enqueue_script('ga-external-tracking', plugins_url('/google-analyticator/external-tracking.js'));
 }
 
-// Takes a link and adds the Google outgoing tracking code
-function ga_parse_link($matches){
-	$local_host = ga_find_domain($_SERVER["HTTP_HOST"]);
-	$target = ga_find_domain($matches[3]);
-	$url = $matches[3];
-	$file_extension = strtolower(substr(strrchr($url,"."),1));
-	if ( $target["domain"] != $local_host["domain"]  ){
-		$tracker_code .= " onclick=\"javascript:pageTracker._trackPageview ('/outbound/".$target["host"]."');\"";
-	}
-	if ( ($target["domain"] == $local_host["domain"])  && (ga_check_download($file_extension)) ){
-		$url = strtolower(substr(strrchr($url,"/"),1));
-		$tracker_code .= " onclick=\"javascript:pageTracker._trackPageview ('/downloads/".$file_extension."/".$url."');\"";
-	}
-	// Properly format additional code
-	if ( $matches[1] != '' ) {
-		$matches[1] = ' '. trim($matches[1]);
-	}
-	if ( $matches[4] != '' ) {
-		$matches[4] = ' '. trim($matches[4]);
-	}	
-	
-	return '<a href="' . $matches[2] . '//' . $matches[3] . '"' . $matches[1] . $matches[4].$tracker_code.'>' . $matches[5] . '</a>';    
-}
-
-// Checks to see if the link is on your site
-function ga_find_domain($url){
-	$host_pattern = "/^(http:\/\/)?([^\/]+)/i";
-	$domain_pattern = "/[^\.\/]+\.[^\.\/]+$/";
-
-	preg_match($host_pattern, $url, $matches);
-	$host = $matches[2];
-	preg_match($domain_pattern, $host, $matches);
-	return array("domain"=>$matches[0],"host"=>$host);    
-}
-
-// Checks to see if the requested URL is a download
-function ga_check_download($file_extension){
-	if (get_option(key_ga_downloads)){
-		$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
-	
-		foreach ($extensions as $extension) {
-			if ($extension == $file_extension)
-				return true;
-		}
-	}
-}
+/**
+ * Adds download tracking via jQuery to Google Analyticator
+ *
+ * @author Ronald Heft
+ **/
+function ga_file_extensions()
+{ 
+	$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
+	foreach ( $extensions AS $extension )
+		$ext .= "'$extensions',";
+	$ext = substr($ext, 0, -1);
+?>
+	<script type="text/javascript">var fileTypes = [<?php echo $ext; ?>];</script>
+<?php }
 
 ?>
