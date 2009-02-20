@@ -2,7 +2,7 @@
 Contributors: cavemonkey50
 Donate link: http://cavemonkey50.com/code/
 Tags: stats, google, analytics, tracking
-Requires at least: 2.5
+Requires at least: 2.6
 Tested up to: 2.7
 Stable tag: 2.40
 
