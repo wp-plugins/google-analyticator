@@ -1,11 +1,11 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 2.40
- * Plugin URI: http://cavemonkey50.com/code/google-analyticator/
- * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the options page</a> and enter your Google Analytics' UID and enable logging.
- * Author: Ronald Heft, Jr.
- * Author URI: http://cavemonkey50.com/
+ * Version: 3.0
+ * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
+ * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
+ * Author: Spiral Web Consulting
+ * Author URI: http://spiralwebconsulting.com/
  */
 
 // Constants for enabled/disabled state
@@ -20,7 +20,9 @@ define("key_ga_admin_level", "ga_admin_level", true);
 define("key_ga_extra", "ga_extra", true);
 define("key_ga_extra_after", "ga_extra_after", true);
 define("key_ga_outbound", "ga_outbound", true);
+define("key_ga_outbound_prefix", "ga_outbound_prefix", true);
 define("key_ga_downloads", "ga_downloads", true);
+define("key_ga_downloads_prefix", "ga_downloads_prefix", true);
 define("key_ga_footer", "ga_footer", true);
 define("key_ga_specify_http", "ga_specify_http", true);
 
@@ -31,7 +33,9 @@ define("ga_admin_level_default", 8, true);
 define("ga_extra_default", "", true);
 define("ga_extra_after_default", "", true);
 define("ga_outbound_default", ga_enabled, true);
+define("ga_outbound_prefix_default", 'outgoing', true);
 define("ga_downloads_default", "", true);
+define("ga_downloads_prefix_default", "download", true);
 define("ga_footer_default", ga_disabled, true);
 define("ga_specify_http_default", "auto", true);
 
@@ -43,7 +47,9 @@ add_option(key_ga_admin_level, ga_admin_level_default, 'The level to consider a 
 add_option(key_ga_extra, ga_extra_default, 'Addition Google Analytics tracking options');
 add_option(key_ga_extra_after, ga_extra_after_default, 'Addition Google Analytics tracking options');
 add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links');
+add_option(key_ga_outbound_prefix, ga_outbound_prefix_default, 'Add tracking of outbound links');
 add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track with Google Analyticator');
+add_option(key_ga_downloads_prefix, ga_downloads_prefix_default, 'Download extensions to track with Google Analyticator');
 add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputting in the footer');
 add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');
 
@@ -62,7 +68,9 @@ function ga_admin_init() {
 		register_setting('google-analyticator', key_ga_extra, '');
 		register_setting('google-analyticator', key_ga_extra_after, '');
 		register_setting('google-analyticator', key_ga_outbound, '');
+		register_setting('google-analyticator', key_ga_outbound_prefix, '');
 		register_setting('google-analyticator', key_ga_downloads, '');
+		register_setting('google-analyticator', key_ga_downloads_prefix, '');
 		register_setting('google-analyticator', key_ga_footer, '');
 		register_setting('google-analyticator', key_ga_specify_http, '');
 	}
@@ -74,7 +82,7 @@ add_action('init', 'ga_outgoing_links');
 // Hook in the options page function
 function add_ga_option_page() {
 	global $wpdb;
-	add_options_page('Google Analyticator Options', 'Google Analytics', 8, basename(__FILE__), 'ga_options_page');
+	add_options_page('Google Analyticator Settings', 'Google Analytics', 8, basename(__FILE__), 'ga_options_page');
 }
 
 function ga_options_page() {
@@ -119,10 +127,22 @@ function ga_options_page() {
 			if (($ga_outbound != ga_enabled) && ($ga_outbound != ga_disabled))
 				$ga_outbound = ga_outbound_default;
 			update_option(key_ga_outbound, $ga_outbound);
+			
+			// Update the outbound prefix
+			$ga_outbound_prefix = $_POST[key_ga_outbound_prefix];
+			if ($ga_outbound_prefix == '')
+				$ga_outbound_prefix = ga_outbound_prefix_default;
+			update_option(key_ga_outbound_prefix, $ga_outbound_prefix);
 
 			// Update the download tracking code
 			$ga_downloads = $_POST[key_ga_downloads];
 			update_option(key_ga_downloads, $ga_downloads);
+			
+			// Update the download prefix
+			$ga_downloads_prefix = $_POST[key_ga_downloads_prefix];
+			if ($ga_downloads_prefix == '')
+				$ga_downloads_prefix = ga_downloads_prefix_default;
+			update_option(key_ga_downloads_prefix, $ga_downloads_prefix);
 
 			// Update the footer
 			$ga_footer = $_POST[key_ga_footer];
@@ -147,7 +167,12 @@ function ga_options_page() {
 		<div class="wrap">
 		<form method="post" action="options-general.php?page=google-analyticator.php">
 			<h2>Google Analyticator Settings</h2>
-			<h3>Basic Options</h3>
+			
+			<p><em>
+				Google Analyticator is brought to you for free by <a href="http://spiralwebconsulting.com/">Spiral Web Consulting</a>. Spiral Web Consulting is a small web development firm specializing in PHP development. Visit our website to learn more, and don't hesitate to ask us to develop your next big WordPress plugin idea.
+			</em></p>
+			
+			<h3>Basic Settings</h3>
 			<?php if (get_option(key_ga_status) == ga_disabled) { ?>
 				<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
 				Google Analytics integration is currently <strong>DISABLED</strong>.
@@ -196,7 +221,7 @@ function ga_options_page() {
 					</td>
 				</tr>
 			</table>
-			<h3>Advanced Options</h3>
+			<h3>Advanced Settings</h3>
 				<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
@@ -297,6 +322,20 @@ function ga_options_page() {
 				</tr>
 				<tr>
 					<th valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_outbound_prefix; ?>">Prefix external links with:</label>
+					</th>
+					<td>
+						<?php
+						echo "<input type='text' size='50' ";
+						echo "name='".key_ga_outbound_prefix."' ";
+						echo "id='".key_ga_outbound_prefix."' ";
+						echo "value='".stripslashes(get_option(key_ga_outbound_prefix))."' />\n";
+						?>
+						<p style="margin: 5px 10px;" class="setting-description">Enter a name for the section tracked external links will appear under.</em></p>
+					</td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_downloads; ?>">Download extensions to track:</label>
 					</th>
 					<td>
@@ -307,6 +346,20 @@ function ga_options_page() {
 						echo "value='".stripslashes(get_option(key_ga_downloads))."' />\n";
 						?>
 						<p style="margin: 5px 10px;" class="setting-description">Enter any extensions of files you would like to be tracked as a download. For example to track all MP3s and PDFs enter <strong>mp3,pdf</strong>. <em>Outbound link tracking must be enabled for downloads to be tracked.</em></p>
+					</td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_downloads_prefix; ?>">Prefix download links with:</label>
+					</th>
+					<td>
+						<?php
+						echo "<input type='text' size='50' ";
+						echo "name='".key_ga_downloads_prefix."' ";
+						echo "id='".key_ga_download_sprefix."' ";
+						echo "value='".stripslashes(get_option(key_ga_downloads_prefix))."' />\n";
+						?>
+						<p style="margin: 5px 10px;" class="setting-description">Enter a name for the section tracked download links will appear under.</em></p>
 					</td>
 				</tr>
 				<tr>
@@ -391,50 +444,60 @@ function add_google_analytics() {
 	$extensions = str_replace (",", "|", get_option(key_ga_downloads));
 	
 	// If GA is enabled and has a valid key
-	if ((get_option(key_ga_status) != ga_disabled) && ($uid != "XX-XXXXX-X")) {
+	if (  (get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" )) {
 		
-		// Track if admin tracking is enabled or disabled and less than user level 8
-		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_' . get_option(key_ga_admin_level)) ))) {
-			
-			echo "<!-- Google Analytics Tracking by Google Analyticator: http://cavemonkey50.com/code/google-analyticator/ -->\n";
-			// Pick the HTTP connection
-			if ( get_option(key_ga_specify_http) == 'http' ) {
-				echo "	<script type=\"text/javascript\" src=\"http://www.google-analytics.com/ga.js\"></script>\n\n";
-			} elseif ( get_option(key_ga_specify_http) == 'https' ) {
-				echo "	<script type=\"text/javascript\" src=\"https://ssl.google-analytics.com/ga.js\"></script>\n\n";
-			} else {
-				echo "	<script type=\"text/javascript\">\n";
-				echo "		var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
-				echo "		document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
-				echo "	</script>\n\n";
-			}
-			
+		echo "<!-- Google Analytics Tracking by Google Analyticator: http://plugins.spiralwebconsulting.com/analyticator.html -->\n";
+		// Pick the HTTP connection
+		if ( get_option(key_ga_specify_http) == 'http' ) {
+			echo "	<script type=\"text/javascript\" src=\"http://www.google-analytics.com/ga.js\"></script>\n\n";
+		} elseif ( get_option(key_ga_specify_http) == 'https' ) {
+			echo "	<script type=\"text/javascript\" src=\"https://ssl.google-analytics.com/ga.js\"></script>\n\n";
+		} else {
 			echo "	<script type=\"text/javascript\">\n";
-			echo "		try {\n";
-			echo "		var pageTracker = _gat._getTracker(\"$uid\");\n";
-			
-			// Insert extra before tracker code
-			if ( '' != $extra )
-				echo "		" . $extra . "\n";
-			
-			// Initialize the tracker
-			echo "		pageTracker._initData();\n";
-			echo "		pageTracker._trackPageview();\n";
-			
-			// Insert extra after tracker code
-			if ( '' != $extra_after )
-				echo "		" . $extra_after . "\n";
-			
-			echo "	} catch(err) {}</script>\n";
-			
-			
-			$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
-			foreach ( $extensions AS $extension )
-				$ext .= "'$extension',";
-			$ext = substr($ext, 0, -1); ?>
-			<script type="text/javascript">var fileTypes = [<?php echo $ext; ?>];</script>
-			<?php
+			echo "		var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
+			echo "		document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
+			echo "	</script>\n\n";
 		}
+		
+		echo "	<script type=\"text/javascript\">\n";
+		echo "	try {\n";
+		echo "		var pageTracker = _gat._getTracker(\"$uid\");\n";
+		
+		// Insert extra before tracker code
+		if ( '' != $extra )
+			echo "		" . $extra . "\n";
+		
+		// Initialize the tracker
+		echo "		pageTracker._initData();\n";
+		echo "		pageTracker._trackPageview();\n";
+		
+		// Disable page tracking if admin is logged in
+		if ( ( get_option(key_ga_admin) == ga_disabled ) && ( current_user_can('level_' . get_option(key_ga_admin_level)) ) )
+			echo "		pageTracker._setVar('admin');\n";
+		
+		// Insert extra after tracker code
+		if ( '' != $extra_after )
+			echo "		" . $extra_after . "\n";
+		
+		echo "	} catch(err) {}</script>\n";
+		
+		// Include the file types to track
+		$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
+		foreach ( $extensions AS $extension )
+			$ext .= "'$extension',";
+		$ext = substr($ext, 0, -1);
+		
+		// Include the link tracking prefixes
+		$outbound_prefix = stripslashes(get_option(key_ga_outbound_prefix));
+		$downloads_prefix = stripslashes(get_option(key_ga_downloads_prefix));
+		
+		?>
+		<script type="text/javascript">
+			var fileTypes = [<?php echo $ext; ?>];
+			var outboundPrefix = '/<?php echo $outbound_prefix; ?>/';
+			var downloadsPrefix = '/<?php echo $downloads_prefix; ?>/';
+		</script>
+		<?php
 	}
 }
 
@@ -445,12 +508,11 @@ function add_google_analytics() {
  **/
 function ga_outgoing_links()
 {
-	// If outbound tracking is enabled
-	if (get_option(key_ga_outbound) == ga_enabled) {
-		// If admin tracking is enabled or not an admin user
-		if ((get_option(key_ga_admin) == ga_enabled) || ((get_option(key_ga_admin) == ga_disabled) && ( !current_user_can('level_' . get_option(key_ga_admin_level)) ))) {
+	// If GA is enabled and has a valid key
+	if (  (get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" )) {
+		// If outbound tracking is enabled
+		if ( get_option(key_ga_outbound) == ga_enabled ) {
 			add_action('wp_print_scripts', 'ga_external_tracking_js');
-			add_action('wp_head', 'ga_file_extensions');
 		}
 	}
 }
@@ -465,20 +527,5 @@ function ga_external_tracking_js()
 	wp_enqueue_script('jquery');
 	wp_enqueue_script('ga-external-tracking', plugins_url('/google-analyticator/external-tracking.js'));
 }
-
-/**
- * Adds download tracking via jQuery to Google Analyticator
- *
- * @author Ronald Heft
- **/
-function ga_file_extensions()
-{ 
-	$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
-	foreach ( $extensions AS $extension )
-		$ext .= "'$extensions',";
-	$ext = substr($ext, 0, -1);
-?>
-	<script type="text/javascript">var fileTypes = [<?php echo $ext; ?>];</script>
-<?php }
 
 ?>
