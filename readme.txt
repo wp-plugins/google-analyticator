@@ -3,7 +3,7 @@ Contributors: cavemonkey50, spiralwebconsulting
 Tags: stats, google, analytics, tracking
 Requires at least: 2.7
 Tested up to: 2.7
-Stable tag: 3.01
+Stable tag: 3.0.2
 
 Adds the necessary JavaScript code to enable Google Analytics.
 
@@ -26,7 +26,7 @@ Google Analyticator Has the Following Features:
 - Allows code to be placed in the footer to ensure faster load times
 - Complete control over options; disable any feature if needed
 
-For more information, visiting the [Google Analyticator plugin page](http://plugins.spiralwebconsulting.com/analyticator.html).
+For more information, visit the [Google Analyticator plugin page](http://plugins.spiralwebconsulting.com/analyticator.html).
 
 == Installation ==
 
