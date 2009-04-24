@@ -3,7 +3,7 @@ Contributors: cavemonkey50, spiralwebconsulting
 Tags: stats, google, analytics, tracking
 Requires at least: 2.7
 Tested up to: 2.7
-Stable tag: 3.0.3
+Stable tag: 4.0
 
 Adds the necessary JavaScript code to enable Google Analytics.
 
@@ -17,6 +17,7 @@ Google Analyticator adds the necessary JavaScript code to enable Google Analytic
 
 Google Analyticator Has the Following Features:
 
+- **NEW:** Google Analytics API support. Includes a stats widget showing yesterday's visitors. More stats to come!
 - Standard Google Analytics tracking support
 - External link tracking of all links on the page, including links not managed by WordPress
 - Download link tracking
