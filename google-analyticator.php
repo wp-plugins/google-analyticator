@@ -1,12 +1,18 @@
-<?php
+<?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 3.01
+ * Version: 4.1
  * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Spiral Web Consulting
  * Author URI: http://spiralwebconsulting.com/
  */
+
+# Include Google Analytics Stats widget
+if ( function_exists('curl_init') ) {
+	require_once('google-analytics-stats.php');
+	$google_analytics_stats = new GoogleStatsWidget();
+}
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -18,6 +24,7 @@ define("key_ga_status", "ga_status", true);
 define("key_ga_admin", "ga_admin_status", true);
 define("key_ga_admin_disable", "ga_admin_disable", true);
 define("key_ga_admin_level", "ga_admin_level", true);
+define("key_ga_adsense", "ga_adsense", true);
 define("key_ga_extra", "ga_extra", true);
 define("key_ga_extra_after", "ga_extra_after", true);
 define("key_ga_outbound", "ga_outbound", true);
@@ -32,6 +39,7 @@ define("ga_status_default", ga_disabled, true);
 define("ga_admin_default", ga_enabled, true);
 define("ga_admin_disable_default", 'remove', true);
 define("ga_admin_level_default", 8, true);
+define("ga_adsense_default", "", true);
 define("ga_extra_default", "", true);
 define("ga_extra_after_default", "", true);
 define("ga_outbound_default", ga_enabled, true);
@@ -47,6 +55,7 @@ add_option(key_ga_uid, ga_uid_default, 'Your Google Analytics UID.');
 add_option(key_ga_admin, ga_admin_default, 'If WordPress admins are counted in Google Analytics.');
 add_option(key_ga_admin_disable, ga_admin_disable_default, '');
 add_option(key_ga_admin_level, ga_admin_level_default, 'The level to consider a user a WordPress admin.');
+add_option(key_ga_adsense, ga_adsense_default, '');
 add_option(key_ga_extra, ga_extra_default, 'Addition Google Analytics tracking options');
 add_option(key_ga_extra_after, ga_extra_after_default, 'Addition Google Analytics tracking options');
 add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links');
@@ -69,6 +78,7 @@ function ga_admin_init() {
 		register_setting('google-analyticator', key_ga_admin, '');
 		register_setting('google-analyticator', key_ga_admin_disable, '');
 		register_setting('google-analyticator', key_ga_admin_level, '');
+		register_setting('google-analyticator', key_ga_adsense, '');
 		register_setting('google-analyticator', key_ga_extra, '');
 		register_setting('google-analyticator', key_ga_extra_after, '');
 		register_setting('google-analyticator', key_ga_outbound, '');
@@ -131,6 +141,10 @@ function ga_options_page() {
 			// Update the extra after tracking code
 			$ga_extra_after = $_POST[key_ga_extra_after];
 			update_option(key_ga_extra_after, $ga_extra_after);
+			
+			// Update the adsense key
+			$ga_adsense = $_POST[key_ga_adsense];
+			update_option(key_ga_adsense, $ga_adsense);
 
 			// Update the outbound tracking
 			$ga_outbound = $_POST[key_ga_outbound];
@@ -165,6 +179,10 @@ function ga_options_page() {
 			if ( $ga_specify_http == '' )
 				$ga_specify_http = 'auto';
 			update_option(key_ga_specify_http, $ga_specify_http);
+			
+			# Update the stat options
+			update_option('google_stats_user', $_POST['google_stats_user']);
+			update_option('google_stats_password', $_POST['google_stats_password']);
 
 			// Give an updated message
 			echo "<div class='updated fade'><p><strong>Google Analyticator settings saved.</strong></p></div>";
@@ -233,6 +251,26 @@ function ga_options_page() {
 			</table>
 			<h3>Advanced Settings</h3>
 				<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
+				<?php if ( function_exists('curl_init') ) { ?>
+				<tr valign="top">
+					<th scope="row">
+						<label for="google_stats_user">Google Username:</label>
+					</th>
+					<td>
+						<input type="text" size="40" name="google_stats_user" id="google_stats_user" value="<?php echo stripslashes(get_option('google_stats_user')); ?>" />
+						<br /><span class="setting-description">Your Google Analytics account's username. This is needed to authenticate with Google for use with the stats widget.</span>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row">
+						<label for="google_stats_password">Google Password:</label>
+					</th>
+					<td>
+						<input type="password" size="40" name="google_stats_password" id="google_stats_password" value="<?php echo stripslashes(get_option('google_stats_password')); ?>" />
+						<br /><span class="setting-description">Your Google Analytics account's password. This is needed to authenticate with Google for use with the stats widget.</span>
+					</td>
+				</tr>
+				<?php } ?>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_admin ?>">WordPress admin logging:</label>
@@ -397,6 +435,20 @@ function ga_options_page() {
 				</tr>
 				<tr>
 					<th valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_adsense; ?>">Google Adsense ID:</label>
+					</th>
+					<td>
+						<?php
+						echo "<input type='text' size='50' ";
+						echo "name='".key_ga_adsense."' ";
+						echo "id='".key_ga_adsense."' ";
+						echo "value='".get_option(key_ga_adsense)."' />\n";
+						?>
+						<p style="margin: 5px 10px;" class="setting-description">Enter your Google Adsense ID assigned by Google Analytics in this box. This enables Analytics tracking of Adsense information if your Adsense and Analytics accounts are linked. Note: It is highly recommended to not have the Google Analytics tracking code in the footer with this option enabled. Google may be unable to track your Adsense data.</p>
+					</td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_extra; ?>">Additional tracking code<br />(before tracker initialization):</label>
 					</th>
 					<td>
@@ -483,6 +535,10 @@ function add_google_analytics() {
 		if ( ( get_option(key_ga_admin) == ga_enabled || !current_user_can('level_' . get_option(key_ga_admin_level)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' ) {
 		
 			echo "<!-- Google Analytics Tracking by Google Analyticator: http://plugins.spiralwebconsulting.com/analyticator.html -->\n";
+			# Google Adsense data if enabled
+			if ( get_option(key_ga_adsense) != '' )
+				echo '	<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n\n";
+			
 			// Pick the HTTP connection
 			if ( get_option(key_ga_specify_http) == 'http' ) {
 				echo "	<script type=\"text/javascript\" src=\"http://www.google-analytics.com/ga.js\"></script>\n\n";
@@ -519,6 +575,7 @@ function add_google_analytics() {
 		
 			// Include the file types to track
 			$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
+			$ext = "";
 			foreach ( $extensions AS $extension )
 				$ext .= "'$extension',";
 			$ext = substr($ext, 0, -1);
