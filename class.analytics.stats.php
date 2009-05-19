@@ -86,6 +86,10 @@ class GoogleAnalyticsStats
 		# Request the list of accounts
 		$response = $this->curl($this->baseFeed . '/accounts/default', false, '0');
 		
+		# Check if the response received exists, else stop processing now
+		if ( $response == '' )
+			return array();
+		
 		# Parse the XML using SimplePie
 		$simplePie = new SimplePie();
 		$simplePie->set_raw_data($response);

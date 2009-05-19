@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 4.1
+ * Version: 4.1.1
  * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Spiral Web Consulting
@@ -444,7 +444,7 @@ function ga_options_page() {
 						echo "id='".key_ga_adsense."' ";
 						echo "value='".get_option(key_ga_adsense)."' />\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enter your Google Adsense ID assigned by Google Analytics in this box. This enables Analytics tracking of Adsense information if your Adsense and Analytics accounts are linked. Note: It is highly recommended to not have the Google Analytics tracking code in the footer with this option enabled. Google may be unable to track your Adsense data.</p>
+						<p style="margin: 5px 10px;" class="setting-description">Enter your Google Adsense ID assigned by Google Analytics in this box. This enables Analytics tracking of Adsense information if your Adsense and Analytics accounts are linked. Note: Google recommends the Analytics tracking code is placed in the header with this option enabled, however, a fix is included in this plugin. To follow the official specs, do not enable footer tracking.</p>
 					</td>
 				</tr>
 				<tr>
@@ -515,14 +515,37 @@ function ga_options_page() {
 }
 
 // Add the script
+$ga_in_footer = false;
 if (get_option(key_ga_footer) == ga_enabled) {
+	$ga_in_footer = true;
+	add_action('wp_head', 'add_ga_adsense');
 	add_action('wp_footer', 'add_google_analytics');
 } else {
 	add_action('wp_head', 'add_google_analytics');
 }
 
+/**
+ * Adds the Analytics Adsense tracking code to the header if the main Analytics tracking code is in the footer.
+ * Idea and code for Adsense tracking with main code in footer props William Charles Nickerson on May 16, 2009.
+ **/
+function add_ga_adsense() {
+	$uid = stripslashes(get_option(key_ga_uid));
+	// If GA is enabled and has a valid key
+	if (  (get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" )) {
+		// Display page tracking if user is not an admin
+		if ( ( get_option(key_ga_admin) == ga_enabled || !current_user_can('level_' . get_option(key_ga_admin_level)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' ) {
+			echo "<!-- Google Analytics Tracking by Google Analyticator: http://plugins.spiralwebconsulting.com/analyticator.html -->\n";
+			if ( get_option(key_ga_adsense) != '' ) {
+				echo '	<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n\n";
+			}
+		}
+	}
+}
+
 // The guts of the Google Analytics script
 function add_google_analytics() {
+	global $ga_in_footer;
+	
 	$uid = stripslashes(get_option(key_ga_uid));
 	$extra = stripslashes(get_option(key_ga_extra));
 	$extra_after = stripslashes(get_option(key_ga_extra_after));
@@ -536,7 +559,7 @@ function add_google_analytics() {
 		
 			echo "<!-- Google Analytics Tracking by Google Analyticator: http://plugins.spiralwebconsulting.com/analyticator.html -->\n";
 			# Google Adsense data if enabled
-			if ( get_option(key_ga_adsense) != '' )
+			if ( get_option(key_ga_adsense) != '' && !$ga_in_footer )
 				echo '	<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n\n";
 			
 			// Pick the HTTP connection

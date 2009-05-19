@@ -108,14 +108,21 @@ class GoogleStatsWidget
 		$line1 = htmlspecialchars($options['line1']);
 		$line2 = htmlspecialchars($options['line2']);
 		
-		# Get the class for interacting with the Google Analytics
-		require_once('class.analytics.stats.php');
+		$accounts = array();
 		
-		# Create a new Gdata call
-		$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
+		# Check if a username has been set
+		if ( get_option('google_stats_user') != '' ) {
 		
-		# Get a list of accounts
-		$accounts = $stats->getAnalyticsAccounts();
+			# Get the class for interacting with the Google Analytics
+			require_once('class.analytics.stats.php');
+		
+			# Create a new Gdata call
+			$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
+		
+			# Get a list of accounts
+			$accounts = $stats->getAnalyticsAccounts();
+			
+		}
 		
 		# Output the options
 		echo '<p style="text-align:right;"><label for="google_stats_title">' . __('Title:') . ' <input style="width: 250px;" id="google_stats_title" name="google_stats_title" type="text" value="' . $title . '" /></label></p>';
@@ -204,7 +211,7 @@ class GoogleStatsWidget
 		echo '</tr></table>';
 		
 		// The following is used to displayed the "Powered By Google Anayltics" text.
-		echo '<div style="font-size:9px;color:#666666;margin-top:0px;font-family:Verdana;">Powered By <a href="http://google.com/analytics/" alt="Google Analytics" style="text-decoration:none;"><img src="' . get_option('home') . '/wp-content/plugins/google-analyticator/ga_logo.png" alt="Google Analytics" style="border:0px;position:relative;top:4px;" /></a></div></div>';
+		echo '<div style="font-size:9px;color:#666666;margin-top:0px;font-family:Verdana;">Powered By <a href="http://google.com/analytics/" alt="Google Analytics" style="text-decoration:none;"><img src="' . plugins_url('/google-analyticator/ga_logo.png') . '" alt="Google Analytics" style="border:0px;position:relative;top:4px;" /></a></div></div>';
 	}
 	
 	/**
