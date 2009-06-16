@@ -97,7 +97,7 @@ class GoogleStatsWidget extends WP_Widget
 			foreach ( $accounts AS $account ) { $select = ( $acnt == $account['id'] ) ? ' selected="selected"' : ''; echo '<option value="' . $account['id'] . '"' . $select . '>' . $account['title'] . '</option>'; }
 		else
 			echo '<option value="">No accounts. Set user/pass in settings.</option>';
-		echo '</select>';
+		echo '</select></label></p>';
 		# Time frame
 		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('timeFrame') . '">' . __('Days of data to get:') . ' <input style="width: 150px;" id="' . $this->get_field_id('timeFrame') . '" name="' . $this->get_field_name('timeFrame') . '" type="text" value="' . $timeFrame . '" /></label></p>';		
 		# Page background
