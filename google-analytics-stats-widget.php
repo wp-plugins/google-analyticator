@@ -95,8 +95,10 @@ class GoogleStatsWidget extends WP_Widget
 		echo '<select name="' . $this->get_field_name('account') . '" id="' . $this->get_field_id('account') . '" style="margin-top: -3px; margin-bottom: 10px;">';
 		if ( count($accounts) > 0 )
 			foreach ( $accounts AS $account ) { $select = ( $acnt == $account['id'] ) ? ' selected="selected"' : ''; echo '<option value="' . $account['id'] . '"' . $select . '>' . $account['title'] . '</option>'; }
+		elseif ( $stats->checkLogin() == false )
+			echo '<option value="">Wrong login. Set user/pass in settings.</option>';
 		else
-			echo '<option value="">No accounts. Set user/pass in settings.</option>';
+			echo '<option value="">No Analytics accounts available.</option>';
 		echo '</select></label></p>';
 		# Time frame
 		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('timeFrame') . '">' . __('Days of data to get:') . ' <input style="width: 150px;" id="' . $this->get_field_id('timeFrame') . '" name="' . $this->get_field_name('timeFrame') . '" type="text" value="' . $timeFrame . '" /></label></p>';		
