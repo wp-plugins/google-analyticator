@@ -82,6 +82,9 @@ class GoogleStatsWidget extends WP_Widget
 		
 			# Create a new Gdata call
 			$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
+			
+			# Check if Google sucessfully logged in
+			$login = $stats->checkLogin();
 		
 			# Get a list of accounts
 			$accounts = $stats->getAnalyticsAccounts();
@@ -95,7 +98,7 @@ class GoogleStatsWidget extends WP_Widget
 		echo '<select name="' . $this->get_field_name('account') . '" id="' . $this->get_field_id('account') . '" style="margin-top: -3px; margin-bottom: 10px;">';
 		if ( count($accounts) > 0 )
 			foreach ( $accounts AS $account ) { $select = ( $acnt == $account['id'] ) ? ' selected="selected"' : ''; echo '<option value="' . $account['id'] . '"' . $select . '>' . $account['title'] . '</option>'; }
-		elseif ( $stats->checkLogin() == false )
+		elseif ( $login == false )
 			echo '<option value="">Wrong login. Set user/pass in settings.</option>';
 		else
 			echo '<option value="">No Analytics accounts available.</option>';
