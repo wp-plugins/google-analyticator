@@ -1,14 +1,14 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 4.3.1
+ * Version: 4.3.2
  * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Spiral Web Consulting
  * Author URI: http://spiralwebconsulting.com/
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '4.3.1');
+define('GOOGLE_ANALYTICATOR_VERSION', '4.3.2');
 
 # Include Google Analytics Stats widget
 if ( function_exists('curl_init') ) {
@@ -113,9 +113,26 @@ function add_ga_option_page() {
 
 add_action('plugin_action_links_' . plugin_basename(__FILE__), 'ga_filter_plugin_actions');
 
-// Adds FAQ and changelog options
+// Add settings option
 function ga_filter_plugin_actions($links) {
-	$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=5">FAQ</a>';
+	$new_links = array();
+	
+	$new_links[] = '<a href="options-general.php?page=google-analyticator.php">Settings</a>';
+	
+	return array_merge($new_links, $links);
+}
+
+add_filter('plugin_row_meta', 'ga_filter_plugin_links', 10, 2);
+
+// Add FAQ and support information
+function ga_filter_plugin_links($links, $file)
+{
+	if ( $file == plugin_basename(__FILE__) )
+	{
+		$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=5">FAQ</a>';
+		$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=6">Support</a>';
+		$links[] = '<a href="http://plugins.spiralwebconsulting.com/analyticator.html#donate">Donate</a>';
+	}
 	
 	return $links;
 }
@@ -222,6 +239,15 @@ function ga_options_page() {
 		<div class="wrap">
 		<form method="post" action="options-general.php?page=google-analyticator.php">
 			<h2>Google Analyticator Settings</h2>
+			
+			<div style="float: right;">
+				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="6309412">
+					<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+					<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+				</form>
+			</div>
 			
 			<p><em>
 				Google Analyticator is brought to you for free by <a href="http://spiralwebconsulting.com/">Spiral Web Consulting</a>. Spiral Web Consulting is a small web development firm specializing in PHP development. Visit our website to learn more, and don't hesitate to ask us to develop your next big WordPress plugin idea.

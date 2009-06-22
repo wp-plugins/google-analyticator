@@ -1,9 +1,10 @@
 === Google Analyticator ===
 Contributors: cavemonkey50, jesse_altman, spiralwebconsulting
+Donate link: http://plugins.spiralwebconsulting.com/analyticator.html#donate
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 2.8
-Stable tag: 4.3.1
+Stable tag: 4.3.2
 
 Adds the necessary JavaScript code to enable Google Analytics.
 
@@ -42,7 +43,11 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 
 Please visit the [Google Analyticator plugin page](http://plugins.spiralwebconsulting.com/analyticator.html#screenshots) for the latest screenshots.
 
-== Changelog ==  
+== Changelog ==
+
+= 4.3.2 =
+* Adds support for WordPress' new changelog readme.txt standard. Version information is now available from within the plugin updater.
+* Enhances the links on the plugin page. Adds a settings, FAQ, and support link.
 
 = 4.3.1 =
 * Fixes a bug that broke the widget page when a username was not entered in settings.
