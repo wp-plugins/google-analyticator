@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 4.3.2
+ * Version: 4.3.3
  * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Spiral Web Consulting
@@ -107,7 +107,6 @@ add_action('init', 'ga_outgoing_links');
 
 // Hook in the options page function
 function add_ga_option_page() {
-	global $wpdb;
 	add_options_page('Google Analyticator Settings', 'Google Analytics', 8, basename(__FILE__), 'ga_options_page');
 }
 
