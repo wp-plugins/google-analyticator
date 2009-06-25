@@ -34,6 +34,7 @@ class GoogleStatsWidget extends WP_Widget
 			echo $before_title . $title . $after_title;
 		
 		# Make the stats chicklet
+		echo '<!--Data gathered from last ' . number_format($timeFrame) . ' days using Google Analyticator -->';
 		$this->initiateBackground($pageBg, $font);
 		$this->beginWidget($font, $widgetBg);
 		$this->widgetInfo($this->getUniqueVisitors($acnt, $timeFrame), $line1, $line2, $innerBg, $font);

@@ -141,6 +141,9 @@ class GoogleAnalyticsStats
 	 **/
 	function getMetric($metric, $startDate, $endDate)
 	{
+		# Ensure the start date is after Jan 1 2005
+		$startDate = $this->verifyStartDate($startDate);
+		
 		# Request the list of accounts
 		$response = $this->curl($this->baseFeed . "/data?ids=$this->accountId&start-date=$startDate&end-date=$endDate&metrics=$metric", false, '0');
 		
@@ -156,6 +159,20 @@ class GoogleAnalyticsStats
 			$data_tag = $data->get_item_tags('http://schemas.google.com/analytics/2009', 'metric');
 		 	return $data_tag[0]['attribs']['']['value'];
 		}
+	}
+	
+	/**
+	 * Checks the date against Jan. 1 2005 because GA API only works until that date
+	 *
+	 * @param date - the date to compare
+	 * @return the correct date
+	 **/
+	function verifyStartDate($date)
+	{
+		if ( strtotime($date) > strtotime('2005-01-01') )
+			return $date;
+		else
+			return '2005-01-01';
 	}
 	
 } // END class

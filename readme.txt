@@ -4,7 +4,7 @@ Donate link: http://plugins.spiralwebconsulting.com/analyticator.html#donate
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 2.8.1
-Stable tag: 4.3.3
+Stable tag: 4.3.4
 
 Adds the necessary JavaScript code to enable Google Analytics.
 
@@ -44,6 +44,12 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 Please visit the [Google Analyticator plugin page](http://plugins.spiralwebconsulting.com/analyticator.html#screenshots) for the latest screenshots.
 
 == Changelog ==
+
+= 4.3.4 =
+* Fixes a bug that was breaking the save button on the settings page in IE.
+* Prevents the widget from grabbing Analytics data earlier January 1, 2005.
+* Fixes an incorrect default state for the event tracking option.
+* Adds the date range used for widget data in an HTML comment to prevent misrepresented stats.
 
 = 4.3.3 =
 * Corrects XHTML validator errors present in the stat widget.

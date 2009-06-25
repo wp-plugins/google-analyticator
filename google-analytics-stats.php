@@ -42,6 +42,7 @@ class GoogleStatsWidget
 		echo $before_title . $options['title'] . $after_title;
 		
 		# Make the stats chicklet
+		echo '<!--Data gathered from last ' . number_format($options['timeFrame']) . ' days using Google Analyticator -->';
 		$this->initiateBackground($options['pageBg'], $options['font']);
 		$this->beginWidget($options['font'], $options['widgetBg']);
 		$this->widgetInfo($this->getUniqueVisitors($options['account'], $options['timeFrame']), $options['line1'], $options['line2'], $options['innerBg'], $options['font']);
