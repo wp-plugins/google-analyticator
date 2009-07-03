@@ -1,25 +1,23 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 4.3.4
+ * Version: 4.4
  * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Spiral Web Consulting
  * Author URI: http://spiralwebconsulting.com/
+ * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '4.3.4');
+define('GOOGLE_ANALYTICATOR_VERSION', '4.4');
 
 # Include Google Analytics Stats widget
-if ( function_exists('curl_init') ) {
-	
-	# Check if we have a version of WordPress greater than 2.8
-	if ( function_exists('register_widget') ) {
-		require_once('google-analytics-stats-widget.php');
-	} else {
-		require_once('google-analytics-stats.php');
-		$google_analytics_stats = new GoogleStatsWidget();
-	}
+# Check if we have a version of WordPress greater than 2.8
+if ( function_exists('register_widget') ) {
+	require_once('google-analytics-stats-widget.php');
+} else {
+	require_once('google-analytics-stats.php');
+	$google_analytics_stats = new GoogleStatsWidget();
 }
 
 // Constants for enabled/disabled state
@@ -82,6 +80,10 @@ add_action('admin_menu', 'add_ga_option_page');
 
 // Initialize the options
 function ga_admin_init() {
+	# Load the localization information
+	$plugin_dir = basename(dirname(__FILE__));
+	load_plugin_textdomain('google-analyticator', 'wp-content/plugins/' . $plugin_dir, $plugin_dir);
+	
 	// Register out options so WordPress knows about them
 	if ( function_exists('register_setting') ) {
 		register_setting('google-analyticator', key_ga_status, '');
@@ -116,7 +118,7 @@ add_action('plugin_action_links_' . plugin_basename(__FILE__), 'ga_filter_plugin
 function ga_filter_plugin_actions($links) {
 	$new_links = array();
 	
-	$new_links[] = '<a href="options-general.php?page=google-analyticator.php">Settings</a>';
+	$new_links[] = '<a href="options-general.php?page=google-analyticator.php">' . __('Settings', 'google-analyticator') . '</a>';
 	
 	return array_merge($new_links, $links);
 }
@@ -128,9 +130,9 @@ function ga_filter_plugin_links($links, $file)
 {
 	if ( $file == plugin_basename(__FILE__) )
 	{
-		$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=5">FAQ</a>';
-		$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=6">Support</a>';
-		$links[] = '<a href="http://plugins.spiralwebconsulting.com/analyticator.html#donate">Donate</a>';
+		$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=5">' . __('FAQ', 'google-analyticator') . '</a>';
+		$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=6">' . __('Support', 'google-analyticator') . '</a>';
+		$links[] = '<a href="http://plugins.spiralwebconsulting.com/analyticator.html#donate">' . __('Donate', 'google-analyticator') . '</a>';
 	}
 	
 	return $links;
@@ -228,7 +230,7 @@ function ga_options_page() {
 			update_option('google_stats_password', $_POST['google_stats_password']);
 
 			// Give an updated message
-			echo "<div class='updated fade'><p><strong>Google Analyticator settings saved.</strong></p></div>";
+			echo "<div class='updated fade'><p><strong>" . __('Google Analyticator settings saved.', 'google-analyticator') . "</strong></p></div>";
 //		}
 	}
 
@@ -237,7 +239,7 @@ function ga_options_page() {
 
 		<div class="wrap">
 			
-		<h2>Google Analyticator Settings</h2>
+		<h2><?php _e('Google Analyticator Settings', 'google-analyticator'); ?></h2>
 		
 		<div style="float: right;">
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -251,24 +253,24 @@ function ga_options_page() {
 		<form method="post" action="options-general.php?page=google-analyticator.php">
 			
 			<p><em>
-				Google Analyticator is brought to you for free by <a href="http://spiralwebconsulting.com/">Spiral Web Consulting</a>. Spiral Web Consulting is a small web development firm specializing in PHP development. Visit our website to learn more, and don't hesitate to ask us to develop your next big WordPress plugin idea.
+				<?php _e('Google Analyticator is brought to you for free by <a href="http://spiralwebconsulting.com/">Spiral Web Consulting</a>. Spiral Web Consulting is a small web development firm specializing in PHP development. Visit our website to learn more, and don\'t hesitate to ask us to develop your next big WordPress plugin idea.', 'google-analyticator'); ?>
 			</em></p>
 			
-			<h3>Basic Settings</h3>
+			<h3><?php _e('Basic Settings', 'google-analyticator'); ?></h3>
 			<?php if (get_option(key_ga_status) == ga_disabled) { ?>
 				<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
-				Google Analytics integration is currently <strong>DISABLED</strong>.
+				<?php _e('Google Analytics integration is currently <strong>DISABLED</strong>.', 'google-analyticator'); ?>
 				</div>
 			<?php } ?>
 			<?php if ((get_option(key_ga_uid) == "XX-XXXXX-X") && (get_option(key_ga_status) != ga_disabled)) { ?>
 				<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
-				Google Analytics integration is currently enabled, but you did not enter a UID. Tracking will not occur.
+				<?php _e('Google Analytics integration is currently enabled, but you did not enter a UID. Tracking will not occur.', 'google-analyticator') ?>
 				</div>
 			<?php } ?>
 			<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_status ?>">Google Analytics logging is:</label>
+						<label for="<?php echo key_ga_status ?>"><?php _e('Google Analytics logging is', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -277,57 +279,84 @@ function ga_options_page() {
 						echo "<option value='".ga_enabled."'";
 						if(get_option(key_ga_status) == ga_enabled)
 							echo " selected='selected'";
-						echo ">Enabled</option>\n";
+						echo ">" . __('Enabled', 'google-analyticator') . "</option>\n";
 						
 						echo "<option value='".ga_disabled."'";
 						if(get_option(key_ga_status) == ga_disabled)
 							echo" selected='selected'";
-						echo ">Disabled</option>\n";
+						echo ">" . __('Disabled', 'google-analyticator') . "</option>\n";
 						
 						echo "</select>\n";
 						?>
 					</td>
 				</tr>
-				<tr>
-					<th valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_uid; ?>">Your Google Analytics' UID:</label>
-					</th>
-					<td>
-						<?php
-						echo "<input type='text' size='50' ";
-						echo "name='".key_ga_uid."' ";
-						echo "id='".key_ga_uid."' ";
-						echo "value='".get_option(key_ga_uid)."' />\n";
-						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enter your Google Analytics' UID in this box. The UID is needed for Google Analytics to log your website stats. Your UID can be found by looking in the JavaScript Google Analytics gives you to put on your page. Look for your UID in between <strong>_uacct = "UA-11111-1";</strong> in the JavaScript. In this example you would put <strong>UA-11111-1</strong> in the UID box.</p>
-					</td>
-				</tr>
-			</table>
-			<h3>Advanced Settings</h3>
-				<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
-				<?php if ( function_exists('curl_init') ) { ?>
 				<tr valign="top">
 					<th scope="row">
-						<label for="google_stats_user">Google Username:</label>
+						<label for="google_stats_user"><?php _e('Google username', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<input type="text" size="40" name="google_stats_user" id="google_stats_user" value="<?php echo stripslashes(get_option('google_stats_user')); ?>" />
-						<p style="margin: 5px 10px;" class="setting-description">Your Google Analytics account's username. This is needed to authenticate with Google for use with the stats widget.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Your Google Analytics account\'s username. Your username and password is needed to authenticate with Google for use with the stats widget. In addition, providing your username and password will enable you to select your Analytics account through a drop-down instead of searching for your UID. If you are not going to use the stat widget, <strong>entering in your username and password is optional</strong>. Your username and password will be stored on your server and is <strong>never transmitted to any third parties</strong> other than Google.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr valign="top">
 					<th scope="row">
-						<label for="google_stats_password">Google Password:</label>
+						<label for="google_stats_password"><?php _e('Google password', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<input type="password" size="40" name="google_stats_password" id="google_stats_password" value="<?php echo stripslashes(get_option('google_stats_password')); ?>" />
-						<p style="margin: 5px 10px;" class="setting-description">Your Google Analytics account's password. This is needed to authenticate with Google for use with the stats widget.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Your Google Analytics account\'s password. See the above setting for more information.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
-				<?php } ?>
+				<tr>
+					<?php
+					# Get the list of accounts if available
+					$ga_accounts = ga_get_analytics_accounts();
+					
+					# If we have a accounts, create a list, if not, use input box
+					if ( $ga_accounts !== false ) :
+					?>
+						<th valign="top" style="padding-top: 10px;">
+							<label for="<?php echo key_ga_uid; ?>"><?php _e('Google Analytics account', 'google-analyticator'); ?>:</label>
+						</th>
+						<td>
+							<?php
+							# Create a select box	
+							echo '<select name="' . key_ga_uid . '" id="' . key_ga_uid . '">';
+							echo '<option value="XX-XXXXX-X">' . __('Select an Account', 'google-analyticator') . '</option>';
+						
+							# The list of accounts
+							foreach ( $ga_accounts AS $account ) {
+								$select = ( get_option(key_ga_uid) == $account['ga:webPropertyId'] ) ? ' selected="selected"' : '';
+								echo '<option value="' . $account['ga:webPropertyId'] . '"' . $select . '>' . $account['title'] . '</option>';
+							}
+						
+							# Close the select box
+							echo '</select>';
+							?>
+							<p style="margin: 5px 10px;" class="setting-description"><?php _e('Select the Analytics account you wish to enable tracking for. An account must be selected for tracking to occur.', 'google-analyticator'); ?></p>
+						</td>
+					<?php else: ?>
+							<th valign="top" style="padding-top: 10px;">
+								<label for="<?php echo key_ga_uid; ?>"><?php _e('Google Analytics UID', 'google-analyticator'); ?>:</label>
+							</th>
+							<td>
+								<?php
+								echo "<input type='text' size='50' ";
+								echo "name='".key_ga_uid."' ";
+								echo "id='".key_ga_uid."' ";
+								echo "value='".get_option(key_ga_uid)."' />\n";
+								?>
+								<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats. <strong>If you are having trouble finding your UID, enter your Google Analytics account\'s username and password in the above fields. After saving the page you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></p>
+							</td>
+						<?php endif; ?>
+				</tr>
+			</table>
+			<h3><?php _e('Advanced Settings', 'google-analyticator'); ?></h3>
+				<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_admin ?>">WordPress admin logging:</label>
+						<label for="<?php echo key_ga_admin ?>"><?php _e('WordPress admin logging', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -336,49 +365,51 @@ function ga_options_page() {
 						echo "<option value='".ga_enabled."'";
 						if(get_option(key_ga_admin) == ga_enabled)
 							echo " selected='selected'";
-						echo ">Enabled</option>\n";
+						echo ">" . __('Enabled', 'google-analyticator') . "</option>\n";
 						
 						echo "<option value='".ga_disabled."'";
 						if(get_option(key_ga_admin) == ga_disabled)
 							echo" selected='selected'";
-						echo ">Disabled</option>\n";
+						echo ">" . __('Disabled', 'google-analyticator') . "</option>\n";
 						
 						echo "</select>\n";
-						?>
-						<p style="margin: 5px 10px;" class="setting-description">Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level <?php
-						echo "<input type='text' size='2' ";
-						echo "name='".key_ga_admin_level."' ";
-						echo "id='".key_ga_admin_level."' ";
-						echo "value='".stripslashes(get_option(key_ga_admin_level))."' />\n";
-						?> or higher. Your user level is <?php
+						
+						# Generate the user level box
+						$level = "<input type='text' size='2' ";
+						$level .= "name='".key_ga_admin_level."' ";
+						$level .= "id='".key_ga_admin_level."' ";
+						$level .= "value='".stripslashes(get_option(key_ga_admin_level))."' />\n";
+						
+						# Output the current user level
 						if ( current_user_can('level_10') )
-							echo '10';
+							$user = '10';
 						elseif ( current_user_can('level_9') )
-							echo '9';
+							$user = '9';
 						elseif ( current_user_can('level_8') )
-							echo '8';
+							$user = '8';
 						elseif ( current_user_can('level_7') )
-							echo '7';
+							$user = '7';
 						elseif ( current_user_can('level_6') )
-							echo '6';
+							$user = '6';
 						elseif ( current_user_can('level_5') )
-							echo '5';
+							$user = '5';
 						elseif ( current_user_can('level_4') )
-							echo '4';
+							$user = '4';
 						elseif ( current_user_can('level_3') )
-							echo '3';
+							$user = '3';
 						elseif ( current_user_can('level_2') )
-							echo '2';
+							$user = '2';
 						elseif ( current_user_can('level_1') )
-							echo '1';
+							$user = '1';
 						else
-							echo '0';
-						?>.</p>
+							$user = '0';
+						?>
+						<p style="margin: 5px 10px;" class="setting-description"><?php printf(__('Disabling this option will prevent all logged in WordPress admins from showing up on your Google Analytics reports. A WordPress admin is defined as a user with a level %s or higher. Your user level is %d.', 'google-analyticator'), $level, $user); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_admin_disable ?>">Admin tracking disable method:</label>
+						<label for="<?php echo key_ga_admin_disable ?>"><?php _e('Admin tracking disable method', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -387,21 +418,21 @@ function ga_options_page() {
 						echo "<option value='remove'";
 						if(get_option(key_ga_admin_disable) == 'remove')
 							echo " selected='selected'";
-						echo ">Remove</option>\n";
+						echo ">" . __('Remove', 'google-analyticator') . "</option>\n";
 						
 						echo "<option value='admin'";
 						if(get_option(key_ga_admin_disable) == 'admin')
 							echo" selected='selected'";
-						echo ">Use 'admin' variable</option>\n";
+						echo ">" . __('Use \'admin\' variable', 'google-analyticator') . "</option>\n";
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Selecting the "Remove" option will physically remove the tracking code from logged in admin users. Selecting the "Use 'admin' variable" option will assign a variable called 'admin' to logged in admin users. This option will allow Google Analytics' site overlay feature to work, but you will have to manually configure Google Analytics to exclude tracking from hits with the 'admin' variable.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Selecting the "Remove" option will physically remove the tracking code from logged in admin users. Selecting the "Use \'admin\' variable" option will assign a variable called \'admin\' to logged in admin users. This option will allow Google Analytics\' site overlay feature to work, but you will have to manually configure Google Analytics to exclude tracking from hits with the \'admin\' variable.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_footer ?>">Footer tracking code:</label>
+						<label for="<?php echo key_ga_footer ?>"><?php _e('Footer tracking code', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -410,21 +441,21 @@ function ga_options_page() {
 						echo "<option value='".ga_enabled."'";
 						if(get_option(key_ga_footer) == ga_enabled)
 							echo " selected='selected'";
-						echo ">Enabled</option>\n";
+						echo ">" . __('Enabled', 'google-analyticator') . "</option>\n";
 						
 						echo "<option value='".ga_disabled."'";
 						if(get_option(key_ga_footer) == ga_disabled)
 							echo" selected='selected'";
-						echo ">Disabled</option>\n";
+						echo ">" . __('Disabled', 'google-analyticator') . "</option>\n";
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enabling this option will insert the Google Analytics tracking code in your site's footer instead of your header. This will speed up your page loading if turned on. Not all themes support code in the footer, so if you turn this option on, be sure to check the Analytics code is still displayed on your site.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enabling this option will insert the Google Analytics tracking code in your site\'s footer instead of your header. This will speed up your page loading if turned on. Not all themes support code in the footer, so if you turn this option on, be sure to check the Analytics code is still displayed on your site.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_outbound ?>">Outbound link tracking:</label>
+						<label for="<?php echo key_ga_outbound ?>"><?php _e('Outbound link tracking', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -433,21 +464,21 @@ function ga_options_page() {
 						echo "<option value='".ga_enabled."'";
 						if(get_option(key_ga_outbound) == ga_enabled)
 							echo " selected='selected'";
-						echo ">Enabled</option>\n";
+						echo ">" . __('Enabled', 'google-analyticator') . "</option>\n";
 						
 						echo "<option value='".ga_disabled."'";
 						if(get_option(key_ga_outbound) == ga_disabled)
 							echo" selected='selected'";
-						echo ">Disabled</option>\n";
+						echo ">" . __('Disabled', 'google-analyticator') . "</option>\n";
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Disabling this option will turn off the tracking of outbound links. It's recommended not to disable this option unless you're a privacy advocate (now why would you be using Google Analytics in the first place?) or it's causing some kind of weird issue.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Disabling this option will turn off the tracking of outbound links. It\'s recommended not to disable this option unless you\'re a privacy advocate (now why would you be using Google Analytics in the first place?) or it\'s causing some kind of weird issue.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_event ?>">Event tracking:</label>
+						<label for="<?php echo key_ga_event ?>"><?php _e('Event tracking', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -456,21 +487,21 @@ function ga_options_page() {
 						echo "<option value='".ga_enabled."'";
 						if(get_option(key_ga_event) == ga_enabled)
 							echo " selected='selected'";
-						echo ">Enabled</option>\n";
+						echo ">" . __('Enabled', 'google-analyticator') . "</option>\n";
 						
 						echo "<option value='".ga_disabled."'";
 						if(get_option(key_ga_event) == ga_disabled)
 							echo" selected='selected'";
-						echo ">Disabled</option>\n";
+						echo ">" . __('Disabled', 'google-analyticator') . "</option>\n";
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enabling this option will treat outbound links and downloads as events instead of pageviews. Since the introduction of <a href="http://code.google.com/apis/analytics/docs/tracking/eventTrackerOverview.html">event tracking in Analytics</a>, this is the recommended way to track these types of actions. Only disable this option if you must use the old pageview tracking method.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enabling this option will treat outbound links and downloads as events instead of pageviews. Since the introduction of <a href="http://code.google.com/apis/analytics/docs/tracking/eventTrackerOverview.html">event tracking in Analytics</a>, this is the recommended way to track these types of actions. Only disable this option if you must use the old pageview tracking method.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_downloads; ?>">Download extensions to track:</label>
+						<label for="<?php echo key_ga_downloads; ?>"><?php _e('Download extensions to track', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -479,12 +510,12 @@ function ga_options_page() {
 						echo "id='".key_ga_downloads."' ";
 						echo "value='".stripslashes(get_option(key_ga_downloads))."' />\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enter any extensions of files you would like to be tracked as a download. For example to track all MP3s and PDFs enter <strong>mp3,pdf</strong>. <em>Outbound link tracking must be enabled for downloads to be tracked.</em></p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter any extensions of files you would like to be tracked as a download. For example to track all MP3s and PDFs enter <strong>mp3,pdf</strong>. <em>Outbound link tracking must be enabled for downloads to be tracked.</em>', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_outbound_prefix; ?>">Prefix external links with:</label>
+						<label for="<?php echo key_ga_outbound_prefix; ?>"><?php _e('Prefix external links with', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -493,12 +524,12 @@ function ga_options_page() {
 						echo "id='".key_ga_outbound_prefix."' ";
 						echo "value='".stripslashes(get_option(key_ga_outbound_prefix))."' />\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enter a name for the section tracked external links will appear under. This option has no effect if event tracking is enabled.</em></p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter a name for the section tracked external links will appear under. This option has no effect if event tracking is enabled.', 'google-analyticator'); ?></em></p>
 					</td>
 				</tr>
 				<tr>
 					<th valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_downloads_prefix; ?>">Prefix download links with:</label>
+						<label for="<?php echo key_ga_downloads_prefix; ?>"><?php _e('Prefix download links with', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -507,12 +538,12 @@ function ga_options_page() {
 						echo "id='".key_ga_download_sprefix."' ";
 						echo "value='".stripslashes(get_option(key_ga_downloads_prefix))."' />\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enter a name for the section tracked download links will appear under. This option has no effect if event tracking is enabled.</em></p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter a name for the section tracked download links will appear under. This option has no effect if event tracking is enabled.', 'google-analyticator'); ?></em></p>
 					</td>
 				</tr>
 				<tr>
 					<th valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_adsense; ?>">Google Adsense ID:</label>
+						<label for="<?php echo key_ga_adsense; ?>"><?php _e('Google Adsense ID', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -521,12 +552,12 @@ function ga_options_page() {
 						echo "id='".key_ga_adsense."' ";
 						echo "value='".get_option(key_ga_adsense)."' />\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enter your Google Adsense ID assigned by Google Analytics in this box. This enables Analytics tracking of Adsense information if your Adsense and Analytics accounts are linked. Note: Google recommends the Analytics tracking code is placed in the header with this option enabled, however, a fix is included in this plugin. To follow the official specs, do not enable footer tracking.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Adsense ID assigned by Google Analytics in this box. This enables Analytics tracking of Adsense information if your Adsense and Analytics accounts are linked. Note: Google recommends the Analytics tracking code is placed in the header with this option enabled, however, a fix is included in this plugin. To follow the official specs, do not enable footer tracking.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_extra; ?>">Additional tracking code<br />(before tracker initialization):</label>
+						<label for="<?php echo key_ga_extra; ?>"><?php _e('Additional tracking code', 'google-analyticator'); ?><br />(<?php _e('before tracker initialization', 'google-analyticator'); ?>):</label>
 					</th>
 					<td>
 						<?php
@@ -535,12 +566,12 @@ function ga_options_page() {
 						echo "id='".key_ga_extra."'>";
 						echo stripslashes(get_option(key_ga_extra))."</textarea>\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>before</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>before</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_extra_after; ?>">Additional tracking code<br />(after tracker initialization):</label>
+						<label for="<?php echo key_ga_extra_after; ?>"><?php _e('Additional tracking code', 'google-analyticator'); ?><br />(<?php _e('after tracker initialization', 'google-analyticator'); ?>):</label>
 					</th>
 					<td>
 						<?php
@@ -549,12 +580,12 @@ function ga_options_page() {
 						echo "id='".key_ga_extra_after."'>";
 						echo stripslashes(get_option(key_ga_extra_after))."</textarea>\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_specify_http; ?>">Specify HTTP detection:</label>
+						<label for="<?php echo key_ga_specify_http; ?>"><?php _e('Specify HTTP detection', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
@@ -563,32 +594,65 @@ function ga_options_page() {
 						echo "<option value='auto'";
 						if(get_option(key_ga_specify_http) == 'auto')
 							echo " selected='selected'";
-						echo ">Auto Detect</option>\n";
+						echo ">" . __('Auto Detect', 'google-analyticator') . "</option>\n";
 						
 						echo "<option value='http'";
 						if(get_option(key_ga_specify_http) == 'http')
 							echo " selected='selected'";
-						echo ">HTTP</option>\n";
+						echo ">" . __('HTTP', 'google-analyticator') . "</option>\n";
 						
 						echo "<option value='https'";
 						if(get_option(key_ga_specify_http) == 'https')
 							echo " selected='selected'";
-						echo ">HTTPS</option>\n";
+						echo ">" . __('HTTPS', 'google-analyticator') . "</option>\n";
 						
 						echo "</select>\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description">Explicitly set the type of HTTP connection your website uses. Setting this option instead of relying on the auto detect may resolve the _gat is undefined error message.</p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Explicitly set the type of HTTP connection your website uses. Setting this option instead of relying on the auto detect may resolve the _gat is undefined error message.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				</table>
 			<p class="submit">
 				<?php if ( function_exists('settings_fields') ) settings_fields('google-analyticator'); ?>
-				<input type="submit" name="info_update" value="Save Changes" />
+				<input type="submit" name="info_update" value="<?php _e('Save Changes', 'google-analyticator'); ?>" />
 			</p>
 		</div>
 		</form>
 
 <?php
+}
+
+/**
+ * Checks if the WordPress API is a valid method for selecting an account
+ *
+ * @return a list of accounts if available, false if none available
+ **/
+function ga_get_analytics_accounts()
+{
+	$accounts = array();
+	
+	# Check if a username has been set
+	if ( get_option('google_stats_user') == '' )
+		return false;
+	
+	# Get the class for interacting with the Google Analytics
+	require_once('class.analytics.stats.php');
+	
+	# Create a new Gdata call
+	$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
+		
+	# Check if Google sucessfully logged in
+	if ( ! $stats->checkLogin() )
+		return false;
+
+	# Get a list of accounts
+	$accounts = $stats->getAnalyticsAccounts();
+	
+	# Return the account array if there are accounts
+	if ( count($accounts) > 0 )
+		return $accounts;
+	else
+		return false;
 }
 
 // Add the script

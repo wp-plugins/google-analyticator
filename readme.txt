@@ -45,6 +45,12 @@ Please visit the [Google Analyticator plugin page](http://plugins.spiralwebconsu
 
 == Changelog ==
 
+= 4.4 =
+* Adds support for automatically retrieving an Analytics account's UID if the account's Google username and password is entered.
+* Updates the Google Analytics API class to use the WordPress HTTP API, thus removing cURL as a core requirement for the widget.
+* Adds additional account information support to the Google Analytics API class.
+* Updates the UID setting help to remove old urchin.js references and provide additional help for finding a UID.
+
 = 4.3.4 =
 * Fixes a bug that was breaking the save button on the settings page in IE.
 * Prevents the widget from grabbing Analytics data earlier January 1, 2005.

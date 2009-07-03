@@ -35,40 +35,45 @@ class GoogleAnalyticsStats
 		$pass = urlencode($pass);
 		
 		# Request authentication with Google
-		$response = $this->curl('https://www.google.com/accounts/ClientLogin', 'accountType=GOOGLE&Email=' . $user . '&Passwd=' . $pass);
+		$response = $this->http('https://www.google.com/accounts/ClientLogin', 'accountType=GOOGLE&Email=' . $user . '&Passwd=' . $pass);
 		
 		# Get the authentication token
 		$this->token = substr(strstr($response, "Auth="), 5);
 	}
 	
 	/**
-	 * Connects over cURL to get data
+	 * Connects using the WordPress HTTP API to get data
 	 *
 	 * @param url - url to request
-	 * @param post - post data to pass through curl
-	 * @return the raw curl response
+	 * @param post - post data to pass through WordPress
+	 * @return the raw http response
 	 **/
-	function curl($url, $post = false, $header = 1)
+	function http($url, $post = false)
 	{
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($curl, CURLOPT_HEADER, $header);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-		curl_setopt($curl, CURLOPT_URL, $url);
+		# Set the arguments to pass to WordPress
+		$args = array(
+			'sslverify' => false
+		);
 		
-		# Include the authentication token if known
-		if ( $this->token ) {
-			curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: GoogleLogin auth=' . $this->token));
-		}
-		
-		# Include optional post fields
+		# Add the optional post values
 		if ( $post ) {
 			$post .= '&service=analytics&source=wp-google-stats';
-			curl_setopt($curl, CURLOPT_POST, 1);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+			$args['body'] = $post;
 		}
 		
-		return curl_exec($curl);
+		# Add the token information
+		if ( $this->token ) {
+			$args['headers'] = array('Authorization' => 'GoogleLogin auth=' . $this->token);
+		}
+		
+		# Make the connection
+		if ( $post )
+			$response = wp_remote_post($url, $args);
+		else
+			$response = wp_remote_get($url, $args);
+		
+		# Return the body of the response
+		return $response['body'];
 	}
 	
 	/**
@@ -102,7 +107,7 @@ class GoogleAnalyticsStats
 	function getAnalyticsAccounts()
 	{		
 		# Request the list of accounts
-		$response = $this->curl($this->baseFeed . '/accounts/default', false, '0');
+		$response = $this->http($this->baseFeed . '/accounts/default');
 		
 		# Check if the response received exists, else stop processing now
 		if ( $response == '' )
@@ -120,10 +125,24 @@ class GoogleAnalyticsStats
 		foreach ( $accounts AS $account ) {
 			$id = array();
 			
-			$item_info = $account->get_item_tags('http://schemas.google.com/analytics/2009', 'tableId');
+			# Get the list of properties
+			$properties = $account->get_item_tags('http://schemas.google.com/analytics/2009', 'property');
 			
+			# Loop through the properties
+			foreach ( $properties AS $property ) {
+				
+				# Get the property information
+				$name = $property['attribs']['']['name'];
+				$value = $property['attribs']['']['value'];
+				
+				# Add the propery data to the id array
+				$id[$name] = $value;
+				
+			}
+			
+			# Add the backward compatibility array items
 			$id['title'] = $account->get_title();
-			$id['id'] = $item_info[0]['data'];
+			$id['id'] = 'ga:' . $id['ga:profileId'];
 			
 			$ids[] = $id;
 		}
@@ -144,8 +163,8 @@ class GoogleAnalyticsStats
 		# Ensure the start date is after Jan 1 2005
 		$startDate = $this->verifyStartDate($startDate);
 		
-		# Request the list of accounts
-		$response = $this->curl($this->baseFeed . "/data?ids=$this->accountId&start-date=$startDate&end-date=$endDate&metrics=$metric", false, '0');
+		# Request the metric data
+		$response = $this->http($this->baseFeed . "/data?ids=$this->accountId&start-date=$startDate&end-date=$endDate&metrics=$metric");
 		
 		# Parse the XML using SimplePie
 		$simplePie = new SimplePie();

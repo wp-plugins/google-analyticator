@@ -42,7 +42,7 @@ class GoogleStatsWidget
 		echo $before_title . $options['title'] . $after_title;
 		
 		# Make the stats chicklet
-		echo '<!--Data gathered from last ' . number_format($options['timeFrame']) . ' days using Google Analyticator -->';
+		echo '<!-- Data gathered from last ' . number_format($options['timeFrame']) . ' days using Google Analyticator -->';
 		$this->initiateBackground($options['pageBg'], $options['font']);
 		$this->beginWidget($options['font'], $options['widgetBg']);
 		$this->widgetInfo($this->getUniqueVisitors($options['account'], $options['timeFrame']), $options['line1'], $options['line2'], $options['innerBg'], $options['font']);
@@ -126,9 +126,9 @@ class GoogleStatsWidget
 		}
 		
 		# Output the options
-		echo '<p style="text-align:right;"><label for="google_stats_title">' . __('Title:') . ' <input style="width: 250px;" id="google_stats_title" name="google_stats_title" type="text" value="' . $title . '" /></label></p>';
+		echo '<p style="text-align:right;"><label for="google_stats_title">' . __('Title', 'google-analyticator') . ': <input style="width: 250px;" id="google_stats_title" name="google_stats_title" type="text" value="' . $title . '" /></label></p>';
 		# The list of accounts
-		echo '<p style="text-align:right;"><label for="google_stats_account">' . __('Analytics account: ');
+		echo '<p style="text-align:right;"><label for="google_stats_account">' . __('Analytics account', 'google-analyticator') . ': ';
 		echo '<select name="google_stats_account" style="margin-top: -3px; margin-bottom: 10px;">';
 		if ( count($accounts) > 0 )
 			foreach ( $accounts AS $account ) { $select = ( $acnt == $account['id'] ) ? ' selected="selected"' : ''; echo '<option value="' . $account['id'] . '"' . $select . '>' . $account['title'] . '</option>'; }
@@ -136,19 +136,19 @@ class GoogleStatsWidget
 			echo '<option value="">No accounts. Set user/pass in settings.</option>';
 		echo '</select>';
 		# Time frame
-		echo '<p style="text-align:right;"><label for="google_stats_timeFrame">' . __('Days of data to get:') . ' <input style="width: 150px;" id="google_stats_timeFrame" name="google_stats_timeFrame" type="text" value="' . $timeFrame . '" /></label></p>';		
+		echo '<p style="text-align:right;"><label for="google_stats_timeFrame">' . __('Days of data to get', 'google-analyticator') . ': <input style="width: 150px;" id="google_stats_timeFrame" name="google_stats_timeFrame" type="text" value="' . $timeFrame . '" /></label></p>';		
 		# Page background
-		echo '<p style="text-align:right;"><label for="google_stats_pageBg">' . __('Page background:') . ' <input style="width: 150px;" id="google_stats_pageBg" name="google_stats_pageBg" type="text" value="' . $pageBg . '" /></label></p>';
+		echo '<p style="text-align:right;"><label for="google_stats_pageBg">' . __('Page background', 'google-analyticator') . ': <input style="width: 150px;" id="google_stats_pageBg" name="google_stats_pageBg" type="text" value="' . $pageBg . '" /></label></p>';
 		# Widget background
-		echo '<p style="text-align:right;"><label for="google_stats_widgetBg">' . __('Widget background:') . ' <input style="width: 150px;" id="google_stats_widgetBg" name="google_stats_widgetBg" type="text" value="' . $widgetBg . '" /></label></p>';
+		echo '<p style="text-align:right;"><label for="google_stats_widgetBg">' . __('Widget background', 'google-analyticator') . ': <input style="width: 150px;" id="google_stats_widgetBg" name="google_stats_widgetBg" type="text" value="' . $widgetBg . '" /></label></p>';
 		# Inner background
-		echo '<p style="text-align:right;"><label for="google_stats_innerBg">' . __('Inner background:') . ' <input style="width: 150px;" id="google_stats_innerBg" name="google_stats_innerBg" type="text" value="' . $innerBg . '" /></label></p>';
+		echo '<p style="text-align:right;"><label for="google_stats_innerBg">' . __('Inner background', 'google-analyticator') . ': <input style="width: 150px;" id="google_stats_innerBg" name="google_stats_innerBg" type="text" value="' . $innerBg . '" /></label></p>';
 		# Font color
-		echo '<p style="text-align:right;"><label for="google_stats_font">' . __('Font color:') . ' <input style="width: 150px;" id="google_stats_font" name="google_stats_font" type="text" value="' . $font . '" /></label></p>';
+		echo '<p style="text-align:right;"><label for="google_stats_font">' . __('Font color', 'google-analyticator') . ': <input style="width: 150px;" id="google_stats_font" name="google_stats_font" type="text" value="' . $font . '" /></label></p>';
 		# Text line 1
-		echo '<p style="text-align:right;"><label for="google_stats_line1">' . __('Line 1 text:') . ' <input style="width: 200px;" id="google_stats_line1" name="google_stats_line1" type="text" value="' . $line1 . '" /></label></p>';
+		echo '<p style="text-align:right;"><label for="google_stats_line1">' . __('Line 1 text', 'google-analyticator') . ': <input style="width: 200px;" id="google_stats_line1" name="google_stats_line1" type="text" value="' . $line1 . '" /></label></p>';
 		# Text line 2
-		echo '<p style="text-align:right;"><label for="google_stats_line2">' . __('Line 2 text:') . ' <input style="width: 200px;" id="google_stats_line2" name="google_stats_line2" type="text" value="' . $line2 . '" /></label></p>';
+		echo '<p style="text-align:right;"><label for="google_stats_line2">' . __('Line 2 text', 'google-analyticator') . ': <input style="width: 200px;" id="google_stats_line2" name="google_stats_line2" type="text" value="' . $line2 . '" /></label></p>';
 		# Mark the form as updated
 		echo '<input type="hidden" id="google-stats-submit" name="google-stats-submit" value="1" />';
 	}
