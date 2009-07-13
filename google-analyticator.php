@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 4.4
+ * Version: 5.0
  * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Spiral Web Consulting
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '4.4');
+define('GOOGLE_ANALYTICATOR_VERSION', '5.0');
 
 # Include Google Analytics Stats widget
 # Check if we have a version of WordPress greater than 2.8
@@ -19,6 +19,10 @@ if ( function_exists('register_widget') ) {
 	require_once('google-analytics-stats.php');
 	$google_analytics_stats = new GoogleStatsWidget();
 }
+
+# Include the Google Analytics Summary widget
+require_once('google-analytics-summary-widget.php');
+$google_analytics_summary = new GoogleAnalyticsSummary();
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -73,6 +77,7 @@ add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track
 add_option(key_ga_downloads_prefix, ga_downloads_prefix_default, 'Download extensions to track with Google Analyticator');
 add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputting in the footer');
 add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');
+add_option('ga_google_token', '', 'The token used to authenticate with Google');
 
 // Create a option page for settings
 add_action('admin_init', 'ga_admin_init');
@@ -82,7 +87,7 @@ add_action('admin_menu', 'add_ga_option_page');
 function ga_admin_init() {
 	# Load the localization information
 	$plugin_dir = basename(dirname(__FILE__));
-	load_plugin_textdomain('google-analyticator', 'wp-content/plugins/' . $plugin_dir, $plugin_dir);
+	load_plugin_textdomain('google-analyticator', 'wp-content/plugins/' . $plugin_dir . '/localizations', $plugin_dir . '/localizations');
 	
 	// Register out options so WordPress knows about them
 	if ( function_exists('register_setting') ) {
@@ -224,10 +229,6 @@ function ga_options_page() {
 			if ( $ga_specify_http == '' )
 				$ga_specify_http = 'auto';
 			update_option(key_ga_specify_http, $ga_specify_http);
-			
-			# Update the stat options
-			update_option('google_stats_user', $_POST['google_stats_user']);
-			update_option('google_stats_password', $_POST['google_stats_password']);
 
 			// Give an updated message
 			echo "<div class='updated fade'><p><strong>" . __('Google Analyticator settings saved.', 'google-analyticator') . "</strong></p></div>";
@@ -290,28 +291,25 @@ function ga_options_page() {
 						?>
 					</td>
 				</tr>
-				<tr valign="top">
-					<th scope="row">
-						<label for="google_stats_user"><?php _e('Google username', 'google-analyticator'); ?>:</label>
+				<?php
+					# Get the list of accounts if available
+					$ga_accounts = ga_get_analytics_accounts();
+				?>
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label><?php _e('Authenticate with Google', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
-						<input type="text" size="40" name="google_stats_user" id="google_stats_user" value="<?php echo stripslashes(get_option('google_stats_user')); ?>" />
-						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Your Google Analytics account\'s username. Your username and password is needed to authenticate with Google for use with the stats widget. In addition, providing your username and password will enable you to select your Analytics account through a drop-down instead of searching for your UID. If you are not going to use the stat widget, <strong>entering in your username and password is optional</strong>. Your username and password will be stored on your server and is <strong>never transmitted to any third parties</strong> other than Google.', 'google-analyticator'); ?></p>
-					</td>
-				</tr>
-				<tr valign="top">
-					<th scope="row">
-						<label for="google_stats_password"><?php _e('Google password', 'google-analyticator'); ?>:</label>
-					</th>
-					<td>
-						<input type="password" size="40" name="google_stats_password" id="google_stats_password" value="<?php echo stripslashes(get_option('google_stats_password')); ?>" />
-						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Your Google Analytics account\'s password. See the above setting for more information.', 'google-analyticator'); ?></p>
+						<?php if ( get_option('ga_google_token') == '' ) { ?>
+							<p style="margin-top: 7px;"><a href="https://www.google.com/accounts/AuthSubRequest?&amp;next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=https://www.google.com/analytics/feeds/&amp;secure=0&amp;session=1"><?php _e('Click here to login to Google, thus authenticating Google Analyticator with your Analytics account.', 'google-analyticator'); ?></a></p>
+						<?php } else { ?>
+							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="https://www.google.com/accounts/AuthSubRequest?&amp;next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=https://www.google.com/analytics/feeds/&amp;secure=0&amp;session=1"><?php _e('Click here to authenticate again.', 'google-analyticator'); ?></a></p>
+						<?php } ?>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Clicking the above link will authenticate Google Analyticator with Google. Authentication with Google is needed for use with the stats widget. In addition, authenticating will enable you to select your Analytics account through a drop-down instead of searching for your UID. If you are not going to use the stat widget, <strong>authenticating with Google is optional</strong>.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
 					<?php
-					# Get the list of accounts if available
-					$ga_accounts = ga_get_analytics_accounts();
 					
 					# If we have a accounts, create a list, if not, use input box
 					if ( $ga_accounts !== false ) :
@@ -337,19 +335,19 @@ function ga_options_page() {
 							<p style="margin: 5px 10px;" class="setting-description"><?php _e('Select the Analytics account you wish to enable tracking for. An account must be selected for tracking to occur.', 'google-analyticator'); ?></p>
 						</td>
 					<?php else: ?>
-							<th valign="top" style="padding-top: 10px;">
-								<label for="<?php echo key_ga_uid; ?>"><?php _e('Google Analytics UID', 'google-analyticator'); ?>:</label>
-							</th>
-							<td>
-								<?php
-								echo "<input type='text' size='50' ";
-								echo "name='".key_ga_uid."' ";
-								echo "id='".key_ga_uid."' ";
-								echo "value='".get_option(key_ga_uid)."' />\n";
-								?>
-								<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats. <strong>If you are having trouble finding your UID, enter your Google Analytics account\'s username and password in the above fields. After saving the page you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></p>
-							</td>
-						<?php endif; ?>
+						<th valign="top" style="padding-top: 10px;">
+							<label for="<?php echo key_ga_uid; ?>"><?php _e('Google Analytics UID', 'google-analyticator'); ?>:</label>
+						</th>
+						<td>
+							<?php
+							echo "<input type='text' size='50' ";
+							echo "name='".key_ga_uid."' ";
+							echo "id='".key_ga_uid."' ";
+							echo "value='".get_option(key_ga_uid)."' />\n";
+							?>
+							<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats. <strong>If you are having trouble finding your UID, authenticate with Google in the above field. After returning from Google, you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></p>
+						</td>
+					<?php endif; ?>
 				</tr>
 			</table>
 			<h3><?php _e('Advanced Settings', 'google-analyticator'); ?></h3>
@@ -631,15 +629,14 @@ function ga_get_analytics_accounts()
 {
 	$accounts = array();
 	
-	# Check if a username has been set
-	if ( get_option('google_stats_user') == '' )
-		return false;
-	
 	# Get the class for interacting with the Google Analytics
 	require_once('class.analytics.stats.php');
 	
 	# Create a new Gdata call
-	$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
+	if ( isset($_GET['token']) )
+		$stats = new GoogleAnalyticsStats($_GET['token']);
+	else
+		$stats = new GoogleAnalyticsStats();
 		
 	# Check if Google sucessfully logged in
 	if ( ! $stats->checkLogin() )

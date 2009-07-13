@@ -75,22 +75,17 @@ class GoogleStatsWidget extends WP_Widget
 		
 		$accounts = array();
 		
-		# Check if a username has been set
-		if ( get_option('google_stats_user') != '' ) {
+		# Get the class for interacting with the Google Analytics
+		require_once('class.analytics.stats.php');
+	
+		# Create a new Gdata call
+		$stats = new GoogleAnalyticsStats();
 		
-			# Get the class for interacting with the Google Analytics
-			require_once('class.analytics.stats.php');
-		
-			# Create a new Gdata call
-			$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
-			
-			# Check if Google sucessfully logged in
-			$login = $stats->checkLogin();
-		
-			# Get a list of accounts
-			$accounts = $stats->getAnalyticsAccounts();
-			
-		}
+		# Check if Google sucessfully logged in
+		$login = $stats->checkLogin();
+	
+		# Get a list of accounts
+		$accounts = $stats->getAnalyticsAccounts();
 		
 		# Output the options
 		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('title') . '">' . __('Title', 'google-analyticator') . ': <input style="width: 250px;" id="' . $this->get_field_id('title') . '" name="' . $this->get_field_name('title') . '" type="text" value="' . $title . '" /></label></p>';
@@ -100,7 +95,7 @@ class GoogleStatsWidget extends WP_Widget
 		if ( count($accounts) > 0 )
 			foreach ( $accounts AS $account ) { $select = ( $acnt == $account['id'] ) ? ' selected="selected"' : ''; echo '<option value="' . $account['id'] . '"' . $select . '>' . $account['title'] . '</option>'; }
 		elseif ( $login == false )
-			echo '<option value="">"' . __('Wrong login. Set user/pass in settings.', 'google-analyticator') . '</option>';
+			echo '<option value="">' . __('Authenticate on settings page.', 'google-analyticator') . '</option>';
 		else
 			echo '<option value="">' . __('No Analytics accounts available.', 'google-analyticator') . '</option>';
 		echo '</select></label></p>';
@@ -214,7 +209,7 @@ class GoogleStatsWidget extends WP_Widget
 		require_once('class.analytics.stats.php');
 
 		# Create a new Gdata call
-		$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
+		$stats = new GoogleAnalyticsStats();
 
 		# Set the account to the one requested
 		$stats->setAccount($account);

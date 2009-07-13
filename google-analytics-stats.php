@@ -111,20 +111,15 @@ class GoogleStatsWidget
 		
 		$accounts = array();
 		
-		# Check if a username has been set
-		if ( get_option('google_stats_user') != '' ) {
-		
-			# Get the class for interacting with the Google Analytics
-			require_once('class.analytics.stats.php');
-		
-			# Create a new Gdata call
-			$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
-		
-			# Get a list of accounts
-			$accounts = $stats->getAnalyticsAccounts();
-			
-		}
-		
+		# Get the class for interacting with the Google Analytics
+		require_once('class.analytics.stats.php');
+	
+		# Create a new Gdata call
+		$stats = new GoogleAnalyticsStats();
+	
+		# Get a list of accounts
+		$accounts = $stats->getAnalyticsAccounts();
+	
 		# Output the options
 		echo '<p style="text-align:right;"><label for="google_stats_title">' . __('Title', 'google-analyticator') . ': <input style="width: 250px;" id="google_stats_title" name="google_stats_title" type="text" value="' . $title . '" /></label></p>';
 		# The list of accounts
@@ -247,7 +242,7 @@ class GoogleStatsWidget
 		require_once('class.analytics.stats.php');
 		
 		# Create a new Gdata call
-		$stats = new GoogleAnalyticsStats(stripslashes(get_option('google_stats_user')), stripslashes(get_option('google_stats_password')), true);
+		$stats = new GoogleAnalyticsStats();
 		
 		# Set the account to the one requested
 		$stats->setAccount($account);
