@@ -29,7 +29,7 @@ Google Analyticator Has the Following Features:
 - Installs easily - unlike other plugins, the user doesn't even have to know their Analytics UID
 - Allows tracking code to be placed in the footer to ensure faster load times
 - Provides complete control over options; disable any feature if needed
-- **NEW!** Support localization - get the settings page in your language of choice
+- **NEW!** Supports localization - get the settings page in your language of choice
 
 For more information, visit the [Google Analyticator plugin page](http://plugins.spiralwebconsulting.com/analyticator.html).
 
@@ -49,8 +49,6 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 4. An example of a front-end widget configuration.
 5. An example of a front-end widget configuration.
 6. An example of a front-end widget configuration.
-
-Please visit [Spiral Web Consulting's screenshots section](http://plugins.spiralwebconsulting.com/analyticator.html#screenshots) for better quality shots.
 
 == Changelog ==
 
