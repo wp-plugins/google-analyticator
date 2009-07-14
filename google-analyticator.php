@@ -625,7 +625,7 @@ function ga_options_page() {
 				</tr>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_widgets; ?>"><?php _e('Included widgets', 'google-analyticator'); ?>:</label>
+						<label for="<?php echo key_ga_widgets; ?>"><?php _e('Include widgets', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
 						<?php
