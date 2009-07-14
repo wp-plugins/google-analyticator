@@ -55,7 +55,7 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 = 5.0.1 =
 * Adds an option to completely disable the included widgets.
 * Removes the outbound and download prefixes from the Javascript if event tracking is enabled.
-* Fixes an error where the Settings page always thought the Google account was authenticated.
+* Fixes a bug where the Settings page always thought the Google account was authenticated.
 * Prevents the Google API from even attempting to connect to Google's servers if the account is not authenticated.
 * Increases the checks on returned Google API data to prevent unexpected states.
 * Adds missing localized string to settings title.
