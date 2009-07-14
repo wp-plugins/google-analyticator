@@ -749,8 +749,10 @@ function add_google_analytics() {
 			?>
 			<script type="text/javascript">
 				var analyticsFileTypes = [<?php echo strtolower($ext); ?>];
+<?php if ( $event_tracking != 'enabled' ) { ?>
 				var analyticsOutboundPrefix = '/<?php echo $outbound_prefix; ?>/';
 				var analyticsDownloadsPrefix = '/<?php echo $downloads_prefix; ?>/';
+<?php } ?>
 				var analyticsEventTracking = '<?php echo $event_tracking; ?>';
 			</script>
 			<?php
