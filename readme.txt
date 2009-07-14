@@ -53,10 +53,11 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 == Changelog ==
 
 = 5.0.1 =
+* Adds an option to completely disable the included widgets.
+* Removes the outbound and download prefixes from the Javascript if event tracking is enabled.
+* Adds missing localized string to settings title.
 * Updates included SimplePie version to SimplePie 1.2
 * Switches the SimplePie version the Google API class uses. Now uses included SimplePie 1.2 version over WordPress' due to a bug present in WordPress' version.
-* Adds missing localized string to settings title.
-* Removes the outbound and download prefixes from the Javascript if event tracking is enabled.
 
 = 5.0 =
 * Adds a new admin dashboard widget that displays a graph of the last 30 days of visitors, a summary of site usage, the top pages, the top referrers, and the top searches.

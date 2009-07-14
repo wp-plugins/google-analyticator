@@ -11,19 +11,6 @@
 
 define('GOOGLE_ANALYTICATOR_VERSION', '5.0.1');
 
-# Include Google Analytics Stats widget
-# Check if we have a version of WordPress greater than 2.8
-if ( function_exists('register_widget') ) {
-	require_once('google-analytics-stats-widget.php');
-} else {
-	require_once('google-analytics-stats.php');
-	$google_analytics_stats = new GoogleStatsWidget();
-}
-
-# Include the Google Analytics Summary widget
-require_once('google-analytics-summary-widget.php');
-$google_analytics_summary = new GoogleAnalyticsSummary();
-
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
 define("ga_disabled", "disabled", true);
@@ -44,6 +31,7 @@ define("key_ga_downloads", "ga_downloads", true);
 define("key_ga_downloads_prefix", "ga_downloads_prefix", true);
 define("key_ga_footer", "ga_footer", true);
 define("key_ga_specify_http", "ga_specify_http", true);
+define("key_ga_widgets", "ga_widgets", true);
 
 define("ga_uid_default", "XX-XXXXX-X", true);
 define("ga_status_default", ga_disabled, true);
@@ -60,6 +48,7 @@ define("ga_downloads_default", "", true);
 define("ga_downloads_prefix_default", "download", true);
 define("ga_footer_default", ga_disabled, true);
 define("ga_specify_http_default", "auto", true);
+define("ga_widgets_default", ga_enabled, true);
 
 // Create the default key and status
 add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
@@ -77,7 +66,26 @@ add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track
 add_option(key_ga_downloads_prefix, ga_downloads_prefix_default, 'Download extensions to track with Google Analyticator');
 add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputting in the footer');
 add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');
+add_option(key_ga_widgets, ga_widgets_default, 'If the widgets are enabled or disabled');
 add_option('ga_google_token', '', 'The token used to authenticate with Google');
+
+# Check if widgets are enabled
+if ( get_option(key_ga_widgets) == 'enabled' ) {
+
+	# Include Google Analytics Stats widget
+	# Check if we have a version of WordPress greater than 2.8
+	if ( function_exists('register_widget') ) {
+		require_once('google-analytics-stats-widget.php');
+	} else {
+		require_once('google-analytics-stats.php');
+		$google_analytics_stats = new GoogleStatsWidget();
+	}
+
+	# Include the Google Analytics Summary widget
+	require_once('google-analytics-summary-widget.php');
+	$google_analytics_summary = new GoogleAnalyticsSummary();
+
+}
 
 // Create a option page for settings
 add_action('admin_init', 'ga_admin_init');
@@ -229,6 +237,12 @@ function ga_options_page() {
 			if ( $ga_specify_http == '' )
 				$ga_specify_http = 'auto';
 			update_option(key_ga_specify_http, $ga_specify_http);
+			
+			// Update the widgets option
+			$ga_widgets = $_POST[key_ga_widgets];
+			if (($ga_widgets != ga_enabled) && ($ga_widgets != ga_disabled))
+				$ga_widgets = ga_widgets_default;
+			update_option(key_ga_widgets, $ga_widgets);
 
 			// Give an updated message
 			echo "<div class='updated fade'><p><strong>" . __('Google Analyticator settings saved.', 'google-analyticator') . "</strong></p></div>";
@@ -607,6 +621,29 @@ function ga_options_page() {
 						echo "</select>\n";
 						?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Explicitly set the type of HTTP connection your website uses. Setting this option instead of relying on the auto detect may resolve the _gat is undefined error message.', 'google-analyticator'); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_widgets; ?>"><?php _e('Included widgets', 'google-analyticator'); ?>:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_widgets."' id='".key_ga_widgets."'>\n";
+						
+						echo "<option value='".ga_enabled."'";
+						if(get_option(key_ga_widgets) == ga_enabled)
+							echo " selected='selected'";
+						echo ">" . __('Enabled', 'google-analyticator') . "</option>\n";
+						
+						echo "<option value='".ga_disabled."'";
+						if(get_option(key_ga_widgets) == ga_disabled)
+							echo" selected='selected'";
+						echo ">" . __('Disabled', 'google-analyticator') . "</option>\n";
+						
+						echo "</select>\n";
+						?>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Disabling this option will completely remove the Dashboard Summary widget and the theme Stats widget. Use this option if you would prefer to not see the widgets.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				</table>
