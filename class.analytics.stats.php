@@ -2,11 +2,12 @@
 
 # Include SimplePie if it doesn't exist
 if ( !class_exists('SimplePie') ) {
-	if ( function_exists('fetch_feed') ) {
-		require_once (ABSPATH . WPINC . '/class-feed.php');
-	} else {
+	# Disabled WordPress SimplePie for now. We must wait for WordPress to upgrade to SimplePie 1.2+ to fix a paring error some users are experiencing
+//	if ( function_exists('fetch_feed') ) {
+//		require_once (ABSPATH . WPINC . '/class-feed.php');
+//	} else {
 		require_once('simplepie.inc');
-	}
+//	}
 }
 
 /**

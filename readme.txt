@@ -29,7 +29,7 @@ Google Analyticator Has the Following Features:
 - Installs easily - unlike other plugins, the user doesn't even have to know their Analytics UID
 - Allows tracking code to be placed in the footer to ensure faster load times
 - Provides complete control over options; disable any feature if needed
-- **NEW!** Support localization - get the settings page in your language of choice
+- **NEW!** Supports localization - get the settings page in your language of choice
 
 For more information, visit the [Google Analyticator plugin page](http://plugins.spiralwebconsulting.com/analyticator.html).
 
@@ -50,9 +50,11 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 5. An example of a front-end widget configuration.
 6. An example of a front-end widget configuration.
 
-Please visit [Spiral Web Consulting's screenshots section](http://plugins.spiralwebconsulting.com/analyticator.html#screenshots) for better quality shots.
-
 == Changelog ==
+
+= 5.0.1 =
+* Updates included SimplePie version to SimplePie 1.2
+* Switches the SimplePie version the Google API class uses. Now uses included SimplePie 1.2 version over WordPress' due to a bug present in WordPress' version. This should remove the error message about SimplePie on line 1790.
 
 = 5.0 =
 * Adds a new admin dashboard widget that displays a graph of the last 30 days of visitors, a summary of site usage, the top pages, the top referrers, and the top searches.
