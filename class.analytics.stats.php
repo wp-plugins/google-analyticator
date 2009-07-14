@@ -23,6 +23,7 @@ class GoogleAnalyticsStats
 	var $accountId;
 	var $token = false;
 	var $responseHash = array();
+	var $responseCode = '';
 	
 	/**
 	 * Constructor
@@ -97,6 +98,9 @@ class GoogleAnalyticsStats
 			return '';
 		}
 		
+		# Set the message response
+		$this->responseCode = $response['response']['code'];
+		
 		# Build an array of messages
 		foreach( explode("\n", $response['body']) as $line ) {
 			if ( trim($line) != '' ) {
@@ -145,8 +149,8 @@ class GoogleAnalyticsStats
 		$response = $this->http($this->baseFeed . '/accounts/default');
 		
 		# Check if the response received exists, else stop processing now
-		if ( $response == '' )
-			return array();
+		if ( $response == '' || $this->responseCode != '200' )
+			return false;
 		
 		# Parse the XML using SimplePie
 		$simplePie = new SimplePie();
@@ -201,6 +205,10 @@ class GoogleAnalyticsStats
 		# Request the metric data
 		$response = $this->http($this->baseFeed . "/data?ids=$this->accountId&start-date=$startDate&end-date=$endDate&metrics=$metric");
 		
+		# Check if the response received exists, else stop processing now
+		if ( $response == '' || $this->responseCode != '200' )
+			return false;
+		
 		# Parse the XML using SimplePie
 		$simplePie = new SimplePie();
 		$simplePie->set_raw_data($response);
@@ -253,6 +261,10 @@ class GoogleAnalyticsStats
 		
 		# Request the metric data
 		$response = $this->http($url);
+		
+		# Check if the response received exists, else stop processing now
+		if ( $response == '' || $this->responseCode != '200' )
+			return false;
 		
 		# Parse the XML using SimplePie
 		$simplePie = new SimplePie();
