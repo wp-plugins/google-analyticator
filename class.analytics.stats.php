@@ -64,6 +64,10 @@ class GoogleAnalyticsStats
 	 **/
 	function http($url, $post = false)
 	{
+		# Return false if the token has not been set
+		if ( trim(get_option('ga_google_token')) == '' )
+			return '';
+		
 		# Set the arguments to pass to WordPress
 		$args = array(
 			'sslverify' => false

@@ -314,7 +314,7 @@ function ga_options_page() {
 						<label><?php _e('Authenticate with Google', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
-						<?php if ( get_option('ga_google_token') == '' ) { ?>
+						<?php if ( trim(get_option('ga_google_token')) == '' ) { ?>
 							<p style="margin-top: 7px;"><a href="https://www.google.com/accounts/AuthSubRequest?next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=<?php echo urlencode('https://www.google.com/analytics/feeds/'); ?>&amp;secure=0&amp;session=1"><?php _e('Click here to login to Google, thus authenticating Google Analyticator with your Analytics account.', 'google-analyticator'); ?></a></p>
 						<?php } else { ?>
 							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="https://www.google.com/accounts/AuthSubRequest?next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=<?php echo urlencode('https://www.google.com/analytics/feeds/'); ?>&amp;secure=0&amp;session=1"><?php _e('Click here to authenticate again.', 'google-analyticator'); ?></a></p>

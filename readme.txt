@@ -55,10 +55,12 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 = 5.0.1 =
 * Adds an option to completely disable the included widgets.
 * Removes the outbound and download prefixes from the Javascript if event tracking is enabled.
+* Fixes an error where the Settings page always thought the Google account was authenticated.
+* Prevents the Google API from even attempting to connect to Google's servers if the account is not authenticated.
+* Increases the checks on returned Google API data to prevent unexpected states.
 * Adds missing localized string to settings title.
 * Updates included SimplePie version to SimplePie 1.2
 * Switches the SimplePie version the Google API class uses. Now uses included SimplePie 1.2 version over WordPress' due to a bug present in WordPress' version.
-* Increases the checks on returned Google API data to prevent unexpected states.
 
 = 5.0 =
 * Adds a new admin dashboard widget that displays a graph of the last 30 days of visitors, a summary of site usage, the top pages, the top referrers, and the top searches.
