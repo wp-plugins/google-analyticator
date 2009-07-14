@@ -114,7 +114,7 @@ add_action('init', 'ga_outgoing_links');
 
 // Hook in the options page function
 function add_ga_option_page() {
-	add_options_page('Google Analyticator Settings', 'Google Analytics', 8, basename(__FILE__), 'ga_options_page');
+	add_options_page(__('Google Analyticator Settings', 'google-analyticator'), 'Google Analytics', 8, basename(__FILE__), 'ga_options_page');
 }
 
 add_action('plugin_action_links_' . plugin_basename(__FILE__), 'ga_filter_plugin_actions');
