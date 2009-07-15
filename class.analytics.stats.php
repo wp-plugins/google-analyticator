@@ -2,11 +2,7 @@
 
 # Include SimplePie if it doesn't exist
 if ( !class_exists('SimplePie') ) {
-	if ( function_exists('fetch_feed') ) {
-		require_once (ABSPATH . WPINC . '/class-feed.php');
-	} else {
-		require_once('simplepie.inc');
-	}
+	require_once (ABSPATH . WPINC . '/class-feed.php');
 }
 
 /**
