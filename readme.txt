@@ -53,7 +53,7 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 == Changelog ==
 
 = 5.1 =
-* Fixes the broken/frozen/error on the Dashboard introduced in Google Analyticator 5.0.
+* Fixes the broken/frozen error on the Dashboard introduced in Google Analyticator 5.0.
 * Fixes an Internal Server Error received on the settings page under IIS servers.
 * Adds an option to completely disable the included widgets.
 * Removes the outbound and download prefixes from the Javascript if event tracking is enabled.
