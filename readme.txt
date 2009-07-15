@@ -62,6 +62,7 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 * Increases the checks on returned Google API data to prevent unexpected states.
 * Adds missing localized string to settings title.
 * Removes the Google authentication and widgets from WordPress 2.7 due to compatibility issues. Users wishing to authenticate and use the widgets should upgrade to WordPress 2.8.
+* Prevents PHP warnings from displaying on the dashboard summary widget when an Analytics account is new and does not have a history of data.
 
 = 5.0 =
 * Adds a new admin dashboard widget that displays a graph of the last 30 days of visitors, a summary of site usage, the top pages, the top referrers, and the top searches.

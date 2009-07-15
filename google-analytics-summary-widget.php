@@ -256,19 +256,35 @@ class GoogleAnalyticsSummary
 			<tr>
 				<td width=""><strong><?php echo number_format($stats[0]['ga:visits']); ?></strong></td>
 				<td width=""><?php _e('Visits', 'google-analyticator'); ?></td>
-				<td width="20%"><strong><?php echo number_format(round(($stats[0]['ga:bounces']/$stats[0]['ga:entrances'])*100, 2), 2); ?>%</strong></td>
+				<?php if ( $stats[0]['ga:entrances'] <= 0 ) { ?>
+					<td width="20%"><strong>0.00%</strong></td>
+				<?php } else { ?>
+					<td width="20%"><strong><?php echo number_format(round(($stats[0]['ga:bounces']/$stats[0]['ga:entrances'])*100, 2), 2); ?>%</strong></td>
+				<?php } ?>
 				<td width="30%"><?php _e('Bounce Rate', 'google-analyticator'); ?></td>
 			</tr>
 			<tr>
 				<td><strong><?php echo number_format($stats[0]['ga:pageviews']); ?></strong></td>
 				<td><?php _e('Pageviews', 'google-analyticator'); ?></td>
-				<td><strong><?php echo $this->sec2Time($stats[0]['ga:timeOnSite']/$stats[0]['ga:visits']); ?></strong></td>
+				<?php if ( $stats[0]['ga:visits'] <= 0 ) { ?>
+					<td><strong>00:00:00</strong></td>
+				<?php } else { ?>
+					<td><strong><?php echo $this->sec2Time($stats[0]['ga:timeOnSite']/$stats[0]['ga:visits']); ?></strong></td>
+				<?php } ?>
 				<td><?php _e('Avg. Time on Site', 'google-analyticator'); ?></td>
 			</tr>
 			<tr>
-				<td><strong><?php echo number_format(round($stats[0]['ga:pageviews']/$stats[0]['ga:visits'], 2), 2); ?></strong></td>
+				<?php if ( $stats[0]['ga:visits'] <= 0 ) { ?>
+					<td><strong>0.00</strong></td>
+				<?php } else { ?>
+					<td><strong><?php echo number_format(round($stats[0]['ga:pageviews']/$stats[0]['ga:visits'], 2), 2); ?></strong></td>
+				<?php } ?>
 				<td><?php _e('Pages/Visit', 'google-analyticator'); ?></td>
-				<td><strong><?php echo number_format(round(($stats[0]['ga:newVisits']/$stats[0]['ga:visits'])*100, 2), 2); ?>%</strong></td>
+				<?php if ( $stats[0]['ga:visits'] <= 0 ) { ?>
+					<td><strong>0.00%</strong></td>
+				<?php } else { ?>
+					<td><strong><?php echo number_format(round(($stats[0]['ga:newVisits']/$stats[0]['ga:visits'])*100, 2), 2); ?>%</strong></td>
+				<?php } ?>
 				<td><?php _e('% New Visits', 'google-analyticator'); ?></td>
 			</tr>
 		</table>
@@ -309,16 +325,21 @@ class GoogleAnalyticsSummary
 		
 		}
 		
-		# Build the top pages list
-		echo '<ol>';
-		
-		# Loop through each stat
-		foreach ( $stats AS $stat ) {
-			echo '<li><a href="' . $stat['ga:pagePath'] . '">' . $stat['ga:pageTitle'] . '</a> - ' . number_format($stat['ga:pageviews']) . ' ' . __('Views', 'google-analyticator') . '</li>';
+		# Check the size of the stats array
+		if ( count($stats) <= 0 ) {
+			echo '<p>' . __('There is no data for view.') . '</p>';
+		} else {
+			# Build the top pages list
+			echo '<ol>';
+			
+			# Loop through each stat
+			foreach ( $stats AS $stat ) {
+				echo '<li><a href="' . $stat['ga:pagePath'] . '">' . $stat['ga:pageTitle'] . '</a> - ' . number_format($stat['ga:pageviews']) . ' ' . __('Views', 'google-analyticator') . '</li>';
+			}
+			
+			# Finish the list
+			echo '</ol>';
 		}
-		
-		# Finish the list
-		echo '</ol>';
 	}
 	
 	/**
@@ -355,16 +376,21 @@ class GoogleAnalyticsSummary
 		
 		}
 		
-		# Build the top pages list
-		echo '<ol>';
+		# Check the size of the stats array
+		if ( count($stats) <= 0 ) {
+			echo '<p>' . __('There is no data for view.') . '</p>';
+		} else {
+			# Build the top pages list
+			echo '<ol>';
 		
-		# Loop through each stat
-		foreach ( $stats AS $stat ) {
-			echo '<li><strong>' . $stat['ga:source'] . '</strong> - ' . number_format($stat['ga:visits']) . ' ' . __('Visits', 'google-analyticator') . '</li>';
+			# Loop through each stat
+			foreach ( $stats AS $stat ) {
+				echo '<li><strong>' . $stat['ga:source'] . '</strong> - ' . number_format($stat['ga:visits']) . ' ' . __('Visits', 'google-analyticator') . '</li>';
+			}
+		
+			# Finish the list
+			echo '</ol>';
 		}
-		
-		# Finish the list
-		echo '</ol>';
 	}
 	
 	/**
@@ -401,16 +427,21 @@ class GoogleAnalyticsSummary
 		
 		}
 		
-		# Build the top pages list
-		echo '<ol>';
+		# Check the size of the stats array
+		if ( count($stats) <= 0 ) {
+			echo '<p>' . __('There is no data for view.') . '</p>';
+		} else {
+			# Build the top pages list
+			echo '<ol>';
 		
-		# Loop through each stat
-		foreach ( $stats AS $stat ) {
-			echo '<li><strong>' . $stat['ga:keyword'] . '</strong> - ' . number_format($stat['ga:visits']) . ' ' . __('Visits', 'google-analyticator') . '</li>';
+			# Loop through each stat
+			foreach ( $stats AS $stat ) {
+				echo '<li><strong>' . $stat['ga:keyword'] . '</strong> - ' . number_format($stat['ga:visits']) . ' ' . __('Visits', 'google-analyticator') . '</li>';
+			}
+		
+			# Finish the list
+			echo '</ol>';
 		}
-		
-		# Finish the list
-		echo '</ol>';
 	}
 	
 	/**
