@@ -278,7 +278,7 @@ function ga_options_page() {
 			<?php } ?>
 			<?php if ((get_option(key_ga_uid) == "XX-XXXXX-X") && (get_option(key_ga_status) != ga_disabled)) { ?>
 				<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
-				<?php _e('Google Analytics integration is currently enabled, but you did not enter a UID. Tracking will not occur.', 'google-analyticator') ?>
+				<?php _e('Google Analytics integration is currently enabled, but you did not enter a UID. Tracking will not occur.', 'google-analyticator'); ?>
 				</div>
 			<?php } ?>
 			<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
@@ -318,9 +318,9 @@ function ga_options_page() {
 					</th>
 					<td>
 						<?php if ( trim(get_option('ga_google_token')) == '' ) { ?>
-							<p style="margin-top: 7px;"><a href="https://www.google.com/accounts/AuthSubRequest?next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=<?php echo urlencode('https://www.google.com/analytics/feeds/'); ?>&amp;secure=0&amp;session=1"><?php _e('Click here to login to Google, thus authenticating Google Analyticator with your Analytics account.', 'google-analyticator'); ?></a></p>
+							<p style="margin-top: 7px;"><a href="https://www.google.com/accounts/AuthSubRequest?next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=https://www.google.com/analytics/feeds/&amp;secure=0&amp;session=1"><?php _e('Click here to login to Google, thus authenticating Google Analyticator with your Analytics account.', 'google-analyticator'); ?></a></p>
 						<?php } else { ?>
-							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="https://www.google.com/accounts/AuthSubRequest?next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=<?php echo urlencode('https://www.google.com/analytics/feeds/'); ?>&amp;secure=0&amp;session=1"><?php _e('Click here to authenticate again.', 'google-analyticator'); ?></a></p>
+							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="https://www.google.com/accounts/AuthSubRequest?next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=https://www.google.com/analytics/feeds/&amp;secure=0&amp;session=1"><?php _e('Click here to authenticate again.', 'google-analyticator'); ?></a></p>
 						<?php } ?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Clicking the above link will authenticate Google Analyticator with Google. Authentication with Google is needed for use with the stats widget. In addition, authenticating will enable you to select your Analytics account through a drop-down instead of searching for your UID. If you are not going to use the stat widget, <strong>authenticating with Google is optional</strong>.', 'google-analyticator'); ?></p>
 					</td>
@@ -363,7 +363,7 @@ function ga_options_page() {
 							echo "id='".key_ga_uid."' ";
 							echo "value='".get_option(key_ga_uid)."' />\n";
 							?>
-							<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats.', 'google-analyticator'); ?> <strong><?php if ( function_exists('register_widget') ) _('If you are having trouble finding your UID, authenticate with Google in the above field. After returning from Google, you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></strong></p>
+							<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats.', 'google-analyticator'); ?> <strong><?php if ( function_exists('register_widget') ) _e('If you are having trouble finding your UID, authenticate with Google in the above field. After returning from Google, you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></strong></p>
 						</td>
 					<?php endif; ?>
 				</tr>
