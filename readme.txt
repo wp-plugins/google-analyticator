@@ -4,7 +4,7 @@ Donate link: http://plugins.spiralwebconsulting.com/analyticator.html#donate
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 2.8.1
-Stable tag: 5.0
+Stable tag: 5.1
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 

@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 5.1-beta
+ * Version: 5.1
  * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Spiral Web Consulting
