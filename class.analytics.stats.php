@@ -2,12 +2,11 @@
 
 # Include SimplePie if it doesn't exist
 if ( !class_exists('SimplePie') ) {
-	# Disabled WordPress SimplePie for now. We must wait for WordPress to upgrade to SimplePie 1.2+ to fix a paring error some users are experiencing
-//	if ( function_exists('fetch_feed') ) {
-//		require_once (ABSPATH . WPINC . '/class-feed.php');
-//	} else {
+	if ( function_exists('fetch_feed') ) {
+		require_once (ABSPATH . WPINC . '/class-feed.php');
+	} else {
 		require_once('simplepie.inc');
-//	}
+	}
 }
 
 /**
@@ -32,6 +31,9 @@ class GoogleAnalyticsStats
 	 **/
 	function GoogleAnalyticsStats($token = false)
 	{	
+		# Increase the memory limit to prevent blank page errors
+		ini_set('memory_limit', '64M');
+		
 		# If we need to request a permanent token
 		if ( $token ) {
 			
