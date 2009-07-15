@@ -69,21 +69,20 @@ add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect t
 add_option(key_ga_widgets, ga_widgets_default, 'If the widgets are enabled or disabled');
 add_option('ga_google_token', '', 'The token used to authenticate with Google');
 
-# Check if widgets are enabled
-if ( get_option(key_ga_widgets) == 'enabled' ) {
+# Check if we have a version of WordPress greater than 2.8
+if ( function_exists('register_widget') ) {
+	
+	# Check if widgets are enabled
+	if ( get_option(key_ga_widgets) == 'enabled' ) {
 
-	# Include Google Analytics Stats widget
-	# Check if we have a version of WordPress greater than 2.8
-	if ( function_exists('register_widget') ) {
+		# Include Google Analytics Stats widget
 		require_once('google-analytics-stats-widget.php');
-	} else {
-		require_once('google-analytics-stats.php');
-		$google_analytics_stats = new GoogleStatsWidget();
-	}
 
-	# Include the Google Analytics Summary widget
-	require_once('google-analytics-summary-widget.php');
-	$google_analytics_summary = new GoogleAnalyticsSummary();
+		# Include the Google Analytics Summary widget
+		require_once('google-analytics-summary-widget.php');
+		$google_analytics_summary = new GoogleAnalyticsSummary();
+		
+	}
 
 }
 
@@ -306,6 +305,10 @@ function ga_options_page() {
 					</td>
 				</tr>
 				<?php
+				# Check if we have a version of WordPress greater than 2.8
+				if ( function_exists('register_widget') ) {
+				?>
+				<?php
 					# Get the list of accounts if available
 					$ga_accounts = ga_get_analytics_accounts();
 				?>
@@ -322,6 +325,7 @@ function ga_options_page() {
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Clicking the above link will authenticate Google Analyticator with Google. Authentication with Google is needed for use with the stats widget. In addition, authenticating will enable you to select your Analytics account through a drop-down instead of searching for your UID. If you are not going to use the stat widget, <strong>authenticating with Google is optional</strong>.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
+				<?php } else { $ga_accounts = false; } ?>
 				<tr>
 					<?php
 					
@@ -359,7 +363,7 @@ function ga_options_page() {
 							echo "id='".key_ga_uid."' ";
 							echo "value='".get_option(key_ga_uid)."' />\n";
 							?>
-							<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats. <strong>If you are having trouble finding your UID, authenticate with Google in the above field. After returning from Google, you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></p>
+							<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats.', 'google-analyticator'); ?> <strong><?php if ( function_exists('register_widget') ) _('If you are having trouble finding your UID, authenticate with Google in the above field. After returning from Google, you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></strong></p>
 						</td>
 					<?php endif; ?>
 				</tr>
@@ -623,6 +627,10 @@ function ga_options_page() {
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Explicitly set the type of HTTP connection your website uses. Setting this option instead of relying on the auto detect may resolve the _gat is undefined error message.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
+				<?php
+				# Check if we have a version of WordPress greater than 2.8
+				if ( function_exists('register_widget') ) {
+				?>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_widgets; ?>"><?php _e('Include widgets', 'google-analyticator'); ?>:</label>
@@ -646,6 +654,7 @@ function ga_options_page() {
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Disabling this option will completely remove the Dashboard Summary widget and the theme Stats widget. Use this option if you would prefer to not see the widgets.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
+				<?php } ?>
 				</table>
 			<p class="submit">
 				<?php if ( function_exists('settings_fields') ) settings_fields('google-analyticator'); ?>

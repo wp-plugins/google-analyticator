@@ -61,6 +61,7 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 * Adds missing localized string to settings title.
 * Updates included SimplePie version to SimplePie 1.2
 * Switches the SimplePie version the Google API class uses. Now uses included SimplePie 1.2 version over WordPress' due to a bug present in WordPress' version.
+* Removes the Google authentication and widgets from WordPress 2.7 due to compatibility issues. Users wishing to authenticate and use the widgets should upgrade to WordPress 2.8.
 
 = 5.0 =
 * Adds a new admin dashboard widget that displays a graph of the last 30 days of visitors, a summary of site usage, the top pages, the top referrers, and the top searches.
