@@ -326,7 +326,7 @@ class GoogleAnalyticsSummary
 		}
 		
 		# Check the size of the stats array
-		if ( count($stats) <= 0 ) {
+		if ( count($stats) <= 0 || !is_array($stats) ) {
 			echo '<p>' . __('There is no data for view.') . '</p>';
 		} else {
 			# Build the top pages list
@@ -377,7 +377,7 @@ class GoogleAnalyticsSummary
 		}
 		
 		# Check the size of the stats array
-		if ( count($stats) <= 0 ) {
+		if ( count($stats) <= 0 || !is_array($stats) ) {
 			echo '<p>' . __('There is no data for view.') . '</p>';
 		} else {
 			# Build the top pages list
@@ -428,7 +428,7 @@ class GoogleAnalyticsSummary
 		}
 		
 		# Check the size of the stats array
-		if ( count($stats) <= 0 ) {
+		if ( count($stats) <= 0 || !is_array($stats) ) {
 			echo '<p>' . __('There is no data for view.') . '</p>';
 		} else {
 			# Build the top pages list

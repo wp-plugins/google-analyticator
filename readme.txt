@@ -52,6 +52,10 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 
 == Changelog ==
 
+= 5.1.1 =
+* Improves detection of accounts without stats.
+* Increases memory limit slightly.
+
 = 5.1 =
 * Fixes the broken/frozen error on the Dashboard introduced in Google Analyticator 5.0.
 * Fixes an Internal Server Error received on the settings page under IIS servers.
