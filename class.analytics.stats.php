@@ -28,7 +28,7 @@ class GoogleAnalyticsStats
 	function GoogleAnalyticsStats($token = false)
 	{	
 		# Increase the memory limit to prevent blank page errors
-		ini_set('memory_limit', '64M');
+		ini_set('memory_limit', '96M');
 		
 		# If we need to request a permanent token
 		if ( $token ) {
