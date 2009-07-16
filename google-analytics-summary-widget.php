@@ -210,7 +210,11 @@ class GoogleAnalyticsSummary
 			$data = '0,0';
 		} else {
 			foreach ( $stats AS $stat ) {
-				$data .= $stat['ga:visits'] . ',';
+				# Verify the number is numeric
+				if ( is_numeric($stat['ga:visits']) )
+					$data .= $stat['ga:visits'] . ',';
+				else
+					$data .= '0,';
 			
 				# Update the max value if greater
 				if ( $max < $stat['ga:visits'] )
