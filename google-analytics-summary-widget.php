@@ -204,16 +204,22 @@ class GoogleAnalyticsSummary
 		# Create a list of the data points for graphing
 		$data = '';
 		$max = 0;
-		foreach ( $stats AS $stat ) {
-			$data .= $stat['ga:visits'] . ',';
-			
-			# Update the max value if greater
-			if ( $max < $stat['ga:visits'] )
-				$max = $stat['ga:visits'];
-		}
 		
-		# Shorten the string to remove the last comma
-		$data = substr($data, 0, -1);
+		# Check the size of the stats array
+		if ( count($stats) <= 0 || !is_array($stats) ) {
+			$data = '0,0';
+		} else {
+			foreach ( $stats AS $stat ) {
+				$data .= $stat['ga:visits'] . ',';
+			
+				# Update the max value if greater
+				if ( $max < $stat['ga:visits'] )
+					$max = $stat['ga:visits'];
+			}
+			
+			# Shorten the string to remove the last comma
+			$data = substr($data, 0, -1);
+		}
 		
 		# Output the graph
 		echo '<script type="text/javascript">var ga_visits = [' . $data . '];</script>';
