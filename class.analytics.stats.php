@@ -88,6 +88,14 @@ class GoogleAnalyticsStats
 		# Disable the fopen transport since it doesn't work with the Google API
 		add_filter('use_fopen_transport', create_function('$a', 'return false;'));
 		
+		# Check compatibility mode settings
+		if ( get_option('ga_compatibility') == 'level1' ) {
+			add_filter('use_curl_transport', create_function('$a', 'return false;'));
+		} elseif ( get_option('ga_compatibility') == 'level2' ) {
+			add_filter('use_curl_transport', create_function('$a', 'return false;'));
+			add_filter('use_streams_transport', create_function('$a', 'return false;'));
+		}
+		
 		# Make the connection
 		if ( $post )
 			$response = wp_remote_post($url, $args);

@@ -68,6 +68,7 @@ add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputti
 add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');
 add_option(key_ga_widgets, ga_widgets_default, 'If the widgets are enabled or disabled');
 add_option('ga_google_token', '', 'The token used to authenticate with Google');
+add_option('ga_compatibility', 'off', 'Transport compatibility options');
 
 # Check if we have a version of WordPress greater than 2.8
 if ( function_exists('register_widget') ) {
@@ -242,6 +243,12 @@ function ga_options_page() {
 			if (($ga_widgets != ga_enabled) && ($ga_widgets != ga_disabled))
 				$ga_widgets = ga_widgets_default;
 			update_option(key_ga_widgets, $ga_widgets);
+			
+			// Update the compatibility options
+			$ga_compatibility = $_POST['ga_compatibility'];
+			if ( $ga_compatibility == '' )
+				$ga_compatibility = 'off';
+			update_option('ga_compatibility', $ga_compatibility);
 
 			// Give an updated message
 			echo "<div class='updated fade'><p><strong>" . __('Google Analyticator settings saved.', 'google-analyticator') . "</strong></p></div>";
@@ -652,6 +659,34 @@ function ga_options_page() {
 						echo "</select>\n";
 						?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Disabling this option will completely remove the Dashboard Summary widget and the theme Stats widget. Use this option if you would prefer to not see the widgets.', 'google-analyticator'); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="ga_compatibility"><?php _e('Authentication compatibility', 'google-analyticator'); ?>:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='ga_compatibility' id='ga_compatibility'>\n";
+						
+						echo "<option value='off'";
+						if(get_option('ga_compatibility') == 'off')
+							echo " selected='selected'";
+						echo ">" . __('Off', 'google-analyticator') . "</option>\n";
+						
+						echo "<option value='level1'";
+						if(get_option('ga_compatibility') == 'level1')
+							echo " selected='selected'";
+						echo ">" . __('Disable cURL', 'google-analyticator') . "</option>\n";
+						
+						echo "<option value='level2'";
+						if(get_option('ga_compatibility') == 'level2')
+							echo " selected='selected'";
+						echo ">" . __('Disable cURL and PHP Streams', 'google-analyticator') . "</option>\n";
+						
+						echo "</select>\n";
+						?>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('If you\'re having trouble authenticating with Google for use with the stats widgets, try setting these compatibility modes. Try disabling cURL first and re-authenticate. If that fails, try disabling cURL and PHP Streams.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<?php } ?>
