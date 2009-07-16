@@ -147,6 +147,10 @@ class GoogleAnalyticsSummary
 		# Get a list of accounts
 		$accounts = $this->api->getAnalyticsAccounts();
 		
+		# Check if we actually have accounts
+		if ( !is_array($accounts) )
+			return false;
+		
 		# Check if we have a list of accounts
 		if ( count($accounts) <= 0 )
 			return false;

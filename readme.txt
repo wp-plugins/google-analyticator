@@ -54,6 +54,7 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 
 = 5.1.1 =
 * Adds authentication compatibility modes for users having issues with cURL and PHP Streams.
+* Improves detection of Google Accounts that are not linked to Analytics accounts.
 * Improves detection of accounts without stats.
 * Increases memory limit slightly.
 
