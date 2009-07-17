@@ -36,7 +36,7 @@ class GoogleAnalyticsStats
 			$this->token = $token;
 			
 			# Request authentication with Google
-			$response = $this->http('https://www.google.com/accounts/AuthSubSessionToken', $post);
+			$response = $this->http('https://www.google.com/accounts/AuthSubSessionToken');
 		
 			# Get the authentication token
 			$this->token = substr(strstr($response, "Token="), 6);

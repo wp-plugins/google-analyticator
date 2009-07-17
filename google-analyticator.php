@@ -325,9 +325,17 @@ function ga_options_page() {
 					</th>
 					<td>
 						<?php if ( trim(get_option('ga_google_token')) == '' ) { ?>
-							<p style="margin-top: 7px;"><a href="https://www.google.com/accounts/AuthSubRequest?next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=https://www.google.com/analytics/feeds/&amp;secure=0&amp;session=1"><?php _e('Click here to login to Google, thus authenticating Google Analyticator with your Analytics account.', 'google-analyticator'); ?></a></p>
+							<p style="margin-top: 7px;"><a href="https://www.google.com/accounts/AuthSubRequest?<?php echo http_build_query(array(		'next' => admin_url('/options-general.php?page=google-analyticator.php'),
+							'scope' => 'https://www.google.com/analytics/feeds/',
+							'secure' => 0,
+							'session' => 1
+								)); ?>"><?php _e('Click here to login to Google, thus authenticating Google Analyticator with your Analytics account.', 'google-analyticator'); ?></a></p>
 						<?php } else { ?>
-							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="https://www.google.com/accounts/AuthSubRequest?next=<?php echo urlencode(admin_url('/options-general.php?page=google-analyticator.php')); ?>&amp;scope=https://www.google.com/analytics/feeds/&amp;secure=0&amp;session=1"><?php _e('Click here to authenticate again.', 'google-analyticator'); ?></a></p>
+							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="https://www.google.com/accounts/AuthSubRequest?<?php echo http_build_query(array(		'next' => admin_url('/options-general.php?page=google-analyticator.php'),
+							'scope' => 'https://www.google.com/analytics/feeds/',
+							'secure' => 0,
+							'session' => 1
+								)); ?>"><?php _e('Click here to authenticate again.', 'google-analyticator'); ?></a></p>
 						<?php } ?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Clicking the above link will authenticate Google Analyticator with Google. Authentication with Google is needed for use with the stats widget. In addition, authenticating will enable you to select your Analytics account through a drop-down instead of searching for your UID. If you are not going to use the stat widget, <strong>authenticating with Google is optional</strong>.', 'google-analyticator'); ?></p>
 					</td>
@@ -558,7 +566,7 @@ function ga_options_page() {
 						<?php
 						echo "<input type='text' size='50' ";
 						echo "name='".key_ga_downloads_prefix."' ";
-						echo "id='".key_ga_download_sprefix."' ";
+						echo "id='".key_ga_downloads_prefix."' ";
 						echo "value='".stripslashes(get_option(key_ga_downloads_prefix))."' />\n";
 						?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter a name for the section tracked download links will appear under. This option has no effect if event tracking is enabled.', 'google-analyticator'); ?></em></p>
@@ -731,6 +739,30 @@ function ga_get_analytics_accounts()
 		return $accounts;
 	else
 		return false;
+}
+
+/**
+ * Add http_build_query if it doesn't exist already
+ **/
+if ( !function_exists('http_build_query') ) {
+	function http_build_query($params, $key = null)
+	{
+		$ret = array();
+		
+		foreach( (array) $params as $name => $val ) {
+			$name = urlencode($name);
+			
+			if ( $key !== null )
+				$name = $key . "[" . $name . "]";
+			
+			if ( is_array($val) || is_object($val) )
+				$ret[] = http_build_query($val, $name);
+			elseif ($val !== null)
+				$ret[] = $name . "=" . urlencode($val);
+		}
+        
+		return implode("&", $ret);
+	}
 }
 
 // Add the script
