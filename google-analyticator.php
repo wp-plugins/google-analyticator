@@ -328,13 +328,15 @@ function ga_options_page() {
 							<p style="margin-top: 7px;"><a href="https://www.google.com/accounts/AuthSubRequest?<?php echo http_build_query(array(		'next' => admin_url('/options-general.php?page=google-analyticator.php'),
 							'scope' => 'https://www.google.com/analytics/feeds/',
 							'secure' => 0,
-							'session' => 1
+							'session' => 1,
+							'hd' => 'default'
 								)); ?>"><?php _e('Click here to login to Google, thus authenticating Google Analyticator with your Analytics account.', 'google-analyticator'); ?></a></p>
 						<?php } else { ?>
 							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="https://www.google.com/accounts/AuthSubRequest?<?php echo http_build_query(array(		'next' => admin_url('/options-general.php?page=google-analyticator.php'),
 							'scope' => 'https://www.google.com/analytics/feeds/',
 							'secure' => 0,
-							'session' => 1
+							'session' => 1,
+							'hd' => 'default'
 								)); ?>"><?php _e('Click here to authenticate again.', 'google-analyticator'); ?></a></p>
 						<?php } ?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Clicking the above link will authenticate Google Analyticator with Google. Authentication with Google is needed for use with the stats widget. In addition, authenticating will enable you to select your Analytics account through a drop-down instead of searching for your UID. If you are not going to use the stat widget, <strong>authenticating with Google is optional</strong>.', 'google-analyticator'); ?></p>
