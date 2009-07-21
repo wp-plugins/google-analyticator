@@ -29,7 +29,7 @@ class GoogleAnalyticsSummary
 		$this->id = $this->getAnalyticsAccount();
 		$this->api->setAccount($this->id);
 		
-		wp_add_dashboard_widget('google-analytics-summary', 'Google Analytics Summary', array($this, 'widget'));
+		wp_add_dashboard_widget('google-analytics-summary', __('Google Analytics Summary', 'google-analyticator'), array($this, 'widget'));
 	}
 	
 	/**
@@ -341,7 +341,7 @@ class GoogleAnalyticsSummary
 		
 		# Check the size of the stats array
 		if ( count($stats) <= 0 || !is_array($stats) ) {
-			echo '<p>' . __('There is no data for view.') . '</p>';
+			echo '<p>' . __('There is no data for view.', 'google-analyticator') . '</p>';
 		} else {
 			# Build the top pages list
 			echo '<ol>';
@@ -392,7 +392,7 @@ class GoogleAnalyticsSummary
 		
 		# Check the size of the stats array
 		if ( count($stats) <= 0 || !is_array($stats) ) {
-			echo '<p>' . __('There is no data for view.') . '</p>';
+			echo '<p>' . __('There is no data for view.', 'google-analyticator') . '</p>';
 		} else {
 			# Build the top pages list
 			echo '<ol>';
@@ -443,7 +443,7 @@ class GoogleAnalyticsSummary
 		
 		# Check the size of the stats array
 		if ( count($stats) <= 0 || !is_array($stats) ) {
-			echo '<p>' . __('There is no data for view.') . '</p>';
+			echo '<p>' . __('There is no data for view.', 'google-analyticator') . '</p>';
 		} else {
 			# Build the top pages list
 			echo '<ol>';

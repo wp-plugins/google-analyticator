@@ -57,7 +57,7 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 * Improves detection of Google Accounts that are not linked to Analytics accounts.
 * Improves detection of accounts without stats.
 * Increases memory limit slightly.
-* Cleans up the authentication URL, preventing the malformed URL error that Google would sometime display.
+* Cleans up the authentication URL, preventing the malformed URL error that Google would sometimes display.
 * Removes hosted Google accounts from Google's authentication page.
 
 = 5.1 =
