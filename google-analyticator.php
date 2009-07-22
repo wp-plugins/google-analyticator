@@ -73,12 +73,17 @@ add_option('ga_compatibility', 'off', 'Transport compatibility options');
 # Check if we have a version of WordPress greater than 2.8
 if ( function_exists('register_widget') ) {
 	
-	# Get the current memory limit
-	$current_mem_limit = substr(ini_get('memory_limit'), 0, -1);
+	# Check if ini_set is a valid option
+	if ( function_exists('ini_set') ) {
 	
-	# Check if this limit is less than 96M, if so, increase it
-	if ( $current_mem_limit < 96 )
-		ini_set('memory_limit', '96M');
+		# Get the current memory limit
+		$current_mem_limit = substr(ini_get('memory_limit'), 0, -1);
+	
+		# Check if this limit is less than 96M, if so, increase it
+		if ( $current_mem_limit < 96 )
+			@ini_set('memory_limit', '96M');
+	
+	}
 	
 	# Check if widgets are enabled
 	if ( get_option(key_ga_widgets) == 'enabled' ) {
