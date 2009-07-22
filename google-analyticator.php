@@ -73,15 +73,33 @@ add_option('ga_compatibility', 'off', 'Transport compatibility options');
 # Check if we have a version of WordPress greater than 2.8
 if ( function_exists('register_widget') ) {
 	
+	# Get the current memory limit
+	$current_mem_limit = substr(ini_get('memory_limit'), 0, -1);
+	
+	# Check if this limit is less than 96M, if so, increase it
+	if ( $current_mem_limit < 96 )
+		ini_set('memory_limit', '96M');
+	
 	# Check if widgets are enabled
 	if ( get_option(key_ga_widgets) == 'enabled' ) {
+		
+		# Get the current memory limit, after the update
+		$current_mem_limit = substr(ini_get('memory_limit'), 0, -1);
+		
+		# Check again if the memory limit is fine
+		# If the memory limit did not increase, disable the widgets
+		if ( $current_mem_limit < 96 ) {
+			update_option(key_ga_widgets, 'disabled');
+		} else {
+			
+			# Include Google Analytics Stats widget
+			require_once('google-analytics-stats-widget.php');
 
-		# Include Google Analytics Stats widget
-		require_once('google-analytics-stats-widget.php');
-
-		# Include the Google Analytics Summary widget
-		require_once('google-analytics-summary-widget.php');
-		$google_analytics_summary = new GoogleAnalyticsSummary();
+			# Include the Google Analytics Summary widget
+			require_once('google-analytics-summary-widget.php');
+			$google_analytics_summary = new GoogleAnalyticsSummary();
+			
+		}
 		
 	}
 
@@ -312,8 +330,10 @@ function ga_options_page() {
 					</td>
 				</tr>
 				<?php
-				# Check if we have a version of WordPress greater than 2.8
-				if ( function_exists('register_widget') ) {
+				# Get the current memory limit, after the update
+				$current_mem_limit = substr(ini_get('memory_limit'), 0, -1);
+				# Check if we have a version of WordPress greater than 2.8, and check if we have the memory to use the api
+				if ( function_exists('register_widget') && ( $current_mem_limit >= 96 ) ) {
 				?>
 				<?php
 					# Get the list of accounts if available

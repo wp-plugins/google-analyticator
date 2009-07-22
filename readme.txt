@@ -53,10 +53,10 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 == Changelog ==
 
 = 5.1.1 =
+* Increases checks on the memory limit and now prevents the memory intensive functionality from running if there is insufficient memory.
 * Adds authentication compatibility modes for users having issues with cURL and PHP Streams.
 * Improves detection of Google Accounts that are not linked to Analytics accounts.
 * Improves detection of accounts without stats.
-* Increases memory limit slightly.
 * Cleans up the authentication URL, preventing the malformed URL error that Google would sometimes display.
 * Removes hosted Google accounts from Google's authentication page.
 

@@ -26,10 +26,7 @@ class GoogleAnalyticsStats
 	 * @param token - a one-time use token to be exchanged for a real token
 	 **/
 	function GoogleAnalyticsStats($token = false)
-	{	
-		# Increase the memory limit to prevent blank page errors
-		ini_set('memory_limit', '96M');
-		
+	{		
 		# If we need to request a permanent token
 		if ( $token ) {
 			
