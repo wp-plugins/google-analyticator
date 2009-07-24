@@ -59,6 +59,7 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 * Improves detection of accounts without stats.
 * Cleans up the authentication URL, preventing the malformed URL error that Google would sometimes display.
 * Removes hosted Google accounts from Google's authentication page.
+* Adds an error message to the settings page if Google authentication fails.
 
 = 5.1 =
 * Fixes the broken/frozen error on the Dashboard introduced in Google Analyticator 5.0.

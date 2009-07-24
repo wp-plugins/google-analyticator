@@ -356,6 +356,9 @@ function ga_options_page() {
 							'session' => 1,
 							'hd' => 'default'
 								)); ?>"><?php _e('Click here to login to Google, thus authenticating Google Analyticator with your Analytics account.', 'google-analyticator'); ?></a></p>
+							<?php if ( $_GET['token'] != '' && $ga_accounts == false ) { ?>
+								<p style="color: red;"><?php _e('Failed to authenticate with Google. Try using the compatibility options at the bottom of this page. If you are still unable to authenticate, contact your host, informing them you are experiencing errors with outbound SSL connections.', 'google-analyticator'); ?></p>
+							<?php } ?>
 						<?php } else { ?>
 							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="https://www.google.com/accounts/AuthSubRequest?<?php echo http_build_query(array(		'next' => admin_url('/options-general.php?page=google-analyticator.php'),
 							'scope' => 'https://www.google.com/analytics/feeds/',
