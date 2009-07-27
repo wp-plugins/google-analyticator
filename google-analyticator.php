@@ -78,7 +78,8 @@ if ( function_exists('register_widget') ) {
 
 	# Check if this limit is less than 96M, if so, increase it
 	if ( $current_mem_limit < 96 || $current_mem_limit == '' ) {
-		@ini_set('memory_limit', '96M');
+		if ( function_exists('memory_get_usage') )
+			@ini_set('memory_limit', '96M');
 	}
 
 	# Check if widgets are enabled
