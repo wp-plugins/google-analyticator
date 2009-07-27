@@ -30,6 +30,22 @@ class GoogleAnalyticsStats
 		# If we need to request a permanent token
 		if ( $token ) {
 			
+			# Check if we're deauthorizing an account
+			if ( $token == 'deauth' ) {
+				
+				# Get the current token
+				$this->token = get_option('ga_google_token');
+				
+				# Revoke the current token
+				$response = $this->http('https://www.google.com/accounts/AuthSubRevokeToken');
+				
+				# Remove the current token
+				update_option('ga_google_token', '');
+				
+				return '';
+				
+			}
+			
 			$this->token = $token;
 			
 			# Request authentication with Google
