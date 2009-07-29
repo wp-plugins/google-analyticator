@@ -348,7 +348,7 @@ class GoogleAnalyticsSummary
 			
 			# Loop through each stat
 			foreach ( $stats AS $stat ) {
-				echo '<li><a href="' . $stat['ga:pagePath'] . '">' . $stat['ga:pageTitle'] . '</a> - ' . number_format($stat['ga:pageviews']) . ' ' . __('Views', 'google-analyticator') . '</li>';
+				echo '<li><a href="' . esc_html($stat['ga:pagePath']) . '">' . $stat['ga:pageTitle'] . '</a> - ' . number_format($stat['ga:pageviews']) . ' ' . __('Views', 'google-analyticator') . '</li>';
 			}
 			
 			# Finish the list
@@ -399,7 +399,7 @@ class GoogleAnalyticsSummary
 		
 			# Loop through each stat
 			foreach ( $stats AS $stat ) {
-				echo '<li><strong>' . $stat['ga:source'] . '</strong> - ' . number_format($stat['ga:visits']) . ' ' . __('Visits', 'google-analyticator') . '</li>';
+				echo '<li><strong>' . esc_html($stat['ga:source']) . '</strong> - ' . number_format($stat['ga:visits']) . ' ' . __('Visits', 'google-analyticator') . '</li>';
 			}
 		
 			# Finish the list
@@ -450,7 +450,7 @@ class GoogleAnalyticsSummary
 		
 			# Loop through each stat
 			foreach ( $stats AS $stat ) {
-				echo '<li><strong>' . $stat['ga:keyword'] . '</strong> - ' . number_format($stat['ga:visits']) . ' ' . __('Visits', 'google-analyticator') . '</li>';
+				echo '<li><strong>' . esc_html($stat['ga:keyword']) . '</strong> - ' . number_format($stat['ga:visits']) . ' ' . __('Visits', 'google-analyticator') . '</li>';
 			}
 		
 			# Finish the list
