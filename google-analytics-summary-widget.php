@@ -26,7 +26,10 @@ class GoogleAnalyticsSummary
 	 **/
 	function addDashboardWidget()
 	{
-		wp_add_dashboard_widget('google-analytics-summary', __('Google Analytics Summary', 'google-analyticator'), array($this, 'widget'));
+		# Check if the user is an admin
+		if ( current_user_can('level_' . get_option(key_ga_admin_level)) ) {
+			wp_add_dashboard_widget('google-analytics-summary', __('Google Analytics Summary', 'google-analyticator'), array($this, 'widget'));
+		}
 	}
 	
 	/**

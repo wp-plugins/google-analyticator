@@ -55,6 +55,7 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 = 5.3 =
 * Converts API data call to AJAX to reduce the memory needed on page loads.
 * Removes memory_limit alterations, since the default amount should be enough now.
+* Disables the summary dashboard widget for non-admins, as defined by the admin level setting on Google Analyticator's settings page.
 
 = 5.2.1 =
 * Corrects a potential html sanitation vulnerability with text retrieved from the Google Analytics API.
