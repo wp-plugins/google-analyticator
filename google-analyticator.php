@@ -686,6 +686,7 @@ function ga_options_page() {
  **/
 function ga_admin_ajax()
 {
+	if ( function_exists('register_widget') ) {
 	?>
 	<script type="text/javascript">
 	
@@ -713,6 +714,7 @@ function ga_admin_ajax()
 	
 	</script>
 	<?php
+	}
 }
 
 # Look for the ajax list call
