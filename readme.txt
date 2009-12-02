@@ -1,6 +1,6 @@
 === Google Analyticator ===
-Contributors: cavemonkey50, jesse_altman, spiralwebconsulting
-Donate link: http://plugins.spiralwebconsulting.com/analyticator.html#donate
+Contributors: cavemonkey50
+Donate link: http://ronaldheft.com/code/donate/
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 2.9
