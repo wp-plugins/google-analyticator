@@ -51,6 +51,7 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 == Changelog ==
 
 = 6.0 =
+* Fixes the (not set) pages in the Top Pages section of the dashboard widget. Pages containing the title (not set) will be combined with the correct page and corresponding title. Note that I am still trying to get this bug fixed in the API; this is just a hold over until the bug is fixed.
 * Adds a link to Google Analytics on the dashboard widget for quick access to view full stat reports.
 * Fixes a Javascript error that prevented the dashboard widget from collapsing.
 * Corrects a uid undefined error message that appeared if error reporting was set too high.
