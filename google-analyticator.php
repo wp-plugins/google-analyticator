@@ -931,6 +931,8 @@ function add_google_analytics() {
  **/
 function ga_outgoing_links()
 {
+	$uid = stripslashes(get_option(key_ga_uid));
+	
 	// If GA is enabled and has a valid key
 	if (  (get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" )) {
 		// If outbound tracking is enabled
