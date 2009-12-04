@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Google Analyticator
  * Version: 6.0a
- * Plugin URI: http://ronaldheft.com/analyticator/
+ * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
  * Author URI: http://ronaldheft.com/

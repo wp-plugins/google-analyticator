@@ -12,8 +12,6 @@ Adds the necessary JavaScript code to enable Google Analytics. Includes widgets 
 
 Google Analyticator adds the necessary JavaScript code to enable Google Analytics logging on any WordPress blog. This eliminates the need to edit your template code to begin logging. Google Analyticator also includes several widgets for displaying Analytics data in the admin and on your blog.
 
-*Google Analyticator is brought to you for free by [Spiral Web Consulting](http://spiralwebconsulting.com/). Spiral Web Consulting is a small web development firm specializing in PHP development. Visit our website to learn more, and don't hesitate to ask us to develop your next big WordPress plugin idea.*
-
 = Features =
 
 Google Analyticator Has the Following Features:
@@ -31,15 +29,15 @@ Google Analyticator Has the Following Features:
 - Provides complete control over options; disable any feature if needed
 - **NEW!** Supports localization - get the settings page in your language of choice
 
-For more information, visit the [Google Analyticator plugin page](http://plugins.spiralwebconsulting.com/analyticator.html).
+For more information, visit the [Google Analyticator plugin page](http://ronaldheft.com/code/analyticator/).
 
 == Installation ==
 
-Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&t=17) for installation information.
+Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/viewtopic.php?f=5&t=17) for installation information.
 
 == Frequently Asked Questions ==
 
-Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=5) for the latest FAQ information.
+Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/viewforum.php?f=5) for the latest FAQ information.
 
 == Screenshots ==
 
@@ -51,6 +49,9 @@ Please visit [Spiral Web Consulting's forum](http://plugins.spiralwebconsulting.
 6. An example of a front-end widget configuration.
 
 == Changelog ==
+
+= 6.0 =
+* Removes references to Spiral Web Consulting. Google Analyticator is now being developed exclusively by Ronald Heft.
 
 = 5.3.2 =
 * Prepares Google Analyticator for WordPress 2.9 compatibility.
