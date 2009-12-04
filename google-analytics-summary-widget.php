@@ -61,13 +61,13 @@ class GoogleAnalyticsSummary
 					},
 					success: function(html) {
 						// Hide the loading message
-						jQuery('#google-analytics-summary .inside').hide();
+						jQuery('#google-analytics-summary .inside small').remove();
 						
 						// Place the widget data in the area
-						jQuery('#google-analytics-summary .inside').html(html);
+						jQuery('#google-analytics-summary .inside .target').html(html);
 						
 						// Display the widget data
-						jQuery('#google-analytics-summary .inside').slideDown();
+						jQuery('#google-analytics-summary .inside .target').slideDown();
 						
 						// Handle displaying the graph
 						if ( navigator.appName != 'Microsoft Internet Explorer' ) {
@@ -92,6 +92,7 @@ class GoogleAnalyticsSummary
 	function widget()
 	{
 		echo '<small>' . __('Loading') . '...</small>';
+		echo '<div class="target" style="display: none;"></div>';
 	}
 	
 	/**
