@@ -117,7 +117,10 @@ function ga_admin_init() {
 	}
 }
 
-// Initialize outbound link tracking
+# Add the core Google Analytics script, with a high priority to ensure last script for async tracking
+add_action('wp_head', 'add_google_analytics', 999999);
+
+# Initialize outbound link tracking
 add_action('init', 'ga_outgoing_links');
 
 // Hook in the options page function
@@ -818,110 +821,86 @@ if ( !function_exists('http_build_query') ) {
 	}
 }
 
-// Add the script
-$ga_in_footer = false;
-if (get_option(key_ga_footer) == ga_enabled) {
-	$ga_in_footer = true;
-	add_action('wp_head', 'add_ga_adsense');
-	add_action('wp_footer', 'add_google_analytics');
-} else {
-	add_action('wp_head', 'add_google_analytics');
-}
-
 /**
- * Adds the Analytics Adsense tracking code to the header if the main Analytics tracking code is in the footer.
- * Idea and code for Adsense tracking with main code in footer props William Charles Nickerson on May 16, 2009.
+ * Echos out the core Analytics tracking code
  **/
-function add_ga_adsense() {
-	$uid = stripslashes(get_option(key_ga_uid));
-	// If GA is enabled and has a valid key
-	if (  (get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" )) {
-		// Display page tracking if user is not an admin
-		if ( ( get_option(key_ga_admin) == ga_enabled || !current_user_can('level_' . get_option(key_ga_admin_level)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' ) {
-			if ( get_option(key_ga_adsense) != '' ) {
-				echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://plugins.spiralwebconsulting.com/analyticator.html -->\n";
-				echo '	<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n\n";
-			}
-		}
-	}
-}
-
-// The guts of the Google Analytics script
-function add_google_analytics() {
-	global $ga_in_footer;
-	
+function add_google_analytics()
+{
+	# Fetch variables used in the tracking code
 	$uid = stripslashes(get_option(key_ga_uid));
 	$extra = stripslashes(get_option(key_ga_extra));
 	$extra_after = stripslashes(get_option(key_ga_extra_after));
 	$extensions = str_replace (",", "|", get_option(key_ga_downloads));
 	
-	// If GA is enabled and has a valid key
-	if (  (get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" )) {
-		
-		// Display page tracking if user is not an admin
-		if ( ( get_option(key_ga_admin) == ga_enabled || !current_user_can('level_' . get_option(key_ga_admin_level)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' ) {
-		
-			echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://plugins.spiralwebconsulting.com/analyticator.html -->\n";
-			# Google Adsense data if enabled
-			if ( get_option(key_ga_adsense) != '' && !$ga_in_footer )
-				echo '	<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n\n";
+	# Determine if the GA is enabled and contains a valid UID
+	if ( ( get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" ) )
+	{
+		# Determine if the user is an admin, and should see the tracking code
+		if ( ( get_option(key_ga_admin) == ga_enabled || !current_user_can('level_' . get_option(key_ga_admin_level)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' )
+		{
+			# Add the notice that Google Analyticator tracking is enabled
+			echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://ronaldheft.com/code/analyticator/ -->\n";
 			
-			// Pick the HTTP connection
-			if ( get_option(key_ga_specify_http) == 'http' ) {
-				echo "	<script type=\"text/javascript\" src=\"http://www.google-analytics.com/ga.js\"></script>\n\n";
-			} elseif ( get_option(key_ga_specify_http) == 'https' ) {
-				echo "	<script type=\"text/javascript\" src=\"https://ssl.google-analytics.com/ga.js\"></script>\n\n";
-			} else {
-				echo "	<script type=\"text/javascript\">\n";
-				echo "		var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");\n";
-				echo "		document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n";
-				echo "	</script>\n\n";
-			}
+			# Add the Adsense data if specified
+			if ( get_option(key_ga_adsense) != '' )
+				echo '<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n";
+			
+			# Add the first part of the core tracking code
+			?>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', '<?php echo $uid; ?>']);
+<?php
 		
-			echo "	<script type=\"text/javascript\">\n";
-			echo "	try {\n";
-			echo "		var pageTracker = _gat._getTracker(\"$uid\");\n";
-		
-			// Insert extra before tracker code
+			# Add any tracking code before the trackPageview
 			if ( '' != $extra )
-				echo "		" . $extra . "\n";
+				echo "	$extra\n";
+			
+			# Add the track pageview function
+			echo "	_gaq.push(['_trackPageview']);\n";
 		
-			// Initialize the tracker
-			echo "		pageTracker._initData();\n";
-			echo "		pageTracker._trackPageview();\n";
-		
-			// Disable page tracking if admin is logged in
+			# Disable page tracking if admin is logged in
 			if ( ( get_option(key_ga_admin) == ga_disabled ) && ( current_user_can('level_' . get_option(key_ga_admin_level)) ) )
-				echo "		pageTracker._setVar('admin');\n";
+				echo "	_gaq.push(['_setVar', 'admin]);\n";
 		
-			// Insert extra after tracker code
+			# Add any tracking code after the trackPageview
 			if ( '' != $extra_after )
-				echo "		" . $extra_after . "\n";
+				echo "	$extra_after\n";
 		
-			echo "	} catch(err) {}</script>\n";
-		
-			// Include the file types to track
+			# Add the final section of the tracking code
+			?>
+
+	(function() {
+		var ga = document.createElement('script');
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		ga.setAttribute('async', 'true');
+		document.documentElement.firstChild.appendChild(ga);
+	})();
+</script><?php
+			
+			# Include the file types to track
 			$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
 			$ext = "";
 			foreach ( $extensions AS $extension )
 				$ext .= "'$extension',";
 			$ext = substr($ext, 0, -1);
 		
-			// Include the link tracking prefixes
+			# Include the link tracking prefixes
 			$outbound_prefix = stripslashes(get_option(key_ga_outbound_prefix));
 			$downloads_prefix = stripslashes(get_option(key_ga_downloads_prefix));
 			$event_tracking = get_option(key_ga_event);
 		
 			?>
-			<script type="text/javascript">
-				var analyticsFileTypes = [<?php echo strtolower($ext); ?>];
+
+<script type="text/javascript">
+	var analyticsFileTypes = [<?php echo strtolower($ext); ?>];
 <?php if ( $event_tracking != 'enabled' ) { ?>
-				var analyticsOutboundPrefix = '/<?php echo $outbound_prefix; ?>/';
-				var analyticsDownloadsPrefix = '/<?php echo $downloads_prefix; ?>/';
+	var analyticsOutboundPrefix = '/<?php echo $outbound_prefix; ?>/';
+	var analyticsDownloadsPrefix = '/<?php echo $downloads_prefix; ?>/';
 <?php } ?>
-				var analyticsEventTracking = '<?php echo $event_tracking; ?>';
-			</script>
-			<?php
+	var analyticsEventTracking = '<?php echo $event_tracking; ?>';
+</script>
+<?php			
 		}
 	}
 }
@@ -931,16 +910,21 @@ function add_google_analytics() {
  **/
 function ga_outgoing_links()
 {
+	# Fetch the UID
 	$uid = stripslashes(get_option(key_ga_uid));
 	
-	// If GA is enabled and has a valid key
-	if (  (get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" )) {
-		// If outbound tracking is enabled
-		if ( get_option(key_ga_outbound) == ga_enabled ) {
-			// If this is not an admin page
-			if ( !is_admin() ) {
-				// Display page tracking if user is not an admin
-				if ( ( get_option(key_ga_admin) == ga_enabled || !current_user_can('level_' . get_option(key_ga_admin_level)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' ) {
+	# If GA is enabled and has a valid key
+	if (  (get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" ) )
+	{
+		# If outbound tracking is enabled
+		if ( get_option(key_ga_outbound) == ga_enabled )
+		{
+			# If this is not an admin page
+			if ( !is_admin() )
+			{
+				# Display page tracking if user is not an admin
+				if ( ( get_option(key_ga_admin) == ga_enabled || !current_user_can('level_' . get_option(key_ga_admin_level)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' )
+				{
 					add_action('wp_print_scripts', 'ga_external_tracking_js');
 				}
 			}
@@ -953,7 +937,6 @@ function ga_outgoing_links()
  **/
 function ga_external_tracking_js()
 {
-//	wp_enqueue_script('jquery');
 	wp_enqueue_script('ga-external-tracking', plugins_url('/google-analyticator/external-tracking.min.js'), array('jquery'), GOOGLE_ANALYTICATOR_VERSION);
 }
 

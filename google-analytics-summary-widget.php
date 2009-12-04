@@ -368,7 +368,7 @@ class GoogleAnalyticsSummary
 		}
 		
 		# If the stats need to be updated
-//		if ( ! $updated ) {
+		if ( ! $updated ) {
 		
 			# Get the metrics needed to build the top pages
 			$before = date('Y-m-d', strtotime('-31 days'));
@@ -379,7 +379,7 @@ class GoogleAnalyticsSummary
 			$newStats = serialize(array('stats'=>$stats, 'lastcalled'=>time()));
 			update_option('google_stats_topPages_' . $this->id, $newStats);
 		
-//		}
+		}
 		
 		# Check the size of the stats array
 		if ( count($stats) <= 0 || !is_array($stats) ) {
