@@ -29,8 +29,6 @@ define("key_ga_outbound", "ga_outbound", true);
 define("key_ga_outbound_prefix", "ga_outbound_prefix", true);
 define("key_ga_downloads", "ga_downloads", true);
 define("key_ga_downloads_prefix", "ga_downloads_prefix", true);
-define("key_ga_footer", "ga_footer", true);
-define("key_ga_specify_http", "ga_specify_http", true);
 define("key_ga_widgets", "ga_widgets", true);
 
 define("ga_uid_default", "XX-XXXXX-X", true);
@@ -46,8 +44,6 @@ define("ga_outbound_default", ga_enabled, true);
 define("ga_outbound_prefix_default", 'outgoing', true);
 define("ga_downloads_default", "", true);
 define("ga_downloads_prefix_default", "download", true);
-define("ga_footer_default", ga_disabled, true);
-define("ga_specify_http_default", "auto", true);
 define("ga_widgets_default", ga_enabled, true);
 
 // Create the default key and status
@@ -64,8 +60,6 @@ add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links
 add_option(key_ga_outbound_prefix, ga_outbound_prefix_default, 'Add tracking of outbound links');
 add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track with Google Analyticator');
 add_option(key_ga_downloads_prefix, ga_downloads_prefix_default, 'Download extensions to track with Google Analyticator');
-add_option(key_ga_footer, ga_footer_default, 'If Google Analyticator is outputting in the footer');
-add_option(key_ga_specify_http, ga_specify_http_default, 'Automatically detect the http/https settings');
 add_option(key_ga_widgets, ga_widgets_default, 'If the widgets are enabled or disabled');
 add_option('ga_google_token', '', 'The token used to authenticate with Google');
 add_option('ga_compatibility', 'off', 'Transport compatibility options');
@@ -112,8 +106,6 @@ function ga_admin_init() {
 		register_setting('google-analyticator', key_ga_outbound_prefix, '');
 		register_setting('google-analyticator', key_ga_downloads, '');
 		register_setting('google-analyticator', key_ga_downloads_prefix, '');
-		register_setting('google-analyticator', key_ga_footer, '');
-		register_setting('google-analyticator', key_ga_specify_http, '');
 	}
 }
 
@@ -231,18 +223,6 @@ function ga_options_page() {
 			if ($ga_downloads_prefix == '')
 				$ga_downloads_prefix = ga_downloads_prefix_default;
 			update_option(key_ga_downloads_prefix, $ga_downloads_prefix);
-
-			// Update the footer
-			$ga_footer = $_POST[key_ga_footer];
-			if (($ga_footer != ga_enabled) && ($ga_footer != ga_disabled))
-				$ga_footer = ga_footer_default;
-			update_option(key_ga_footer, $ga_footer);
-			
-			// Update the HTTP status
-			$ga_specify_http = $_POST[key_ga_specify_http];
-			if ( $ga_specify_http == '' )
-				$ga_specify_http = 'auto';
-			update_option(key_ga_specify_http, $ga_specify_http);
 			
 			// Update the widgets option
 			$ga_widgets = $_POST[key_ga_widgets];
@@ -438,29 +418,6 @@ function ga_options_page() {
 				</tr>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_footer ?>"><?php _e('Footer tracking code', 'google-analyticator'); ?>:</label>
-					</th>
-					<td>
-						<?php
-						echo "<select name='".key_ga_footer."' id='".key_ga_footer."'>\n";
-						
-						echo "<option value='".ga_enabled."'";
-						if(get_option(key_ga_footer) == ga_enabled)
-							echo " selected='selected'";
-						echo ">" . __('Enabled', 'google-analyticator') . "</option>\n";
-						
-						echo "<option value='".ga_disabled."'";
-						if(get_option(key_ga_footer) == ga_disabled)
-							echo" selected='selected'";
-						echo ">" . __('Disabled', 'google-analyticator') . "</option>\n";
-						
-						echo "</select>\n";
-						?>
-						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enabling this option will insert the Google Analytics tracking code in your site\'s footer instead of your header. This will speed up your page loading if turned on. Not all themes support code in the footer, so if you turn this option on, be sure to check the Analytics code is still displayed on your site.', 'google-analyticator'); ?></p>
-					</td>
-				</tr>
-				<tr>
-					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_outbound ?>"><?php _e('Outbound link tracking', 'google-analyticator'); ?>:</label>
 					</th>
 					<td>
@@ -587,34 +544,6 @@ function ga_options_page() {
 						echo stripslashes(get_option(key_ga_extra_after))."</textarea>\n";
 						?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter any additional lines of tracking code that you would like to include in the Google Analytics tracking script. The code in this section will be displayed <strong>after</strong> the Google Analytics tracker is initialized. Read <a href="http://www.google.com/analytics/InstallingGATrackingCode.pdf">Google Analytics tracker manual</a> to learn what code goes here and how to use it.', 'google-analyticator'); ?></p>
-					</td>
-				</tr>
-				<tr>
-					<th width="30%" valign="top" style="padding-top: 10px;">
-						<label for="<?php echo key_ga_specify_http; ?>"><?php _e('Specify HTTP detection', 'google-analyticator'); ?>:</label>
-					</th>
-					<td>
-						<?php
-						echo "<select name='".key_ga_specify_http."' id='".key_ga_specify_http."'>\n";
-						
-						echo "<option value='auto'";
-						if(get_option(key_ga_specify_http) == 'auto')
-							echo " selected='selected'";
-						echo ">" . __('Auto Detect', 'google-analyticator') . "</option>\n";
-						
-						echo "<option value='http'";
-						if(get_option(key_ga_specify_http) == 'http')
-							echo " selected='selected'";
-						echo ">" . __('HTTP', 'google-analyticator') . "</option>\n";
-						
-						echo "<option value='https'";
-						if(get_option(key_ga_specify_http) == 'https')
-							echo " selected='selected'";
-						echo ">" . __('HTTPS', 'google-analyticator') . "</option>\n";
-						
-						echo "</select>\n";
-						?>
-						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Explicitly set the type of HTTP connection your website uses. Setting this option instead of relying on the auto detect may resolve the _gat is undefined error message.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<?php
