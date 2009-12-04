@@ -3,7 +3,7 @@
 /**
  * Creates a summary widget for Google Analytics stats
  *
- * @author Spiral Web Consulting
+ * @author Ronald Heft
  **/
 class GoogleAnalyticsSummary
 {
@@ -50,6 +50,9 @@ class GoogleAnalyticsSummary
 		<script type="text/javascript">
 		
 			jQuery(document).ready(function(){
+				
+				// Add a link to see full stats on the Analytics website
+				jQuery('#google-analytics-summary h3.hndle span').append('<span class="postbox-title-action"><a href="http://google.com/analytics/" class="edit-box open-box">View Full Stat Report</a></span>');
 				
 				// Grab the widget data
 				jQuery.ajax({

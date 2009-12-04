@@ -51,6 +51,7 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 == Changelog ==
 
 = 6.0 =
+* Adds a link to Google Analytics on the dashboard widget for quick access to view full stat reports.
 * Fixes a Javascript error that prevented the dashboard widget from collapsing.
 * Corrects a uid undefined error message that appeared if error reporting was set too high.
 * Removes references to Spiral Web Consulting. Google Analyticator is now being developed exclusively by Ronald Heft.
