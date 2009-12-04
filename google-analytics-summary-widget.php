@@ -38,7 +38,7 @@ class GoogleAnalyticsSummary
 	function addJavascript()
 	{
 		# Include the Sparklines graphing library
-		wp_enqueue_script('jquery-sparklines', plugins_url('/google-analyticator/jquery.sparkline.min.js'), array('jquery'), '1.4.2');
+		wp_enqueue_script('jquery-sparklines', plugins_url('/google-analyticator/jquery.sparkline.min.js'), array('jquery'), '1.4.3');
 	}
 	
 	/**
