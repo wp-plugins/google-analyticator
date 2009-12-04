@@ -1,15 +1,15 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 5.3.2
- * Plugin URI: http://plugins.spiralwebconsulting.com/analyticator.html
+ * Version: 6.0a
+ * Plugin URI: http://ronaldheft.com/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
- * Author: Spiral Web Consulting
- * Author URI: http://spiralwebconsulting.com/
+ * Author: Ronald Heft
+ * Author URI: http://ronaldheft.com/
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '5.3.2');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.0a');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -146,9 +146,9 @@ function ga_filter_plugin_links($links, $file)
 {
 	if ( $file == plugin_basename(__FILE__) )
 	{
-		$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=5">' . __('FAQ', 'google-analyticator') . '</a>';
-		$links[] = '<a href="http://plugins.spiralwebconsulting.com/forums/viewforum.php?f=6">' . __('Support', 'google-analyticator') . '</a>';
-		$links[] = '<a href="http://plugins.spiralwebconsulting.com/analyticator.html#donate">' . __('Donate', 'google-analyticator') . '</a>';
+		$links[] = '<a href="http://forums.ronaldheft.com/viewforum.php?f=5">' . __('FAQ', 'google-analyticator') . '</a>';
+		$links[] = '<a href="http://forums.ronaldheft.com/viewforum.php?f=6">' . __('Support', 'google-analyticator') . '</a>';
+		$links[] = '<a href="http://ronaldheft.com/code/donate/">' . __('Donate', 'google-analyticator') . '</a>';
 	}
 	
 	return $links;
