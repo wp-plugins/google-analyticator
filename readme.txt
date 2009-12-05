@@ -4,7 +4,7 @@ Donate link: http://ronaldheft.com/code/donate/
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 2.9
-Stable tag: 5.3.2
+Stable tag: 6.0
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
@@ -16,8 +16,8 @@ Google Analyticator adds the necessary JavaScript code to enable Google Analytic
 
 Google Analyticator Has the Following Features:
 
-- Supports standard Google Analytics tracking
-- **NEW!** Includes an admin dashboard widget that displays a graph of the last 30 days of visitors, a summary of site usage, the top pages, the top referrers, and the top searches
+- **NEW!** Supports standard Google Analytics tracking via the latest async tracking methods (faster and more reliable than the older ga.js tracking method)
+- Includes an admin dashboard widget that displays a graph of the last 30 days of visitors, a summary of site usage, the top pages, the top referrers, and the top searches
 - Includes a widget that can be used to display visitor stat information on the front-end
 - Supports outbound link tracking of all links on the page, including links not managed by WordPress
 - Supports download link tracking
@@ -25,9 +25,8 @@ Google Analyticator Has the Following Features:
 - Allows hiding of Administrator visits without affecting Google Analytics' site overlay feature
 - Supports any advanced tracking code Google provides
 - Installs easily - unlike other plugins, the user doesn't even have to know their Analytics UID
-- Allows tracking code to be placed in the footer to ensure faster load times
 - Provides complete control over options; disable any feature if needed
-- **NEW!** Supports localization - get the settings page in your language of choice
+- Supports localization - get the settings page in your language of choice
 
 For more information, visit the [Google Analyticator plugin page](http://ronaldheft.com/code/analyticator/).
 
@@ -51,7 +50,7 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 == Changelog ==
 
 = 6.0 =
-* Switches current tracking script (ga.js) to the new awesome async tracking script. In laymen's terms: updates to the latest tracking code, the tracking script will load faster, and tracking will be more reliable.
+* Switches current tracking script (ga.js) to the new awesome async tracking script. In laymen's terms: updates to the latest tracking code, the tracking script will load faster, and tracking will be more reliable. If you use custom tracking code, be sure to migrate that code to the new async tracking methods.
 * Removes settings made obsolete due to the new async tracking (footer tracking and http/https).
 * Fixes the (not set) pages in the Top Pages section of the dashboard widget. Pages containing the title (not set) will be combined with the correct page and corresponding title. Note that I am still trying to get this bug fixed in the Google Analytics API; this is just a hold over until the bug is fixed.
 * Adds a link to Google Analytics on the dashboard widget for quick access to view full stat reports.

@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.0a
+ * Version: 6.0
  * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.0a');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.0');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -230,6 +230,8 @@ function ga_options_page() {
 		<div class="wrap">
 			
 		<h2><?php _e('Google Analyticator Settings', 'google-analyticator'); ?></h2>
+		
+		<p><em>Like Google Analyticator? Help support it <a href="http://ronaldheft.com/code/donate/">by donating to the developer</a>. This helps cover the cost of maintaining the plugin and development time toward new features. Every donation, no matter how small, is appreciated.</em></p>
 			
 		<form method="post" action="options-general.php?page=google-analyticator.php">
 			<?php
@@ -747,6 +749,28 @@ function add_google_analytics()
 			if ( get_option(key_ga_adsense) != '' )
 				echo '<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n";
 			
+			# Include the file types to track
+			$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
+			$ext = "";
+			foreach ( $extensions AS $extension )
+				$ext .= "'$extension',";
+			$ext = substr($ext, 0, -1);
+
+			# Include the link tracking prefixes
+			$outbound_prefix = stripslashes(get_option(key_ga_outbound_prefix));
+			$downloads_prefix = stripslashes(get_option(key_ga_downloads_prefix));
+			$event_tracking = get_option(key_ga_event);
+
+			?>
+<script type="text/javascript">
+	var analyticsFileTypes = [<?php echo strtolower($ext); ?>];
+<?php if ( $event_tracking != 'enabled' ) { ?>
+	var analyticsOutboundPrefix = '/<?php echo $outbound_prefix; ?>/';
+	var analyticsDownloadsPrefix = '/<?php echo $downloads_prefix; ?>/';
+<?php } ?>
+	var analyticsEventTracking = '<?php echo $event_tracking; ?>';
+</script>
+<?php
 			# Add the first part of the core tracking code
 			?>
 <script type="text/javascript">
@@ -778,31 +802,8 @@ function add_google_analytics()
 		ga.setAttribute('async', 'true');
 		document.documentElement.firstChild.appendChild(ga);
 	})();
-</script><?php
-			
-			# Include the file types to track
-			$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
-			$ext = "";
-			foreach ( $extensions AS $extension )
-				$ext .= "'$extension',";
-			$ext = substr($ext, 0, -1);
-		
-			# Include the link tracking prefixes
-			$outbound_prefix = stripslashes(get_option(key_ga_outbound_prefix));
-			$downloads_prefix = stripslashes(get_option(key_ga_downloads_prefix));
-			$event_tracking = get_option(key_ga_event);
-		
-			?>
-
-<script type="text/javascript">
-	var analyticsFileTypes = [<?php echo strtolower($ext); ?>];
-<?php if ( $event_tracking != 'enabled' ) { ?>
-	var analyticsOutboundPrefix = '/<?php echo $outbound_prefix; ?>/';
-	var analyticsDownloadsPrefix = '/<?php echo $downloads_prefix; ?>/';
-<?php } ?>
-	var analyticsEventTracking = '<?php echo $event_tracking; ?>';
 </script>
-<?php			
+<?php
 		}
 	}
 }
