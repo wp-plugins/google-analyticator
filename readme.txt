@@ -53,11 +53,12 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 = 6.0 =
 * Switches current tracking script (ga.js) to the new awesome async tracking script. In laymen's terms: updates to the latest tracking code, the tracking script will load faster, and tracking will be more reliable.
 * Removes settings made obsolete due to the new async tracking (footer tracking and http/https).
-* Fixes the (not set) pages in the Top Pages section of the dashboard widget. Pages containing the title (not set) will be combined with the correct page and corresponding title. Note that I am still trying to get this bug fixed in the API; this is just a hold over until the bug is fixed.
+* Fixes the (not set) pages in the Top Pages section of the dashboard widget. Pages containing the title (not set) will be combined with the correct page and corresponding title. Note that I am still trying to get this bug fixed in the Google Analytics API; this is just a hold over until the bug is fixed.
 * Adds a link to Google Analytics on the dashboard widget for quick access to view full stat reports.
 * Fixes a Javascript error that prevented the dashboard widget from collapsing.
 * Corrects a uid undefined error message that appeared if error reporting was set too high.
 * Updates the included jQuery sparklines plugin to the latest version, 1.4.3.
+* Adds an experimental function to retrieve page visitors stats for theme developers. This function is not final and only provided for advanced users who know what they're doing. Future versions will improve on the code already in place. Find the get_analytics_visits_by_page in google-analyticator.php to learn how to use. Use at your own risk.
 * Removes references to Spiral Web Consulting. Google Analyticator is now being developed exclusively by Ronald Heft.
 
 = 5.3.2 =

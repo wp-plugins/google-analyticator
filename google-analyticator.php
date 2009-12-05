@@ -869,4 +869,58 @@ function ga_external_tracking_js()
 	wp_enqueue_script('ga-external-tracking', plugins_url('/google-analyticator/external-tracking.min.js'), array('jquery'), GOOGLE_ANALYTICATOR_VERSION);
 }
 
+/**
+ * EXPERIMENTAL: Retrieve Google's visits for the given page
+ * More work needs to be done. Needs caching, needs to be less resource intensive, and
+ * needs an automated way to determine the page.
+ * Function may/will change in future releases. Only use if you know what you're doing.
+ *
+ * @param url - the page url, missing the domain information
+ * @param days - the number of days to get
+ * @return the number of visits
+ **/
+function get_analytics_visits_by_page($page, $days = 31)
+{
+	require_once('class.analytics.stats.php');
+	
+	# Create a new API object
+	$api = new GoogleAnalyticsStats();
+	
+	# Get the current accounts accounts
+	$accounts = ga_get_analytics_accounts();
+	
+	# Verify accounts exist
+	if ( count($accounts) <= 0 )
+		return 0;
+	
+	# Loop throught the account and return the current account
+	foreach ( $accounts AS $account )
+	{
+		# Check if the UID matches the selected UID
+		if ( $account['ga:webPropertyId'] == get_option('ga_uid') )
+		{
+			$api->setAccount($account['id']);
+			break;
+		}
+	}
+	
+	# Encode the page url
+	$page = urlencode($page);
+	
+	# Get the metric information from Google
+	$before = date('Y-m-d', strtotime('-' . $days . ' days'));
+	$yesterday = date('Y-m-d', strtotime('-1 day'));
+	$stats = $api->getMetrics('ga:visits', $before, $yesterday, 'ga:pagePath', false, 'ga:pagePath%3D%3D' . $page, 1);
+	
+	# Check the size of the stats array
+	if ( count($stats) <= 0 || !is_array($stats) ) {
+		return 0;
+	} else {
+		# Loop through each stat for display
+		foreach ( $stats AS $stat ) {
+			return $stat['ga:visits'];
+		}
+	}
+}
+
 ?>
