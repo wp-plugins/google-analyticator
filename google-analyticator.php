@@ -90,23 +90,6 @@ function ga_admin_init() {
 	# Load the localization information
 	$plugin_dir = basename(dirname(__FILE__));
 	load_plugin_textdomain('google-analyticator', 'wp-content/plugins/' . $plugin_dir . '/localizations', $plugin_dir . '/localizations');
-	
-	// Register out options so WordPress knows about them
-	if ( function_exists('register_setting') ) {
-		register_setting('google-analyticator', key_ga_status, '');
-		register_setting('google-analyticator', key_ga_uid, '');
-		register_setting('google-analyticator', key_ga_admin, '');
-		register_setting('google-analyticator', key_ga_admin_disable, '');
-		register_setting('google-analyticator', key_ga_admin_level, '');
-		register_setting('google-analyticator', key_ga_adsense, '');
-		register_setting('google-analyticator', key_ga_extra, '');
-		register_setting('google-analyticator', key_ga_extra_after, '');
-		register_setting('google-analyticator', key_ga_event, '');
-		register_setting('google-analyticator', key_ga_outbound, '');
-		register_setting('google-analyticator', key_ga_outbound_prefix, '');
-		register_setting('google-analyticator', key_ga_downloads, '');
-		register_setting('google-analyticator', key_ga_downloads_prefix, '');
-	}
 }
 
 # Add the core Google Analytics script, with a high priority to ensure last script for async tracking
@@ -152,93 +135,93 @@ function ga_filter_plugin_links($links, $file)
 function ga_options_page() {
 	// If we are a postback, store the options
 	if (isset($_POST['info_update'])) {
-//		if ( wp_verify_nonce($_POST['ga-nonce-key'], 'google-analyticator') ) {
-			
-			// Update the status
-			$ga_status = $_POST[key_ga_status];
-			if (($ga_status != ga_enabled) && ($ga_status != ga_disabled))
-				$ga_status = ga_status_default;
-			update_option(key_ga_status, $ga_status);
+		# Verify nonce
+		check_admin_referer('google-analyticator-update_settings');
+					
+		// Update the status
+		$ga_status = $_POST[key_ga_status];
+		if (($ga_status != ga_enabled) && ($ga_status != ga_disabled))
+			$ga_status = ga_status_default;
+		update_option(key_ga_status, $ga_status);
 
-			// Update the UID
-			$ga_uid = $_POST[key_ga_uid];
-			if ($ga_uid == '')
-				$ga_uid = ga_uid_default;
-			update_option(key_ga_uid, $ga_uid);
+		// Update the UID
+		$ga_uid = $_POST[key_ga_uid];
+		if ($ga_uid == '')
+			$ga_uid = ga_uid_default;
+		update_option(key_ga_uid, $ga_uid);
 
-			// Update the admin logging
-			$ga_admin = $_POST[key_ga_admin];
-			if (($ga_admin != ga_enabled) && ($ga_admin != ga_disabled))
-				$ga_admin = ga_admin_default;
-			update_option(key_ga_admin, $ga_admin);
-			
-			// Update the admin disable setting
-			$ga_admin_disable = $_POST[key_ga_admin_disable];
-			if ( $ga_admin_disable == '' )
-				$ga_admin_disable = ga_admin_disable_default;
-			update_option(key_ga_admin_disable, $ga_admin_disable);
-			
-			// Update the admin level
-			$ga_admin_level = $_POST[key_ga_admin_level];
-			if ( $ga_admin_level == '' )
-				$ga_admin_level = ga_admin_level_default;
-			update_option(key_ga_admin_level, $ga_admin_level);
+		// Update the admin logging
+		$ga_admin = $_POST[key_ga_admin];
+		if (($ga_admin != ga_enabled) && ($ga_admin != ga_disabled))
+			$ga_admin = ga_admin_default;
+		update_option(key_ga_admin, $ga_admin);
+		
+		// Update the admin disable setting
+		$ga_admin_disable = $_POST[key_ga_admin_disable];
+		if ( $ga_admin_disable == '' )
+			$ga_admin_disable = ga_admin_disable_default;
+		update_option(key_ga_admin_disable, $ga_admin_disable);
+		
+		// Update the admin level
+		$ga_admin_level = $_POST[key_ga_admin_level];
+		if ( $ga_admin_level == '' )
+			$ga_admin_level = ga_admin_level_default;
+		update_option(key_ga_admin_level, $ga_admin_level);
 
-			// Update the extra tracking code
-			$ga_extra = $_POST[key_ga_extra];
-			update_option(key_ga_extra, $ga_extra);
+		// Update the extra tracking code
+		$ga_extra = $_POST[key_ga_extra];
+		update_option(key_ga_extra, $ga_extra);
 
-			// Update the extra after tracking code
-			$ga_extra_after = $_POST[key_ga_extra_after];
-			update_option(key_ga_extra_after, $ga_extra_after);
-			
-			// Update the adsense key
-			$ga_adsense = $_POST[key_ga_adsense];
-			update_option(key_ga_adsense, $ga_adsense);
-			
-			// Update the event tracking
-			$ga_event = $_POST[key_ga_event];
-			if (($ga_event != ga_enabled) && ($ga_event != ga_disabled))
-				$ga_event = ga_event_default;
-			update_option(key_ga_event, $ga_event);
+		// Update the extra after tracking code
+		$ga_extra_after = $_POST[key_ga_extra_after];
+		update_option(key_ga_extra_after, $ga_extra_after);
+		
+		// Update the adsense key
+		$ga_adsense = $_POST[key_ga_adsense];
+		update_option(key_ga_adsense, $ga_adsense);
+		
+		// Update the event tracking
+		$ga_event = $_POST[key_ga_event];
+		if (($ga_event != ga_enabled) && ($ga_event != ga_disabled))
+			$ga_event = ga_event_default;
+		update_option(key_ga_event, $ga_event);
 
-			// Update the outbound tracking
-			$ga_outbound = $_POST[key_ga_outbound];
-			if (($ga_outbound != ga_enabled) && ($ga_outbound != ga_disabled))
-				$ga_outbound = ga_outbound_default;
-			update_option(key_ga_outbound, $ga_outbound);
-			
-			// Update the outbound prefix
-			$ga_outbound_prefix = $_POST[key_ga_outbound_prefix];
-			if ($ga_outbound_prefix == '')
-				$ga_outbound_prefix = ga_outbound_prefix_default;
-			update_option(key_ga_outbound_prefix, $ga_outbound_prefix);
+		// Update the outbound tracking
+		$ga_outbound = $_POST[key_ga_outbound];
+		if (($ga_outbound != ga_enabled) && ($ga_outbound != ga_disabled))
+			$ga_outbound = ga_outbound_default;
+		update_option(key_ga_outbound, $ga_outbound);
+		
+		// Update the outbound prefix
+		$ga_outbound_prefix = $_POST[key_ga_outbound_prefix];
+		if ($ga_outbound_prefix == '')
+			$ga_outbound_prefix = ga_outbound_prefix_default;
+		update_option(key_ga_outbound_prefix, $ga_outbound_prefix);
 
-			// Update the download tracking code
-			$ga_downloads = $_POST[key_ga_downloads];
-			update_option(key_ga_downloads, $ga_downloads);
-			
-			// Update the download prefix
-			$ga_downloads_prefix = $_POST[key_ga_downloads_prefix];
-			if ($ga_downloads_prefix == '')
-				$ga_downloads_prefix = ga_downloads_prefix_default;
-			update_option(key_ga_downloads_prefix, $ga_downloads_prefix);
-			
-			// Update the widgets option
-			$ga_widgets = $_POST[key_ga_widgets];
-			if (($ga_widgets != ga_enabled) && ($ga_widgets != ga_disabled))
-				$ga_widgets = ga_widgets_default;
-			update_option(key_ga_widgets, $ga_widgets);
-			
-			// Update the compatibility options
-			$ga_compatibility = $_POST['ga_compatibility'];
-			if ( $ga_compatibility == '' )
-				$ga_compatibility = 'off';
-			update_option('ga_compatibility', $ga_compatibility);
+		// Update the download tracking code
+		$ga_downloads = $_POST[key_ga_downloads];
+		update_option(key_ga_downloads, $ga_downloads);
+		
+		// Update the download prefix
+		$ga_downloads_prefix = $_POST[key_ga_downloads_prefix];
+		if ($ga_downloads_prefix == '')
+			$ga_downloads_prefix = ga_downloads_prefix_default;
+		update_option(key_ga_downloads_prefix, $ga_downloads_prefix);
+		
+		// Update the widgets option
+		$ga_widgets = $_POST[key_ga_widgets];
+		if (($ga_widgets != ga_enabled) && ($ga_widgets != ga_disabled))
+			$ga_widgets = ga_widgets_default;
+		update_option(key_ga_widgets, $ga_widgets);
+		
+		// Update the compatibility options
+		$ga_compatibility = $_POST['ga_compatibility'];
+		if ( $ga_compatibility == '' )
+			$ga_compatibility = 'off';
+		update_option('ga_compatibility', $ga_compatibility);
 
-			// Give an updated message
-			echo "<div class='updated fade'><p><strong>" . __('Google Analyticator settings saved.', 'google-analyticator') . "</strong></p></div>";
-//		}
+		// Give an updated message
+		echo "<div class='updated fade'><p><strong>" . __('Google Analyticator settings saved.', 'google-analyticator') . "</strong></p></div>";
 	}
 
 	// Output the options page
@@ -247,21 +230,12 @@ function ga_options_page() {
 		<div class="wrap">
 			
 		<h2><?php _e('Google Analyticator Settings', 'google-analyticator'); ?></h2>
-		
-		<div style="float: right;">
-			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="6309412">
-				<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-				<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-			</form>
-		</div>
 			
 		<form method="post" action="options-general.php?page=google-analyticator.php">
-			
-			<p><em>
-				<?php _e('Google Analyticator is brought to you for free by <a href="http://spiralwebconsulting.com/">Spiral Web Consulting</a>. Spiral Web Consulting is a small web development firm specializing in PHP development. Visit our website to learn more, and don\'t hesitate to ask us to develop your next big WordPress plugin idea.', 'google-analyticator'); ?>
-			</em></p>
+			<?php
+			# Add a nonce
+			wp_nonce_field('google-analyticator-update_settings');
+			?>
 			
 			<h3><?php _e('Basic Settings', 'google-analyticator'); ?></h3>
 			<?php if (get_option(key_ga_status) == ga_disabled) { ?>
@@ -604,7 +578,6 @@ function ga_options_page() {
 				<?php } ?>
 				</table>
 			<p class="submit">
-				<?php if ( function_exists('settings_fields') ) settings_fields('google-analyticator'); ?>
 				<input type="submit" name="info_update" value="<?php _e('Save Changes', 'google-analyticator'); ?>" />
 			</p>
 		</div>
@@ -630,7 +603,7 @@ function ga_admin_ajax()
 				url: 'admin-ajax.php',
 				data: {
 					action: 'ga_ajax_accounts',
-					_ajax_nonce: '<?php echo wp_create_nonce("ga_ajax_accounts"); ?>'<?php if ( isset($_GET['token']) ) { ?>,
+					_ajax_nonce: '<?php echo wp_create_nonce("google-analyticator-accounts_get"); ?>'<?php if ( isset($_GET['token']) ) { ?>,
 					token: '<?php echo $_GET["token"]; ?>'
 					<?php } ?>
 				},
@@ -658,7 +631,7 @@ add_action('wp_ajax_ga_ajax_accounts', 'ga_ajax_accounts');
 function ga_ajax_accounts()
 {
 	# Check the ajax widget
-	check_ajax_referer('ga_ajax_accounts');
+	check_ajax_referer('google-analyticator-accounts_get');
 	
 	# Get the list of accounts if available
 	$ga_accounts = ga_get_analytics_accounts();

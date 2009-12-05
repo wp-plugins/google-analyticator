@@ -60,7 +60,7 @@ class GoogleAnalyticsSummary
 					url: 'admin-ajax.php',
 					data: {
 						action: 'ga_stats_widget',
-						_ajax_nonce: '<?php echo wp_create_nonce("ga_stats_widget"); ?>'
+						_ajax_nonce: '<?php echo wp_create_nonce("google-analyticator-statsWidget_get"); ?>'
 					},
 					success: function(html) {
 						// Hide the loading message
@@ -104,7 +104,7 @@ class GoogleAnalyticsSummary
 	function ajaxWidget()
 	{
 		# Check the ajax widget
-		check_ajax_referer('ga_stats_widget');
+		check_ajax_referer('google-analyticator-statsWidget_get');
 		
 		# Attempt to login and get the current account
 		$this->id = $this->getAnalyticsAccount();
@@ -426,7 +426,7 @@ class GoogleAnalyticsSummary
 			
 			# Loop through each stat for display
 			foreach ( $stats AS $stat ) {
-				echo '<li><a href="' . esc_html($stat['ga:pagePath']) . '">' . $stat['ga:pageTitle'] . '</a> - ' . number_format($stat['ga:pageviews']) . ' ' . __('Views', 'google-analyticator') . '</li>';
+				echo '<li><a href="' . esc_url($stat['ga:pagePath']) . '">' . esc_html($stat['ga:pageTitle']) . '</a> - ' . number_format($stat['ga:pageviews']) . ' ' . __('Views', 'google-analyticator') . '</li>';
 				
 				# Increase the stat counter
 				$stat_count++;

@@ -59,6 +59,7 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 * Corrects a uid undefined error message that appeared if error reporting was set too high.
 * Updates the included jQuery sparklines plugin to the latest version, 1.4.3.
 * Adds an experimental function to retrieve page visitors stats for theme developers. This function is not final and only provided for advanced users who know what they're doing. Future versions will improve on the code already in place. Find the get_analytics_visits_by_page in google-analyticator.php to learn how to use. Use at your own risk.
+* Fixes several security flaws identified during a recent security audit of Google Analyticator.
 * Removes references to Spiral Web Consulting. Google Analyticator is now being developed exclusively by Ronald Heft.
 
 = 5.3.2 =
