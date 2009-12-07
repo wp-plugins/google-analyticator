@@ -94,7 +94,7 @@ class GoogleAnalyticsSummary
 	 **/
 	function widget()
 	{
-		echo '<small>' . __('Loading') . '...</small>';
+		echo '<small>' . __('Loading', 'google-analyticator') . '...</small>';
 		echo '<div class="target" style="display: none;"></div>';
 	}
 	
