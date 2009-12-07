@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.0
+ * Version: 6.0.1
  * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.0');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.0.1');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -787,7 +787,7 @@ function add_google_analytics()
 		
 			# Disable page tracking if admin is logged in
 			if ( ( get_option(key_ga_admin) == ga_disabled ) && ( current_user_can('level_' . get_option(key_ga_admin_level)) ) )
-				echo "	_gaq.push(['_setVar', 'admin]);\n";
+				echo "	_gaq.push(['_setVar', 'admin']);\n";
 		
 			# Add any tracking code after the trackPageview
 			if ( '' != $extra_after )
