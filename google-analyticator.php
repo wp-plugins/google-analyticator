@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.0.1
+ * Version: 6.0.2
  * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.0.1');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.0.2');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -292,7 +292,7 @@ function ga_options_page() {
 						<?php } else { ?>
 							<p style="margin-top: 7px;"><?php _e('Currently authenticated with Google.', 'google-analyticator'); ?> <a href="<?php echo admin_url('/options-general.php?page=google-analyticator.php&token=deauth'); ?>"><?php _e('Deauthorize Google Analyticator.', 'google-analyticator'); ?></a></p>
 							<?php if ( isset($_GET['token']) && $_GET['token'] != 'deauth' ) { ?>
-								<p style="color: red; display: none;" id="ga_connect_error"><?php _e('Failed to authenticate with Google. Try using the compatibility options at the bottom of this page. If you are still unable to authenticate, contact your host, informing them you are experiencing errors with outbound SSL connections.', 'google-analyticator'); ?></p>
+								<p style="color: red; display: none;" id="ga_connect_error"><?php _e('Failed to authenticate with Google. <a href="http://forums.ronaldheft.com/viewtopic.php?f=5&t=851">Read this support article</a> on Analyticator\'s support forums for help.', 'google-analyticator'); ?></p>
 							<?php } ?>
 						<?php } ?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Clicking the above link will authenticate Google Analyticator with Google. Authentication with Google is needed for use with the stats widget. In addition, authenticating will enable you to select your Analytics account through a drop-down instead of searching for your UID. If you are not going to use the stat widget, <strong>authenticating with Google is optional</strong>.', 'google-analyticator'); ?></p>
