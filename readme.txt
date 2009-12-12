@@ -4,7 +4,7 @@ Donate link: http://ronaldheft.com/code/donate/
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 2.9
-Stable tag: 6.0.1
+Stable tag: 6.0.2
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
@@ -49,7 +49,10 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 
 == Changelog ==
 
-= 6.0.1=
+= 6.0.2 =
+* Updates the async tracking snippet to the latest version provided by Google.
+
+= 6.0.1 =
 * Adds a missing closing quote on setVar - admin. If you use this option, update ASAP to prevent Javascript from breaking.
 
 = 6.0 =
