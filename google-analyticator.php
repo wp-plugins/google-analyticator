@@ -594,33 +594,37 @@ function ga_options_page() {
 function ga_admin_ajax()
 {
 	if ( function_exists('register_widget') ) {
-	?>
-	<script type="text/javascript">
-	
-		jQuery(document).ready(function(){
-			
-			// Grab the widget data
-			jQuery.ajax({
-				type: 'post',
-				url: 'admin-ajax.php',
-				data: {
-					action: 'ga_ajax_accounts',
-					_ajax_nonce: '<?php echo wp_create_nonce("google-analyticator-accounts_get"); ?>'<?php if ( isset($_GET['token']) ) { ?>,
-					token: '<?php echo $_GET["token"]; ?>'
-					<?php } ?>
-				},
-				success: function(html) {
-					if ( html != '' )
-						jQuery('#ga_ajax_accounts').html(html);
-					else
-						jQuery('#ga_connect_error').show();
-				}
-			});
 		
-		});
+		# Only attempt to replace code if we're authenticated or attempting to authenticate
+		if ( ( isset($_REQUEST['token']) && $_REQUEST['token'] != '' ) || ( trim(get_option('ga_google_token')) != '' ) ) {
+		?>
+		<script type="text/javascript">
 	
-	</script>
-	<?php
+			jQuery(document).ready(function(){
+			
+				// Grab the widget data
+				jQuery.ajax({
+					type: 'post',
+					url: 'admin-ajax.php',
+					data: {
+						action: 'ga_ajax_accounts',
+						_ajax_nonce: '<?php echo wp_create_nonce("google-analyticator-accounts_get"); ?>'<?php if ( isset($_GET['token']) ) { ?>,
+						token: '<?php echo $_GET["token"]; ?>'
+						<?php } ?>
+					},
+					success: function(html) {
+						if ( html != '' )
+							jQuery('#ga_ajax_accounts').html(html);
+						else
+							jQuery('#ga_connect_error').show();
+					}
+				});
+		
+			});
+	
+		</script>
+		<?php
+		}
 	}
 }
 
