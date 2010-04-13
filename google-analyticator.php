@@ -60,6 +60,7 @@ add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links
 add_option(key_ga_outbound_prefix, ga_outbound_prefix_default, 'Add tracking of outbound links');
 add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track with Google Analyticator');
 add_option(key_ga_downloads_prefix, ga_downloads_prefix_default, 'Download extensions to track with Google Analyticator');
+add_option('ga_profileid', '', 'The specific profile id');
 add_option(key_ga_widgets, ga_widgets_default, 'If the widgets are enabled or disabled');
 add_option('ga_google_token', '', 'The token used to authenticate with Google');
 add_option('ga_compatibility', 'off', 'Transport compatibility options');
@@ -207,6 +208,9 @@ function ga_options_page() {
 		if ($ga_downloads_prefix == '')
 			$ga_downloads_prefix = ga_downloads_prefix_default;
 		update_option(key_ga_downloads_prefix, $ga_downloads_prefix);
+		
+		// Update the profile id
+		update_option('ga_profileid', $_POST['ga_profileid']);
 		
 		// Update the widgets option
 		$ga_widgets = $_POST[key_ga_widgets];
@@ -491,7 +495,7 @@ function ga_options_page() {
 						echo "id='".key_ga_adsense."' ";
 						echo "value='".get_option(key_ga_adsense)."' />\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Adsense ID assigned by Google Analytics in this box. This enables Analytics tracking of Adsense information if your Adsense and Analytics accounts are linked. Note: Google recommends the Analytics tracking code is placed in the header with this option enabled, however, a fix is included in this plugin. To follow the official specs, do not enable footer tracking.', 'google-analyticator'); ?></p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Adsense ID assigned by Google Analytics in this box. This enables Analytics tracking of Adsense information if your Adsense and Analytics accounts are linked.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
@@ -526,6 +530,20 @@ function ga_options_page() {
 				# Check if we have a version of WordPress greater than 2.8
 				if ( function_exists('register_widget') ) {
 				?>
+				<tr>
+					<th valign="top" style="padding-top: 10px;">
+						<label for="ga_profileid"><?php _e('Google Analytics profile ID', 'google-analyticator'); ?>:</label>
+					</th>
+					<td>
+						<?php
+						echo "<input type='text' size='50' ";
+						echo "name='ga_profileid' ";
+						echo "id='ga_profileid' ";
+						echo "value='".get_option('ga_profileid')."' />\n";
+						?>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' profile ID in this box. Entering your profile ID is optional, and is only useful if you have multiple profiles associated with a single UID. By entering your profile ID, the dashboard widget will display stats based on the profile ID you specify.', 'google-analyticator'); ?></p>
+					</td>
+				</tr>
 				<tr>
 					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_widgets; ?>"><?php _e('Include widgets', 'google-analyticator'); ?>:</label>
@@ -810,7 +828,7 @@ function add_google_analytics()
 		} else {
 			# Add the notice that Google Analyticator tracking is enabled
 			echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://ronaldheft.com/code/analyticator/ -->\n";
-			echo "	<!-- Tracking code is hidden, since the settings specify not to track admins. Tracking is occurring for non-admins. -->\n";
+			echo "	<!-- " . __('Tracking code is hidden, since the settings specify not to track admins. Tracking is occurring for non-admins.', 'google-analyticator') . " -->\n";
 		}
 	}
 }

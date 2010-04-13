@@ -49,10 +49,11 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 
 == Changelog ==
 
-= 6.0.3 =
+= 6.1 =
 * Prepares Google Analyticator for WordPress 3.0 compatibility.
 * Updates the async tracking snippet to the latest version provided by Google. This new update solves issues with IE7 and IE6, and fixes all problems related to the snippet being placed in the <head> section of a page. You can rest easy knowing that async tracking in the <head> is completely compatible with IE now.
 * Adds an html comment to the page header when tracking code is hidden due to the user admin level. This should make is less confusing for new Google Analyticator users, wondering if their tracking code is visible to the world.
+* Adds a setting to specify a specific profile ID. This will help users with multiple Analytics profiles, by allowing them to specify which profile to use with the dashboard widget.
 * Fixes the disappearing UID box bug when not authenticated.
 
 = 6.0.2 =

@@ -108,6 +108,9 @@ class GoogleAnalyticsSummary
 		
 		# Attempt to login and get the current account
 		$this->id = $this->getAnalyticsAccount();
+		$profile_id = get_option('ga_profileid');
+		if ( trim($profile_id) != '' )
+			$this->id = 'ga:' . $profile_id;
 		$this->api->setAccount($this->id);
 		
 		# Check that we can display the widget before continuing
