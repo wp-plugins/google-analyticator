@@ -196,7 +196,7 @@ class GoogleStatsWidget extends WP_Widget
 	function getUniqueVisitors($account, $time = 1)
 	{
 		# Get the value from the database
-		$visits = unserialize(get_option('google_stats_visits_' . $account));
+		$visits = maybe_unserialize(get_option('google_stats_visits_' . $account));
 
 		# Check to make sure the timeframe is an int and greater than one
 		$time = (int) $time;
@@ -237,11 +237,8 @@ class GoogleStatsWidget extends WP_Widget
 		$yesterday = date('Y-m-d', strtotime('-1 day'));
 		$uniques = number_format($stats->getMetric('ga:visitors', $before, $yesterday));
 
-		# Make the array for database storage
-		$visit = serialize(array('unique'=>$uniques, 'lastcalled'=>time()));
-
 		# Store the array
-		update_option('google_stats_visits_' . $account, $visit);
+		update_option('google_stats_visits_' . $account, array('unique'=>$uniques, 'lastcalled'=>time()));
 
 		# Return the visits
 		return $uniques;

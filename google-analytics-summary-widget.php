@@ -211,7 +211,7 @@ class GoogleAnalyticsSummary
 	function getVisitsGraph()
 	{
 		# Get the value from the database
-		$cached = unserialize(get_option('google_stats_visitsGraph_' . $this->id));
+		$cached = maybe_unserialize(get_option('google_stats_visitsGraph_' . $this->id));
 		$updated = false;
 
 		# Check if the call has been made before
@@ -234,8 +234,7 @@ class GoogleAnalyticsSummary
 			$stats = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:date', 'ga:date');
 			
 			# Store the serialized stats in the database
-			$newStats = serialize(array('stats'=>$stats, 'lastcalled'=>time()));
-			update_option('google_stats_visitsGraph_' . $this->id, $newStats);
+			update_option('google_stats_visitsGraph_' . $this->id, array('stats'=>$stats, 'lastcalled'=>time()));
 		
 		}
 		
@@ -278,7 +277,7 @@ class GoogleAnalyticsSummary
 	function getSiteUsage()
 	{
 		# Get the value from the database
-		$cached = unserialize(get_option('google_stats_siteUsage_' . $this->id));
+		$cached = maybe_unserialize(get_option('google_stats_siteUsage_' . $this->id));
 		$updated = false;
 
 		# Check if the call has been made before
@@ -301,8 +300,7 @@ class GoogleAnalyticsSummary
 			$stats = $this->api->getMetrics('ga:visits,ga:bounces,ga:entrances,ga:pageviews,ga:timeOnSite,ga:newVisits', $before, $yesterday);
 			
 			# Store the serialized stats in the database
-			$newStats = serialize(array('stats'=>$stats, 'lastcalled'=>time()));
-			update_option('google_stats_siteUsage_' . $this->id, $newStats);
+			update_option('google_stats_siteUsage_' . $this->id, array('stats'=>$stats, 'lastcalled'=>time()));
 		
 		}
 		
@@ -353,7 +351,7 @@ class GoogleAnalyticsSummary
 	function getTopPages()
 	{
 		# Get the value from the database
-		$cached = unserialize(get_option('google_stats_topPages_' . $this->id));
+		$cached = maybe_unserialize(get_option('google_stats_topPages_' . $this->id));
 		$updated = false;
 
 		# Check if the call has been made before
@@ -376,8 +374,7 @@ class GoogleAnalyticsSummary
 			$stats = $this->api->getMetrics('ga:pageviews', $before, $yesterday, 'ga:pageTitle,ga:pagePath', '-ga:pageviews', 'ga:pagePath!%3D%2F', '10');
 			
 			# Store the serialized stats in the database
-			$newStats = serialize(array('stats'=>$stats, 'lastcalled'=>time()));
-			update_option('google_stats_topPages_' . $this->id, $newStats);
+			update_option('google_stats_topPages_' . $this->id, array('stats'=>$stats, 'lastcalled'=>time()));
 		
 		}
 		
@@ -447,7 +444,7 @@ class GoogleAnalyticsSummary
 	function getTopReferrers()
 	{
 		# Get the value from the database
-		$cached = unserialize(get_option('google_stats_topReferrers_' . $this->id));
+		$cached = maybe_unserialize(get_option('google_stats_topReferrers_' . $this->id));
 		$updated = false;
 
 		# Check if the call has been made before
@@ -470,8 +467,7 @@ class GoogleAnalyticsSummary
 			$stats = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:source,ga:medium', '-ga:visits', 'ga:medium%3D%3Dreferral', '5');
 			
 			# Store the serialized stats in the database
-			$newStats = serialize(array('stats'=>$stats, 'lastcalled'=>time()));
-			update_option('google_stats_topReferrers_' . $this->id, $newStats);
+			update_option('google_stats_topReferrers_' . $this->id, array('stats'=>$stats, 'lastcalled'=>time()));
 		
 		}
 		
@@ -498,7 +494,7 @@ class GoogleAnalyticsSummary
 	function getTopSearches()
 	{
 		# Get the value from the database
-		$cached = unserialize(get_option('google_stats_topSearches_' . $this->id));
+		$cached = maybe_unserialize(get_option('google_stats_topSearches_' . $this->id));
 		$updated = false;
 
 		# Check if the call has been made before
@@ -521,8 +517,7 @@ class GoogleAnalyticsSummary
 			$stats = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:keyword', '-ga:visits', 'ga:keyword!%3D(not%20set)', '5');
 			
 			# Store the serialized stats in the database
-			$newStats = serialize(array('stats'=>$stats, 'lastcalled'=>time()));
-			update_option('google_stats_topSearches_' . $this->id, $newStats);
+			update_option('google_stats_topSearches_' . $this->id, array('stats'=>$stats, 'lastcalled'=>time()));
 		
 		}
 		
