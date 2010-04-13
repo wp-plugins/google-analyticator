@@ -803,6 +803,10 @@ function add_google_analytics()
 	})();
 </script>
 <?php
+		} else {
+			# Add the notice that Google Analyticator tracking is enabled
+			echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://ronaldheft.com/code/analyticator/ -->\n";
+			echo "	<!-- Tracking code is hidden, since the settings specify not to track admins. Tracking is occurring for non-admins. -->\n";
 		}
 	}
 }
