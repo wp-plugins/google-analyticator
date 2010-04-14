@@ -27,7 +27,7 @@ class GoogleAnalyticsSummary
 	function addDashboardWidget()
 	{
 		# Check if the user is an admin
-		if ( current_user_can('level_' . get_option(key_ga_admin_level)) ) {
+		if ( ga_current_user_is(get_option(key_ga_dashboard_role)) ) {
 			wp_add_dashboard_widget('google-analytics-summary', __('Google Analytics Summary', 'google-analyticator'), array($this, 'widget'));
 		}
 	}
