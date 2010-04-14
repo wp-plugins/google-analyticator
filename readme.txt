@@ -4,7 +4,7 @@ Donate link: http://ronaldheft.com/code/donate/
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 3.0
-Stable tag: 6.0.2
+Stable tag: 6.1
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
@@ -293,3 +293,9 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 
 = 1.0 =
 * Initial release.
+
+== Upgrade Notice ==
+
+= 6.1 =
+
+Recommended update. Highlights include WordPress 3.0 support, updated async tracking code, dashboard stats by Analytics profile, more control over who gets tracked, and more control over who can see the dashboard widget. Settings have changed, so revisit the settings to verify.

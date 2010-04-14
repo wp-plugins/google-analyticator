@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.0.2
+ * Version: 6.1
  * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.0.2');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.1');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -317,7 +317,7 @@ function ga_options_page() {
 						echo "id='".key_ga_uid."' ";
 						echo "value='".get_option(key_ga_uid)."' />\n";
 						?>
-						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://plugins.spiralwebconsulting.com/forums/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats.', 'google-analyticator'); ?> <strong><?php if ( function_exists('register_widget') ) _e('If you are having trouble finding your UID, authenticate with Google in the above field. After returning from Google, you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></strong></p>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Enter your Google Analytics\' UID in this box (<a href="http://forums.ronaldheft.com/viewtopic.php?f=5&amp;t=6">where can I find my UID?</a>). The UID is needed for Google Analytics to log your website stats.', 'google-analyticator'); ?> <strong><?php if ( function_exists('register_widget') ) _e('If you are having trouble finding your UID, authenticate with Google in the above field. After returning from Google, you will be able to select your account through a drop-down box.', 'google-analyticator'); ?></strong></p>
 					</td>
 				</tr>
 			</table>
