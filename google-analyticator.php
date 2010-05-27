@@ -823,6 +823,7 @@ function add_google_analytics()
 <?php
 		
 			# Add any tracking code before the trackPageview
+			do_action('google_analyticator_extra_js_before');
 			if ( '' != $extra )
 				echo "	$extra\n";
 			
@@ -834,6 +835,7 @@ function add_google_analytics()
 				echo "	_gaq.push(['_setVar', 'admin']);\n";
 		
 			# Add any tracking code after the trackPageview
+			do_action('google_analyticator_extra_js_after');
 			if ( '' != $extra_after )
 				echo "	$extra_after\n";
 		
