@@ -365,7 +365,7 @@ function ga_options_page() {
 								echo " checked='checked'";
 							$name_pos = strpos($name, '|');
 							$name = ( $name_pos ) ? substr($name, 0, $name_pos) : $name;
-							echo ' /> ' . $name . '<br />';
+							echo ' /> ' . _x($name, 'User role') . '<br />';
 						}
 						?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Specifies the user roles to not include in your WordPress Analytics report. If a user is logged into WordPress with one of these roles, they will not show up in your Analytics report.', 'google-analyticator'); ?></p>
@@ -560,7 +560,7 @@ function ga_options_page() {
 								echo " checked='checked'";
 							$name_pos = strpos($name, '|');
 							$name = ( $name_pos ) ? substr($name, 0, $name_pos) : $name;
-							echo ' /> ' . $name . '<br />';
+							echo ' /> ' . _x($name, 'User role') . '<br />';
 						}
 						?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Specifies the user roles that can see the dashboard widget. If a user is not in one of these role groups, they will not see the dashboard widget.', 'google-analyticator'); ?></p>
