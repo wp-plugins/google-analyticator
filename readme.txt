@@ -4,7 +4,7 @@ Donate link: http://ronaldheft.com/code/donate/
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 3.0
-Stable tag: 6.1
+Stable tag: 6.1.1
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
@@ -51,7 +51,7 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 
 = 6.1.1 =
 * Due to many questions about tracking code placement, [an FAQ article](http://forums.ronaldheft.com/viewtopic.php?f=5&t=967) has been written to address these placement questions. If you have any questions, this is a recommended read.
-* Corrects issues related to selecting users roles to exclude from tracking and seeing the dashboard widget.
+* Corrects issues related to selecting user roles to exclude from tracking / seeing the dashboard widget.
 * Cleans up the display of user role names for WordPress versions below WordPress 3.0.
 * Updates the included jQuary Sparkline library to 1.5.1, thus adding support for viewing the dashboard graph in all versions of Internet Explorer.
 * Adds two hooks, google_analyticator_extra_js_before and google_analyticator_extra_js_after, enabling other WordPress plugins to insert additional tracking code.
@@ -302,6 +302,10 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 * Initial release.
 
 == Upgrade Notice ==
+
+= 6.1.1 =
+
+Bug fix release. If you're having trouble accessing the settings page or use Internet Explorer, this is a recommended update.
 
 = 6.1 =
 
