@@ -50,8 +50,10 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 == Changelog ==
 
 = 6.1.1 =
+* Due to many questions about tracking code placement, [an FAQ article](http://forums.ronaldheft.com/viewtopic.php?f=5&t=967) has been written to address these placement questions. If you have any questions, this is a recommended read.
 * Corrects issues related to selecting users roles to exclude from tracking and seeing the dashboard widget.
 * Cleans up the display of user role names for WordPress versions below WordPress 3.0.
+* Updates the included jQuary Sparkline library to 1.5.1, thus adding support for viewing the dashboard graph in all versions of Internet Explorer.
 
 = 6.1 =
 * Prepares Google Analyticator for WordPress 3.0 compatibility.

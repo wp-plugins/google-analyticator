@@ -38,7 +38,7 @@ class GoogleAnalyticsSummary
 	function addJavascript()
 	{
 		# Include the Sparklines graphing library
-		wp_enqueue_script('jquery-sparklines', plugins_url('/google-analyticator/jquery.sparkline.min.js'), array('jquery'), '1.4.3');
+		wp_enqueue_script('jquery-sparklines', plugins_url('/google-analyticator/jquery.sparkline.min.js'), array('jquery'), '1.5.1');
 	}
 	
 	/**
@@ -73,13 +73,7 @@ class GoogleAnalyticsSummary
 						jQuery('#google-analytics-summary .inside .target').slideDown();
 						
 						// Handle displaying the graph
-						if ( navigator.appName != 'Microsoft Internet Explorer' ) {
-							jQuery('.ga_visits').sparkline(ga_visits, { type:'line', width:'100%', height:'75px', lineColor:'#aaa', fillColor:'#f0f0f0', spotColor:false, minSpotColor:false, maxSpotColor:false, chartRangeMin:0 });
-						} else {
-							// Hide the widget graph
-							jQuery('.ga_visits_title').remove();
-							jQuery('.ga_visits').remove();
-						}
+						jQuery('.ga_visits').sparkline(ga_visits, { type:'line', width:'100%', height:'75px', lineColor:'#aaa', fillColor:'#f0f0f0', spotColor:false, minSpotColor:false, maxSpotColor:false, chartRangeMin:0 });
 					}
 				});
 			

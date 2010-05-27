@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.1');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.1.1');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
