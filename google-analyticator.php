@@ -363,6 +363,8 @@ function ga_options_page() {
 							echo '<input type="checkbox" value="' . $role . '" name="' . key_ga_admin_role . '[]"';
 							if ( in_array($role, $selected_roles) )
 								echo " checked='checked'";
+							$name_pos = strpos($name, '|');
+							$name = ( $name_pos ) ? substr($name, 0, $name_pos) : $name;
 							echo ' /> ' . $name . '<br />';
 						}
 						?>
@@ -556,6 +558,8 @@ function ga_options_page() {
 							echo '<input type="checkbox" value="' . $role . '" name="' . key_ga_dashboard_role . '[]"';
 							if ( in_array($role, $selected_roles) )
 								echo " checked='checked'";
+							$name_pos = strpos($name, '|');
+							$name = ( $name_pos ) ? substr($name, 0, $name_pos) : $name;
 							echo ' /> ' . $name . '<br />';
 						}
 						?>

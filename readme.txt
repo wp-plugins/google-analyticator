@@ -51,6 +51,7 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 
 = 6.1.1 =
 * Corrects issues related to selecting users roles to exclude from tracking and seeing the dashboard widget.
+* Cleans up the display of user role names for WordPress versions below WordPress 3.0.
 
 = 6.1 =
 * Prepares Google Analyticator for WordPress 3.0 compatibility.
