@@ -49,6 +49,9 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 
 == Changelog ==
 
+= 6.1.1 =
+* Corrects issues related to selecting users roles to exclude from tracking and seeing the dashboard widget.
+
 = 6.1 =
 * Prepares Google Analyticator for WordPress 3.0 compatibility.
 * Updates the async tracking snippet to the latest version provided by Google. This new update solves issues with IE7 and IE6, and fixes all problems related to the snippet being placed in the <head> section of a page. You can rest easy knowing that async tracking in the <head> is completely compatible with IE now.

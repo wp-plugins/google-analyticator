@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.1
+ * Version: 6.1.1
  * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
@@ -355,11 +355,13 @@ function ga_options_page() {
 						<?php						
 						global $wp_roles;
 						$roles = $wp_roles->get_names();
+						$selected_roles = get_option(key_ga_admin_role);
+						if ( !is_array($selected_roles) ) $selected_roles = array();
 						
 						# Loop through the roles
 						foreach ( $roles AS $role => $name ) {
 							echo '<input type="checkbox" value="' . $role . '" name="' . key_ga_admin_role . '[]"';
-							if ( in_array($role, get_option(key_ga_admin_role)) )
+							if ( in_array($role, $selected_roles) )
 								echo " checked='checked'";
 							echo ' /> ' . $name . '<br />';
 						}
@@ -546,11 +548,13 @@ function ga_options_page() {
 						<?php						
 						global $wp_roles;
 						$roles = $wp_roles->get_names();
+						$selected_roles = get_option(key_ga_dashboard_role);
+						if ( !is_array($selected_roles) ) $selected_roles = array();
 						
 						# Loop through the roles
 						foreach ( $roles AS $role => $name ) {
 							echo '<input type="checkbox" value="' . $role . '" name="' . key_ga_dashboard_role . '[]"';
-							if ( in_array($role, get_option(key_ga_dashboard_role)) )
+							if ( in_array($role, $selected_roles) )
 								echo " checked='checked'";
 							echo ' /> ' . $name . '<br />';
 						}
