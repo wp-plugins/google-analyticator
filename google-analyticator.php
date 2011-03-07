@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.1.1
+ * Version: 6.1.2
  * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.1.1');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.1.2');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -47,24 +47,24 @@ define("ga_downloads_prefix_default", "download", true);
 define("ga_widgets_default", ga_enabled, true);
 
 // Create the default key and status
-add_option(key_ga_status, ga_status_default, 'If Google Analytics logging in turned on or off.');
-add_option(key_ga_uid, ga_uid_default, 'Your Google Analytics UID.');
-add_option(key_ga_admin, ga_admin_default, 'If WordPress admins are counted in Google Analytics.');
+add_option(key_ga_status, ga_status_default, '');
+add_option(key_ga_uid, ga_uid_default, '');
+add_option(key_ga_admin, ga_admin_default, '');
 add_option(key_ga_admin_disable, ga_admin_disable_default, '');
-add_option(key_ga_admin_role, array('administrator'), 'The level to consider a user a WordPress admin.');
-add_option(key_ga_dashboard_role, array('administrator'), 'The level to consider the dashboard widget available to users.');
+add_option(key_ga_admin_role, array('administrator'), '');
+add_option(key_ga_dashboard_role, array('administrator'), '');
 add_option(key_ga_adsense, ga_adsense_default, '');
-add_option(key_ga_extra, ga_extra_default, 'Addition Google Analytics tracking options');
-add_option(key_ga_extra_after, ga_extra_after_default, 'Addition Google Analytics tracking options');
+add_option(key_ga_extra, ga_extra_default, '');
+add_option(key_ga_extra_after, ga_extra_after_default, '');
 add_option(key_ga_event, ga_event_default, '');
-add_option(key_ga_outbound, ga_outbound_default, 'Add tracking of outbound links');
-add_option(key_ga_outbound_prefix, ga_outbound_prefix_default, 'Add tracking of outbound links');
-add_option(key_ga_downloads, ga_downloads_default, 'Download extensions to track with Google Analyticator');
-add_option(key_ga_downloads_prefix, ga_downloads_prefix_default, 'Download extensions to track with Google Analyticator');
-add_option('ga_profileid', '', 'The specific profile id');
-add_option(key_ga_widgets, ga_widgets_default, 'If the widgets are enabled or disabled');
-add_option('ga_google_token', '', 'The token used to authenticate with Google');
-add_option('ga_compatibility', 'off', 'Transport compatibility options');
+add_option(key_ga_outbound, ga_outbound_default, '');
+add_option(key_ga_outbound_prefix, ga_outbound_prefix_default, '');
+add_option(key_ga_downloads, ga_downloads_default, '');
+add_option(key_ga_downloads_prefix, ga_downloads_prefix_default, '');
+add_option('ga_profileid', '', '');
+add_option(key_ga_widgets, ga_widgets_default, '');
+add_option('ga_google_token', '', '');
+add_option('ga_compatibility', 'off', '');
 
 # Check if we have a version of WordPress greater than 2.8
 if ( function_exists('register_widget') ) {
@@ -102,7 +102,7 @@ add_action('init', 'ga_outgoing_links');
 
 // Hook in the options page function
 function add_ga_option_page() {
-	$plugin_page = add_options_page(__('Google Analyticator Settings', 'google-analyticator'), 'Google Analytics', 8, basename(__FILE__), 'ga_options_page');
+	$plugin_page = add_options_page(__('Google Analyticator Settings', 'google-analyticator'), 'Google Analytics', 'manage_options', basename(__FILE__), 'ga_options_page');
 	
 	# Include javascript on the GA settings page
 	add_action('admin_head-' . $plugin_page, 'ga_admin_ajax');
@@ -165,11 +165,19 @@ function ga_options_page() {
 		update_option(key_ga_admin_disable, $ga_admin_disable);
 		
 		// Update the admin level
-		$ga_admin_role = $_POST[key_ga_admin_role];
+		if ( array_key_exists(key_ga_admin_role, $_POST) ) {
+			$ga_admin_role = $_POST[key_ga_admin_role];
+		} else {
+			$ga_admin_role = "";
+		}
 		update_option(key_ga_admin_role, $ga_admin_role);
 		
 		// Update the dashboard level
-		$ga_dashboard_role = $_POST[key_ga_dashboard_role];
+		if ( array_key_exists(key_ga_dashboard_role, $_POST) ) {
+			$ga_dashboard_role = $_POST[key_ga_dashboard_role];
+		} else {
+			$ga_dashboard_role = "";
+		}
 		update_option(key_ga_dashboard_role, $ga_dashboard_role);
 
 		// Update the extra tracking code
@@ -649,7 +657,7 @@ function ga_admin_ajax()
 					data: {
 						action: 'ga_ajax_accounts',
 						_ajax_nonce: '<?php echo wp_create_nonce("google-analyticator-accounts_get"); ?>'<?php if ( isset($_GET['token']) ) { ?>,
-						token: '<?php echo $_GET["token"]; ?>'
+						token: '<?php echo esc_js($_GET["token"]); ?>'
 						<?php } ?>
 					},
 					success: function(html) {
@@ -784,7 +792,7 @@ function add_google_analytics()
 	if ( ( get_option(key_ga_status) != ga_disabled ) && ( $uid != "XX-XXXXX-X" ) )
 	{
 		# Determine if the user is an admin, and should see the tracking code
-		if ( ( get_option(key_ga_admin) == ga_enabled || !ga_current_user_is(get_option(ga_admin_role)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' )
+		if ( ( get_option(key_ga_admin) == ga_enabled || !ga_current_user_is(get_option(key_ga_admin_role)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' )
 		{
 			# Add the notice that Google Analyticator tracking is enabled
 			echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://ronaldheft.com/code/analyticator/ -->\n";
@@ -831,7 +839,7 @@ function add_google_analytics()
 			echo "	_gaq.push(['_trackPageview']);\n";
 		
 			# Disable page tracking if admin is logged in
-			if ( ( get_option(key_ga_admin) == ga_disabled ) && ( ga_current_user_is(get_option(ga_admin_role)) ) )
+			if ( ( get_option(key_ga_admin) == ga_disabled ) && ( ga_current_user_is(get_option(key_ga_admin_role)) ) )
 				echo "	_gaq.push(['_setVar', 'admin']);\n";
 		
 			# Add any tracking code after the trackPageview
@@ -875,7 +883,7 @@ function ga_outgoing_links()
 			if ( !is_admin() )
 			{
 				# Display page tracking if user is not an admin
-				if ( ( get_option(key_ga_admin) == ga_enabled || !ga_current_user_is(get_option(ga_admin_role)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' )
+				if ( ( get_option(key_ga_admin) == ga_enabled || !ga_current_user_is(get_option(key_ga_admin_role)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' )
 				{
 					add_action('wp_print_scripts', 'ga_external_tracking_js');
 				}
