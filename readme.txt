@@ -50,7 +50,8 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 == Changelog ==
 
 = 6.1.3 =
-* Fixes a Javascript error on the WordPress login page
+* Fixes a Javascript error on the WordPress login page.
+* Improves profile id logic to hopefully fix dashboard errors for the people that experience them.
 
 = 6.1.2 =
 * Fixes deprecated warnings when wp_debug is enabled.
