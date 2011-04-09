@@ -309,6 +309,7 @@ class GoogleAnalyticsSummary
 		}
 		
 		# Create the site usage table
+		if ( isset($stats[0]) ) {
 		?>
 		<table width="100%">
 			<tr>
@@ -347,6 +348,7 @@ class GoogleAnalyticsSummary
 			</tr>
 		</table>
 		<?php
+		}
 	}
 	
 	/**
