@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.1.2
+ * Version: 6.1.3
  * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.1.2');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.1.3');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -96,6 +96,7 @@ function ga_admin_init() {
 
 # Add the core Google Analytics script, with a high priority to ensure last script for async tracking
 add_action('wp_head', 'add_google_analytics', 999999);
+add_action('login_head', 'add_google_analytics', 999999);
 
 # Initialize outbound link tracking
 add_action('init', 'ga_outgoing_links');

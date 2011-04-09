@@ -3,7 +3,7 @@ Contributors: cavemonkey50
 Donate link: http://ronaldheft.com/code/donate/
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
-Tested up to: 3.1
+Tested up to: 3.2
 Stable tag: 6.1.2
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
@@ -48,6 +48,9 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 6. An example of a front-end widget configuration.
 
 == Changelog ==
+
+= 6.1.3 =
+* Fixes a Javascript error on the WordPress login page
 
 = 6.1.2 =
 * Fixes deprecated warnings when wp_debug is enabled.
