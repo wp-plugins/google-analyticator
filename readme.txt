@@ -4,7 +4,7 @@ Donate link: http://ronaldheft.com/code/donate/
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 2.7
 Tested up to: 3.2
-Stable tag: 6.1.2
+Stable tag: 6.1.3
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
