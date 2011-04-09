@@ -112,7 +112,6 @@ class GoogleAnalyticsSummary
 		} else {
 			$this->id = $account;
 		}
-		print_r($this->id);
 		$this->api->setAccount($this->id);
 		
 		# Check that we can display the widget before continuing
