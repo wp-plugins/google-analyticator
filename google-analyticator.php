@@ -844,26 +844,29 @@ function add_google_analytics()
 		# Determine if the user is an admin, and should see the tracking code
 		if ( ( get_option(key_ga_admin) == ga_enabled || !ga_current_user_is(get_option(key_ga_admin_role)) ) && get_option(key_ga_admin_disable) == 'remove' || get_option(key_ga_admin_disable) != 'remove' )
 		{
-			# Add the notice that Google Analyticator tracking is enabled
-			echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://ronaldheft.com/code/analyticator/ -->\n";
+			# Disable the tracking code on the post preview page
+			if ( !function_exists("is_preview") || ( function_exists("is_preview") && !is_preview() ) )
+			{
+				# Add the notice that Google Analyticator tracking is enabled
+				echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://ronaldheft.com/code/analyticator/ -->\n";
 			
-			# Add the Adsense data if specified
-			if ( get_option(key_ga_adsense) != '' )
-				echo '<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n";
+				# Add the Adsense data if specified
+				if ( get_option(key_ga_adsense) != '' )
+					echo '<script type="text/javascript">window.google_analytics_uacct = "' . get_option(key_ga_adsense) . "\";</script>\n";
 			
-			# Include the file types to track
-			$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
-			$ext = "";
-			foreach ( $extensions AS $extension )
-				$ext .= "'$extension',";
-			$ext = substr($ext, 0, -1);
+				# Include the file types to track
+				$extensions = explode(',', stripslashes(get_option(key_ga_downloads)));
+				$ext = "";
+				foreach ( $extensions AS $extension )
+					$ext .= "'$extension',";
+				$ext = substr($ext, 0, -1);
 
-			# Include the link tracking prefixes
-			$outbound_prefix = stripslashes(get_option(key_ga_outbound_prefix));
-			$downloads_prefix = stripslashes(get_option(key_ga_downloads_prefix));
-			$event_tracking = get_option(key_ga_event);
+				# Include the link tracking prefixes
+				$outbound_prefix = stripslashes(get_option(key_ga_outbound_prefix));
+				$downloads_prefix = stripslashes(get_option(key_ga_downloads_prefix));
+				$event_tracking = get_option(key_ga_event);
 
-			?>
+				?>
 <script type="text/javascript">
 	var analyticsFileTypes = [<?php echo strtolower($ext); ?>];
 <?php if ( $event_tracking != 'enabled' ) { ?>
@@ -873,36 +876,36 @@ function add_google_analytics()
 	var analyticsEventTracking = '<?php echo $event_tracking; ?>';
 </script>
 <?php
-			# Add the first part of the core tracking code
-			?>
+				# Add the first part of the core tracking code
+				?>
 <script type="text/javascript">
 	var _gaq = _gaq || [];
 	_gaq.push(['_setAccount', '<?php echo $uid; ?>']);
 <?php
 		
-			# Add any tracking code before the trackPageview
-			do_action('google_analyticator_extra_js_before');
-			if ( '' != $extra )
-				echo "	$extra\n";
+				# Add any tracking code before the trackPageview
+				do_action('google_analyticator_extra_js_before');
+				if ( '' != $extra )
+					echo "	$extra\n";
 			
-			# Add the track pageview function
-			echo "	_gaq.push(['_trackPageview']);\n";
+				# Add the track pageview function
+				echo "	_gaq.push(['_trackPageview']);\n";
 			
-			# Add the site speed tracking
-			if ( get_option(key_ga_sitespeed) == ga_enabled )
-				echo "	_gaq.push(['_trackPageLoadTime']);\n";
+				# Add the site speed tracking
+				if ( get_option(key_ga_sitespeed) == ga_enabled )
+					echo "	_gaq.push(['_trackPageLoadTime']);\n";
 		
-			# Disable page tracking if admin is logged in
-			if ( ( get_option(key_ga_admin) == ga_disabled ) && ( ga_current_user_is(get_option(key_ga_admin_role)) ) )
-				echo "	_gaq.push(['_setCustomVar', 'admin']);\n";
+				# Disable page tracking if admin is logged in
+				if ( ( get_option(key_ga_admin) == ga_disabled ) && ( ga_current_user_is(get_option(key_ga_admin_role)) ) )
+					echo "	_gaq.push(['_setCustomVar', 'admin']);\n";
 		
-			# Add any tracking code after the trackPageview
-			do_action('google_analyticator_extra_js_after');
-			if ( '' != $extra_after )
-				echo "	$extra_after\n";
+				# Add any tracking code after the trackPageview
+				do_action('google_analyticator_extra_js_after');
+				if ( '' != $extra_after )
+					echo "	$extra_after\n";
 		
-			# Add the final section of the tracking code
-			?>
+				# Add the final section of the tracking code
+				?>
 
 	(function() {
 		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -911,6 +914,7 @@ function add_google_analytics()
 	})();
 </script>
 <?php
+			}
 		} else {
 			# Add the notice that Google Analyticator tracking is enabled
 			echo "<!-- Google Analytics Tracking by Google Analyticator " . GOOGLE_ANALYTICATOR_VERSION . ": http://ronaldheft.com/code/analyticator/ -->\n";
