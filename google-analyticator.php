@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.1.3');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.2');
 
 // Constants for enabled/disabled state
 define("ga_enabled", "enabled", true);
@@ -877,7 +877,7 @@ function add_google_analytics()
 		
 			# Disable page tracking if admin is logged in
 			if ( ( get_option(key_ga_admin) == ga_disabled ) && ( ga_current_user_is(get_option(key_ga_admin_role)) ) )
-				echo "	_gaq.push(['_setVar', 'admin']);\n";
+				echo "	_gaq.push(['_setCustomVar', 'admin']);\n";
 		
 			# Add any tracking code after the trackPageview
 			do_action('google_analyticator_extra_js_after');
