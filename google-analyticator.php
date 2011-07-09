@@ -1,7 +1,7 @@
 <?php 
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.1.3
+ * Version: 6.2
  * Plugin URI: http://ronaldheft.com/code/analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Ronald Heft
@@ -31,6 +31,7 @@ define("key_ga_outbound_prefix", "ga_outbound_prefix", true);
 define("key_ga_downloads", "ga_downloads", true);
 define("key_ga_downloads_prefix", "ga_downloads_prefix", true);
 define("key_ga_widgets", "ga_widgets", true);
+define("key_ga_sitespeed", "ga_sitespeed", true);
 
 define("ga_uid_default", "XX-XXXXX-X", true);
 define("ga_status_default", ga_disabled, true);
@@ -45,6 +46,7 @@ define("ga_outbound_prefix_default", 'outgoing', true);
 define("ga_downloads_default", "", true);
 define("ga_downloads_prefix_default", "download", true);
 define("ga_widgets_default", ga_enabled, true);
+define("ga_sitespeed_default", ga_enabled, true);
 
 // Create the default key and status
 add_option(key_ga_status, ga_status_default, '');
@@ -65,6 +67,7 @@ add_option('ga_profileid', '', '');
 add_option(key_ga_widgets, ga_widgets_default, '');
 add_option('ga_google_token', '', '');
 add_option('ga_compatibility', 'off', '');
+add_option(key_ga_sitespeed, ga_sitespeed_default, '');
 
 # Check if we have a version of WordPress greater than 2.8
 if ( function_exists('register_widget') ) {
@@ -235,6 +238,12 @@ function ga_options_page() {
 		if ( $ga_compatibility == '' )
 			$ga_compatibility = 'off';
 		update_option('ga_compatibility', $ga_compatibility);
+		
+		// Update the sitespeed option
+		$ga_sitespeed = $_POST[key_ga_sitespeed];
+		if (($ga_sitespeed != ga_enabled) && ($ga_sitespeed != ga_disabled))
+			$ga_sitespeed = ga_widgets_default;
+		update_option(key_ga_sitespeed, $ga_sitespeed);
 
 		// Give an updated message
 		echo "<div class='updated fade'><p><strong>" . __('Google Analyticator settings saved.', 'google-analyticator') . "</strong></p></div>";
@@ -401,6 +410,29 @@ function ga_options_page() {
 						echo "</select>\n";
 						?>
 						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Selecting the "Remove" option will physically remove the tracking code from logged in users. Selecting the "Use \'admin\' variable" option will assign a variable called \'admin\' to logged in users. This option will allow Google Analytics\' site overlay feature to work, but you will have to manually configure Google Analytics to exclude tracking from pageviews with the \'admin\' variable.', 'google-analyticator'); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_sitespeed ?>"><?php _e('Site speed tracking', 'google-analyticator'); ?>:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_sitespeed."' id='".key_ga_sitespeed."'>\n";
+						
+						echo "<option value='".ga_enabled."'";
+						if(get_option(key_ga_sitespeed) == ga_enabled)
+							echo " selected='selected'";
+						echo ">" . __('Enabled', 'google-analyticator') . "</option>\n";
+						
+						echo "<option value='".ga_disabled."'";
+						if(get_option(key_ga_sitespeed) == ga_disabled)
+							echo" selected='selected'";
+						echo ">" . __('Disabled', 'google-analyticator') . "</option>\n";
+						
+						echo "</select>\n";
+						?>
+						<p style="margin: 5px 10px;" class="setting-description"><?php _e('Disabling this option will turn off the tracking required for <a href="http://www.google.com/support/analyticshelp/bin/answer.py?hl=en&answer=1205784&topic=1120718&utm_source=gablog&utm_medium=blog&utm_campaign=newga-blog&utm_content=sitespeed">Google Analytics\' Site Speed tracking report</a>.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
 				<tr>
@@ -838,6 +870,10 @@ function add_google_analytics()
 			
 			# Add the track pageview function
 			echo "	_gaq.push(['_trackPageview']);\n";
+			
+			# Add the site speed tracking
+			if ( get_option(key_ga_sitespeed) == ga_enabled )
+				echo "	_gaq.push(['_trackPageLoadTime']);\n";
 		
 			# Disable page tracking if admin is logged in
 			if ( ( get_option(key_ga_admin) == ga_disabled ) && ( ga_current_user_is(get_option(key_ga_admin_role)) ) )
