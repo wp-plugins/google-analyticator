@@ -731,14 +731,27 @@ function ga_ajax_accounts()
 	</th>
 	<td>
 		<?php
+		// sort the $ga_accounts array by ga:accountName and then title
+		$sorted_ga_accounts = array();
+		foreach ($ga_accounts as $ga_account) {
+			$sorted_ga_accounts[$ga_account['ga:accountName']][] = $ga_account;
+		}
+		foreach( $sorted_ga_accounts as $id => $sorted_ga_account) {
+			usort($sorted_ga_accounts[$id], 'ga_sort_account_list');
+		}
+		
 		# Create a select box	
 		echo '<select name="' . key_ga_uid . '" id="' . key_ga_uid . '">';
 		echo '<option value="XX-XXXXX-X">' . __('Select an Account', 'google-analyticator') . '</option>';
 	
 		# The list of accounts
-		foreach ( $ga_accounts AS $account ) {
-			$select = ( get_option(key_ga_uid) == $account['ga:webPropertyId'] ) ? ' selected="selected"' : '';
-			echo '<option value="' . $account['ga:webPropertyId'] . '"' . $select . '>' . $account['title'] . '</option>';
+		foreach ( $sorted_ga_accounts AS $account_name => $account_list ) {
+			echo "<optgroup label='".htmlentities($account_name)."'>\n";
+			foreach( $account_list as $account) {
+				$select = ( get_option(key_ga_uid) == $account['ga:webPropertyId'] ) ? ' selected="selected"' : '';
+				echo '<option value="' . $account['ga:webPropertyId'] . '"' . $select . '>' . $account['title'] . '</option>';
+			}
+			echo "</optgroup>\n";
 		}
 	
 		# Close the select box
@@ -750,6 +763,10 @@ function ga_ajax_accounts()
 	<?php
 	}
 	die();
+}
+
+function ga_sort_account_list($a, $b) {
+	return strcmp($a['title'],$b['title']);
 }
 
 /**

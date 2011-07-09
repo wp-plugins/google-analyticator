@@ -51,8 +51,9 @@ Please visit [Google Analyticator's support forum](http://forums.ronaldheft.com/
 == Changelog ==
 
 = 6.2 =
-* Adds a new option for site speed tracking (enabled by default)
-* Replaces deprecated tracking code _setVar with _setCustomVar
+* Adds a new option for site speed tracking (enabled by default).
+* Replaces deprecated tracking code _setVar with _setCustomVar.
+* Improves the account select dropdown by organizing the accounts. Props bluntly.
 
 = 6.1.3 =
 * Fixes a Javascript error on the WordPress login page.
