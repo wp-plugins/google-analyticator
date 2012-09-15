@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.3
+ * Version: 6.3.1
  * Plugin URI: http://wordpress.org/extend/plugins/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Video User Manuals
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.3');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.3.1');
 
 define('GOOGLE_ANALYTICATOR_CLIENTID', '1007949979410.apps.googleusercontent.com');
 define('GOOGLE_ANALYTICATOR_CLIENTSECRET', 'q06U41XDXtzaXD14E-KO1hti'); //don't worry - this don't need to be secret in our case
@@ -154,20 +154,21 @@ function ga_pre_load()
 
 function ga_activate()
 {
-	
+
 if (! function_exists('curl_init')) {
   print('Google PHP API Client requires the CURL PHP extension');
+  return;
 }
 
 if (! function_exists('json_decode')) {
   print('Google PHP API Client requires the JSON PHP extension');
+  return;
 }
 
 if (! function_exists('http_build_query')) {
   print('Google PHP API Client requires http_build_query()');
+  return;
 }
-
-return;
 
 $url = http_build_query( array(
                                 'next' => admin_url('/options-general.php?page=google-analyticator.php'),
