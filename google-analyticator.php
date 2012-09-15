@@ -154,6 +154,21 @@ function ga_pre_load()
 
 function ga_activate()
 {
+	
+if (! function_exists('curl_init')) {
+  print('Google PHP API Client requires the CURL PHP extension');
+}
+
+if (! function_exists('json_decode')) {
+  print('Google PHP API Client requires the JSON PHP extension');
+}
+
+if (! function_exists('http_build_query')) {
+  print('Google PHP API Client requires http_build_query()');
+}
+
+return;
+
 $url = http_build_query( array(
                                 'next' => admin_url('/options-general.php?page=google-analyticator.php'),
                                 'scope' => GOOGLE_ANALYTICATOR_SCOPE,
