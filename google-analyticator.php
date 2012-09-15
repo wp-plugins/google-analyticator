@@ -718,10 +718,11 @@ function ga_options_page() {
 
                         <a href="<?php echo admin_url('/options-general.php?page=ga_reset'); ?>"><?php _e('Deauthorize Google Analyticator.', 'google-analyticator'); ?></a>
 
-
+                </form>
 
 
 <?php  if (!get_option('wpm_o_user_id')): ?>
+                
 <div style="width:720px; margin:auto auto;" >
     <img src="<?php echo plugins_url('wlcms-plugin-advert.png', __FILE__ ); ?>" alt="Learn how to make WordPress better" />
     <form method="post" onsubmit="return quickValidate()"  action="http://www.aweber.com/scripts/addlead.pl" target="_blank" >
