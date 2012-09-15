@@ -126,9 +126,21 @@ class Google_Client {
   }
 
   public function authenticate($code = null) {
-    $service = $this->prepareService();
+      $service = $this->prepareService();
     $this->authenticated = true;
-    return self::$auth->authenticate($service, $code);
+
+    try {
+            return self::$auth->authenticate($service, $code);
+        }
+        catch (Google_AuthException $e)
+        {
+                  print 'There was an Analytics API service error ' . $e->getCode() . ':' . $e->getMessage();
+                  return false;
+
+        }
+
+
+    
   }
 
   /**

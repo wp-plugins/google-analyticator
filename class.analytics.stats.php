@@ -41,13 +41,13 @@ class GoogleAnalyticsStats
 		$this->client->setUseObjects(true);
 
 		try {
-				$this->analytics = new Google_AnalyticsService($this->client);
-			}
-			catch (Google_ServiceException $e)
-			{
-				  print 'There was an Analytics API service error ' . $e->getCode() . ':' . $e->getMessage();
+                        $this->analytics = new Google_AnalyticsService($this->client);
+                    }
+                    catch (Google_ServiceException $e)
+                    {
+                              print 'There was an Analytics API service error ' . $e->getCode() . ':' . $e->getMessage();
 
-			}
+                    }
 
 	}
 
@@ -65,11 +65,18 @@ class GoogleAnalyticsStats
 
 			if (empty($authCode)) return false;
 
+                        
 			$accessToken = $this->client->authenticate($authCode);
 
-			$this->client->setAccessToken($accessToken);
-
-			update_option('ga_google_authtoken', $accessToken);
+                        if($accessToken)
+                        {
+                            $this->client->setAccessToken($accessToken);
+                            update_option('ga_google_authtoken', $accessToken);
+                        }
+                        else
+                        {
+                            return false;
+                        }
 		}
 
 		$this->token =  $this->client->getAccessToken();
@@ -90,7 +97,14 @@ class GoogleAnalyticsStats
 
 		if (empty($webproperty_id)) return false;
 
-		$profiles = $this->analytics->management_profiles->listManagementProfiles($account_id, $webproperty_id);
+                try {
+                    $profiles = $this->analytics->management_profiles->listManagementProfiles($account_id, $webproperty_id);
+                }
+                catch (Google_ServiceException $e)
+                {
+                    print 'There was an Analytics API service error ' . $e->getCode() . ': ' . $e->getMessage();
+                    return false;
+                }
 
 		$profile_id = $profiles->items[0]->id;
 		if (empty($profile_id)) return false;
@@ -103,16 +117,16 @@ class GoogleAnalyticsStats
 
         function getAllProfiles()
         {
+            $profile_array = array();
+            
+            try {
+                    $profiles = $this->analytics->management_webproperties->listManagementWebproperties('~all');
+                }
+                catch (Google_ServiceException $e)
+                {
+                    print 'There was an Analytics API service error ' . $e->getCode() . ': ' . $e->getMessage();
+                }
 
-        	$profile_array = array();
-
-
-
-		  $profiles = $this->analytics->management_webproperties->listManagementWebproperties('~all');
-
-
-
-           // var_dump($profiles);die;
 
             if( !empty( $profiles->items ) )
             {
@@ -123,7 +137,6 @@ class GoogleAnalyticsStats
             }
 
             return $profile_array;
-
         }
 
 	function getAnalyticsAccounts()

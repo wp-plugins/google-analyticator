@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.3.1
+ * Version: 6.3.2
  * Plugin URI: http://wordpress.org/extend/plugins/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
  * Author: Video User Manuals
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.3.1');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.3.2');
 
 define('GOOGLE_ANALYTICATOR_CLIENTID', '1007949979410.apps.googleusercontent.com');
 define('GOOGLE_ANALYTICATOR_CLIENTSECRET', 'q06U41XDXtzaXD14E-KO1hti'); //don't worry - this don't need to be secret in our case
@@ -190,12 +190,12 @@ $url = http_build_query( array(
             <a
                 onclick="window.open('https://accounts.google.com/o/oauth2/auth?<?php echo $url ?>', 'activate','width=700, height=600, menubar=0, status=0, location=0, toolbar=0')"
                 target="_blank"
-                href="javascript:jQuery('#key').slideDown();"> Click HERE </a>
+                href="javascript:void(0);"> Click Here </a> - <small> Or <a target="_blank" href="https://accounts.google.com/o/oauth2/auth?<?php echo $url ?>">here</a> if you have popups blocked</small>
         </p>
 
-        <div style="display:none" id="key">
+        <div  id="key">
 
-            <p><strong>Google Activation Code </strong> </p>
+            <p><strong>Google Authentication Code </strong> </p>
 
             <p>Enter your Google Authentication Code in this box. This code will be used to get an Authentication Token so you can access your website stats.</p>
             <form method="post" action="<?php bloginfo('url');?>/wp-admin/options-general.php?page=google-analyticator.php">
@@ -216,7 +216,8 @@ $url = http_build_query( array(
 function ga_filter_plugin_actions($links) {
 	$new_links = array();
 
-	$new_links[] = '<a href="options-general.php?page=google-analyticator.php">' . __('Settings', 'google-analyticator') . '</a>';
+	$new_links[] = '<a href="'.get_bloginfo('url').'/wp-admin/options-general.php?page=google-analyticator.php">' . __('Settings', 'google-analyticator') . '</a>';
+        $new_links[] = '<a href="'.get_bloginfo('url').'/wp-admin/options-general.php?page=google-analyticator.php">' . __('Reset', 'google-analyticator') . '</a>';
 
 	return array_merge($new_links, $links);
 }
@@ -722,15 +723,13 @@ function ga_options_page() {
 
 
 <?php  if (!get_option('wpm_o_user_id')): ?>
-                
-<div style="width:720px; margin:auto auto;" >
     <img src="<?php echo plugins_url('wlcms-plugin-advert.png', __FILE__ ); ?>" alt="Learn how to make WordPress better" />
     <form method="post" onsubmit="return quickValidate()"  action="http://www.aweber.com/scripts/addlead.pl" target="_blank" >
     <div style="display: none;">
-    <input type="hidden" name="meta_web_form_id" value="720447695" />
+    <input type="hidden" name="meta_web_form_id" value="672327302" />
     <input type="hidden" name="meta_split_id" value="" />
     <input type="hidden" name="listname" value="vumpublic2" />
-    <input type="hidden" name="redirect" value="http://www.videousermanuals.com/subscription/free-report-response/" id="redirect_9ef7e9b7e6df8e5b029a1e0ace3b3e34" />
+    <input type="hidden" name="redirect" value="http://www.aweber.com/thankyou-coi.htm?m=video" id="redirect_9567c93ed4b6fb0c7cd9247553c362eb" />
     <input type="hidden" name="meta_adtracking" value="ga-plugin" />
     <input type="hidden" name="meta_message" value="1" />
     <input type="hidden" name="meta_required" value="name,email" />
@@ -749,8 +748,6 @@ function ga_options_page() {
     </tr>
     </table>
     </form>
-</div>
-
 <?php endif;?>
 
 <script type="text/javascript">
