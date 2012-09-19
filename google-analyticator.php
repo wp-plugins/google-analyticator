@@ -1,15 +1,15 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.3.2
+ * Version: 6.3.3
  * Plugin URI: http://wordpress.org/extend/plugins/google-analyticator/
- * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin visit <a href="options-general.php?page=google-analyticator.php">the settings page</a> and enter your Google Analytics' UID and enable logging.
+ * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin you need to authenticate with Google, then select your domain and you're set.
  * Author: Video User Manuals
  * Author URI: http://www.videousermanuals.com
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.3.2');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.3.3');
 
 define('GOOGLE_ANALYTICATOR_CLIENTID', '1007949979410.apps.googleusercontent.com');
 define('GOOGLE_ANALYTICATOR_CLIENTSECRET', 'q06U41XDXtzaXD14E-KO1hti'); //don't worry - this don't need to be secret in our case
@@ -72,7 +72,6 @@ add_option(key_ga_downloads_prefix, ga_downloads_prefix_default, '');
 add_option(key_ga_sitespeed, ga_sitespeed_default, '');
 add_option(key_ga_widgets, ga_widgets_default, '');
 add_option('ga_defaults', 'yes' );
-
 add_option('ga_google_token', '', '');
 
 
@@ -198,7 +197,7 @@ $url = http_build_query( array(
             <p><strong>Google Authentication Code </strong> </p>
 
             <p>Enter your Google Authentication Code in this box. This code will be used to get an Authentication Token so you can access your website stats.</p>
-            <form method="post" action="<?php bloginfo('url');?>/wp-admin/options-general.php?page=google-analyticator.php">
+            <form method="post" action="<?php echo admin_url('options-general.php?page=google-analyticator.php');?>">
                 <?php wp_nonce_field('google-analyticator-update_settings'); ?>
                 <input type="text" name="key_ga_google_token" value="" />
                 <input type="submit"  value="Save &amp; Continue" />
@@ -216,19 +215,38 @@ $url = http_build_query( array(
 function ga_filter_plugin_actions($links) {
 	$new_links = array();
 
-	$new_links[] = '<a href="'.get_bloginfo('url').'/wp-admin/options-general.php?page=google-analyticator.php">' . __('Settings', 'google-analyticator') . '</a>';
-        $new_links[] = '<a href="'.get_bloginfo('url').'/wp-admin/options-general.php?page=google-analyticator.php">' . __('Reset', 'google-analyticator') . '</a>';
+	$new_links[] = '<a href="' . admin_url('options-general.php?page=google-analyticator.php').'">' . __('Settings', 'google-analyticator') . '</a>';
+        $new_links[] = '<a href="' . admin_url('options-general.php?page=google-analyticator.php">') . __('Reset', 'google-analyticator') . '</a>';
 
 	return array_merge($new_links, $links);
 }
 
 function ga_do_reset()
 {
-    update_option('ga_google_token', '');
-    update_option('ga_google_authtoken', '');
-    update_option('ga_defaults', 'yes');
+    // Delete all GA options.
+    delete_option(key_ga_status);
+    delete_option(key_ga_uid);
+    delete_option(key_ga_admin);
+    delete_option(key_ga_admin_disable);
+    delete_option(key_ga_admin_role);
+    delete_option(key_ga_dashboard_role);
+    delete_option(key_ga_adsense);
+    delete_option(key_ga_extra);
+    delete_option(key_ga_extra_after);
+    delete_option(key_ga_event);
+    delete_option(key_ga_outbound);
+    delete_option(key_ga_outbound_prefix);
+    delete_option(key_ga_downloads);
+    delete_option(key_ga_downloads_prefix);
+    delete_option(key_ga_sitespeed);
+    delete_option(key_ga_widgets);
+    delete_option('ga_defaults');
+    delete_option('ga_google_token');
+    delete_option('ga_google_authtoken');
 
-    wp_redirect( get_bloginfo('url') . '/wp-admin/options-general.php?page=ga_activate' );
+
+
+    wp_redirect( admin_url( 'options-general.php?page=ga_activate' ) );
     exit;
 }
 
@@ -349,7 +367,7 @@ function ga_options_page() {
 
 		<h2><?php _e('Google Analyticator Settings', 'google-analyticator'); ?></h2>
 
-		<form method="post" action="options-general.php?page=google-analyticator.php">
+		<form method="post" action="<?php echo admin_url('options-general.php?page=google-analyticator.php');?>">
 			<?php
 			# Add a nonce
 			wp_nonce_field('google-analyticator-update_settings');
@@ -412,10 +430,11 @@ function ga_options_page() {
                                                 // If set in DB.
                                                 if( get_option(key_ga_uid) == $id ) { echo ' selected="selected"'; }
                                                 // Else if the domain matches the current domain & nothing set in DB.
-                                                elseif( $_SERVER['SERVER_NAME'] == $domain && ( get_option(key_ga_uid) != '' ) ) { echo ' selected="selected"'; }
+                                                elseif( $_SERVER['HTTP_HOST'] == $domain && ( get_option(key_ga_uid) != '' ) ) { echo ' selected="selected"'; }
                                                 echo '>'.$domain.'</option>';
 
                                             endforeach;
+                                            echo '</select>';
 
                                             ?>
 					</td>
@@ -717,7 +736,7 @@ function ga_options_page() {
 				<input type="submit" name="info_update" value="<?php _e('Save Changes', 'google-analyticator'); ?>" />
 			</p>
 
-                        <a href="<?php echo admin_url('/options-general.php?page=ga_reset'); ?>"><?php _e('Deauthorize Google Analyticator.', 'google-analyticator'); ?></a>
+                        <a href="<?php echo admin_url('/options-general.php?page=ga_reset'); ?>"><?php _e('Deauthorize &amp; Reset Google Analyticator.', 'google-analyticator'); ?></a>
 
                 </form>
 

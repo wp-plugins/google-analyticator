@@ -3,7 +3,7 @@ Contributors: VideoUserManuals, cavemonkey50
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 3.2
 Tested up to: 3.4.2
-Stable tag: 6.3.2
+Stable tag: 6.3.3
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
@@ -58,6 +58,10 @@ For any support issues, please use the official WordPress support forums.
 6. An example of a front-end widget configuration.
 
 == Changelog ==
+
+= 6.3.3 =
+Using the admin_url() function for internal links. Should help people with WP installed in a sub directory.
+Added all vars to reset function to delete / deauthorize from Google. 
 
 = 6.3.2 =
 Based on user issues. Improved error handling from Google APIs (some more to go)
