@@ -103,16 +103,7 @@ class GoogleAnalyticsSummary
 		# Attempt to login and get the current account
 		$account = $this->getAnalyticsAccount();
 
-		$profile_id = get_option('ga_profileid');
-		if ( trim($profile_id) != '' ) {
-			if ( substr($profile_id, 0, 3) == 'ga:' ) {
-				$this->id = $profile_id;
-			} else {
-				$this->id = 'ga:' . $profile_id;
-			}
-		} else {
-			$this->id = $account;
-		}
+                $this->id = $account;
 
 		$this->api->setAccount($this->id);
 		
