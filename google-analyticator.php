@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.3.3
+ * Version: 6.3.4
  * Plugin URI: http://wordpress.org/extend/plugins/google-analyticator/
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin you need to authenticate with Google, then select your domain and you're set.
  * Author: Video User Manuals
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.3.3');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.3.4');
 
 define('GOOGLE_ANALYTICATOR_CLIENTID', '1007949979410.apps.googleusercontent.com');
 define('GOOGLE_ANALYTICATOR_CLIENTSECRET', 'q06U41XDXtzaXD14E-KO1hti'); //don't worry - this don't need to be secret in our case
@@ -75,12 +75,14 @@ add_option('ga_defaults', 'yes' );
 add_option('ga_google_token', '', '');
 
 
+ $useAuth = ( get_option( 'ga_google_token' ) == '' ? false : true );
+
 
 # Check if we have a version of WordPress greater than 2.8
 if ( function_exists('register_widget') ) {
 
-	# Check if widgets are enabled
-	if ( get_option(key_ga_widgets) == 'enabled' ) {
+	# Check if widgets are enabled and the auth has been set!
+	if ( get_option(key_ga_widgets) == 'enabled'  && $useAuth ) {
 
 		# Include Google Analytics Stats widget
 		require_once('google-analytics-stats-widget.php');
@@ -145,7 +147,7 @@ function ga_pre_load()
 
     if( get_option('ga_defaults') == 'yes' ):
 
-        wp_redirect( get_bloginfo('url') . '/wp-admin/options-general.php?page=ga_activate');
+        wp_redirect( admin_url('options-general.php?page=ga_activate') );
         exit;
 
     endif;
@@ -183,6 +185,8 @@ $url = http_build_query( array(
 
         <h2>Activate Google Analyticator</h2>
 
+            <p><strong>Google Authentication Code </strong> </p>
+
         <p>You need to sign in to Google and grant this plugin access to your Google Analytics account</p>
 
         <p>
@@ -194,16 +198,27 @@ $url = http_build_query( array(
 
         <div  id="key">
 
-            <p><strong>Google Authentication Code </strong> </p>
-
             <p>Enter your Google Authentication Code in this box. This code will be used to get an Authentication Token so you can access your website stats.</p>
             <form method="post" action="<?php echo admin_url('options-general.php?page=google-analyticator.php');?>">
                 <?php wp_nonce_field('google-analyticator-update_settings'); ?>
-                <input type="text" name="key_ga_google_token" value="" />
+                <input type="text" name="key_ga_google_token" value="" style="width:450px;"/>
                 <input type="submit"  value="Save &amp; Continue" />
             </form>
         </div>
 
+		<br /><br /><br />
+		<hr />
+		<br />
+
+            <p><strong>I Don't Want To Authenticate Through Google </strong> </p>
+            
+            <p>If you don't want to authenticate through Google and only use the tracking capability of the plugin (<strong><u>not the dashboard functionality</u></strong>), you can do this by clicking the button below. </p>
+            <p>You will be asked on the next page to manually enter your Google Analytics UID.</p>
+            <form method="post" action="<?php echo admin_url('options-general.php?page=google-analyticator.php');?>">
+            <input type="hidden" name="key_ga_google_token" value="" />
+            <?php wp_nonce_field('google-analyticator-update_settings'); ?>
+            <input type="submit"  value="Continue Without Authentication" />
+            </form>
 
 
     </div>
@@ -216,7 +231,7 @@ function ga_filter_plugin_actions($links) {
 	$new_links = array();
 
 	$new_links[] = '<a href="' . admin_url('options-general.php?page=google-analyticator.php').'">' . __('Settings', 'google-analyticator') . '</a>';
-        $new_links[] = '<a href="' . admin_url('options-general.php?page=google-analyticator.php">') . __('Reset', 'google-analyticator') . '</a>';
+        $new_links[] = '<a href="' . admin_url('options-general.php?page=ga_reset">') . __('Reset', 'google-analyticator') . '</a>';
 
 	return array_merge($new_links, $links);
 }
@@ -243,6 +258,7 @@ function ga_do_reset()
     delete_option('ga_defaults');
     delete_option('ga_google_token');
     delete_option('ga_google_authtoken');
+    delete_option('ga_profileid');
 
 
 
@@ -360,6 +376,11 @@ function ga_options_page() {
 		echo "<div class='updated fade'><p><strong>" . __('Google Analyticator settings saved.', 'google-analyticator') . "</strong></p></div>";
 	}
 
+
+        // Are we using the auth system?
+        $useAuth = ( get_option( 'ga_google_token' ) == '' ? false : true );
+
+
 	// Output the options page
 	?>
 
@@ -420,22 +441,30 @@ function ga_options_page() {
 					<td>
                                             <?php
 
-                                            $uids = ga_get_analytics_accounts();
+                                            if( $useAuth ):
+                                                
+                                                $uids = ga_get_analytics_accounts();
 
-                                            echo "<select name='".key_ga_uid."'> ";
+                                                echo "<select name='".key_ga_uid."'> ";
 
-                                            foreach($uids as $id=>$domain):
+                                                foreach($uids as $id=>$domain):
 
-                                                echo '<option value="'.$id.'"';
-                                                // If set in DB.
-                                                if( get_option(key_ga_uid) == $id ) { echo ' selected="selected"'; }
-                                                // Else if the domain matches the current domain & nothing set in DB.
-                                                elseif( $_SERVER['HTTP_HOST'] == $domain && ( get_option(key_ga_uid) != '' ) ) { echo ' selected="selected"'; }
-                                                echo '>'.$domain.'</option>';
+                                                    echo '<option value="'.$id.'"';
+                                                    // If set in DB.
+                                                    if( get_option(key_ga_uid) == $id ) { echo ' selected="selected"'; }
+                                                    // Else if the domain matches the current domain & nothing set in DB.
+                                                    elseif( $_SERVER['HTTP_HOST'] == $domain && ( get_option(key_ga_uid) != '' ) ) { echo ' selected="selected"'; }
+                                                    echo '>'.$domain.'</option>';
 
-                                            endforeach;
-                                            echo '</select>';
+                                                endforeach;
+                                                
+                                                echo '</select>';
 
+                                            else:
+
+                                                echo '<input type="text" name="'.key_ga_uid.'" value="'. get_option( key_ga_uid ) .'" />';
+
+                                            endif;
                                             ?>
 					</td>
 				</tr>
@@ -681,9 +710,14 @@ function ga_options_page() {
 				<tr>
                                     <td colspan="2">
                                         <h3>Admin Dashboard Widgets</h3>
+                                        <?php if(!$useAuth): ?>
+                                        <div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
+                                            <?php _e('You have not authenticated with Google - you cannot use dashboard widgets! Reset the plugin to authenticate..', 'google-analyticator'); ?>
+                                        </div>
+                                        <?php endif;?>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr<?php if(!$useAuth){echo ' style="display:none"';}?>>
 					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_widgets; ?>"><?php _e('Include widgets', 'google-analyticator'); ?>:</label>
 					</th>
@@ -706,7 +740,7 @@ function ga_options_page() {
 						<p  class="setting-description"><?php _e('Disabling this option will completely remove the Dashboard Summary widget and the theme Stats widget. Use this option if you would prefer to not see the widgets.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
-                                <tr>
+                                <tr<?php if(!$useAuth){echo ' style="display:none"';}?>>
 					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_dashboard_role ?>"><?php _e('User roles that can see the dashboard widget', 'google-analyticator'); ?>:</label>
 					</th>
@@ -912,6 +946,7 @@ function add_google_analytics()
 <script type="text/javascript">
 	var _gaq = _gaq || [];
 	_gaq.push(['_setAccount', '<?php echo $uid; ?>']);
+        _gaq.push(['_addDevId', 'i9k95']); // Google Analyticator App ID with Google 
 <?php
 
 				# Add any tracking code before the trackPageview
