@@ -1,9 +1,9 @@
 === Google Analyticator ===
-Contributors: VideoUserManuals, cavemonkey50
+Contributors: VideoUserManuals
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 3.2
-Tested up to: 3.4.2
-Stable tag: 6.3.3
+Tested up to: 3.5
+Stable tag: 6.4
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
@@ -59,21 +59,35 @@ For any support issues, please use the official WordPress support forums.
 
 == Changelog ==
 
+= 6.4 =
+* Added better caching of dashboard widget.
+* Added better error handling with Google API calls. Prevents breaking widget section if an error is found. 
+* Updated Google API files to latest version (0.6.0)
+* Added filter to prevent IDs being passed to google with 'ga:' appended twice (legacy user bug)
+* Removed SiteSpeed option - done automatically with Google Analytics now.
+* Changed some config options with Google API to try help any prev users with re-auth issues. 
+
+= 6.3.4 =
+* Missing admin_url() causing issues with sub-directory installs.
+* Legacy code removed causing API errors with old ga_profileid variable conflicting.
+* Added Google App ID To tracking ID as supplied by Google Analytics team. This is just for Google's own reporting. We do not get access to any of your data.
+* Added support for users who wont want to authenticate with Google, but just use tracking code
+
 = 6.3.3 =
-Using the admin_url() function for internal links. Should help people with WP installed in a sub directory.
-Added all vars to reset function to delete / deauthorize from Google. 
+* Using the admin_url() function for internal links. Should help people with WP installed in a sub directory.
+* Added all vars to reset function to delete / deauthorize from Google.
 
 = 6.3.2 =
-Based on user issues. Improved error handling from Google APIs (some more to go)
-Removed Javascript box on activation due to user issues 
-Protected URITemplateParser class from being re-declared 
-Added Reset option on plugin screen to allow re-authentication 
+* Based on user issues. Improved error handling from Google APIs (some more to go)
+* Removed Javascript box on activation due to user issues
+* Protected URITemplateParser class from being re-declared
+* Added Reset option on plugin screen to allow re-authentication
 
 = 6.3.1 =
-Small bug on upgrades patched 
+* Small bug on upgrades patched
 
 = 6.3 =
-Updated to authenticate with the new Google API
+* Updated to authenticate with the new Google API
 
 = 6.2 =
 * Adds a new option for site speed tracking (enabled by default).
