@@ -27,10 +27,8 @@ class GoogleAnalyticsSummary
             $this,
             'addTopJs'
         ));
-        add_action('wp_ajax_ga_stats_widget', array(
-            $this,
-            'ajaxWidget'
-        ));
+        
+        add_action( 'wp_ajax_ga_stats_widget', array( $this, 'ajaxWidget' ), -1000000 );
     }
     
     /**
@@ -120,63 +118,79 @@ class GoogleAnalyticsSummary
     {
         # Check the ajax widget
         check_ajax_referer('google-analyticator-statsWidget_get');
+        $doing_transient = false; 
         
-        # Attempt to login and get the current account
-        $account = $this->getAnalyticsAccount();
-        
-        $this->id = $account;
-        
-        $this->api->setAccount($this->id);
-        
-        # Check that we can display the widget before continuing
-        if ($account == false || $this->id == false) {
-            # Output error message
-            echo '<p style="margin: 0;">' . __('No Analytics account selected. Double check you are authenticated with Google on Google Analyticator\'s settings page and make sure an account is selected.', 'google-analyticator') . '</p>';
+        # If WP_DEBUG is true,.
+        if ( ( defined('WP_DEBUG') && WP_DEBUG ) || ( false === ( $ga_output = get_transient( 'ga_admin_dashboard_'. GOOGLE_ANALYTICATOR_VERSION ) ) ) ) {
             
-            # Add Javascript variable to prevent breaking the Javascript
-            echo '<script type="text/javascript">var ga_visits = [];</script>';
+            ob_start();
             
-            die();
+            # Attempt to login and get the current account
+            $account = $this->getAnalyticsAccount();
+
+            $this->id = $account;
+
+            $this->api->setAccount($this->id);
+
+            # Check that we can display the widget before continuing
+            if ($account == false || $this->id == false) {
+                # Output error message
+                echo '<p style="margin: 0;">' . __('No Analytics account selected. Double check you are authenticated with Google on Google Analyticator\'s settings page and make sure an account is selected.', 'google-analyticator') . '</p>';
+                # Add Javascript variable to prevent breaking the Javascript
+                echo '<script type="text/javascript">var ga_visits = [];</script>';
+                die;
+            }
+            
+            # Add the header information for the visits graph
+            echo '<p class="ga_visits_title" style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; margin-top: 0px; color: #777; font-size: 13px;">' . __('Visits Over the Past 30 Days', 'google-analyticator') . '</p>';
+
+            # Add the sparkline for the past 30 days
+            $this->getVisitsGraph();
+
+            # Add the summary header
+            echo '<p style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; color: #777; font-size: 13px;">' . __('Site Usage', 'google-analyticator') . '</p>';
+
+            # Add the visitor summary
+            $this->getSiteUsage();
+
+            # Add the top 5 posts header
+            echo '<p style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; color: #777; font-size: 13px;">' . __('Top Pages', 'google-analyticator') . '</p>';
+
+            # Add the top 5 posts
+            $this->getTopPages();
+
+            # Add the tab information
+            echo '<table width="100%"><tr><td width="50%" valign="top">';
+
+            # Add the top 5 referrers header
+            echo '<p style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; color: #777; font-size: 13px;">' . __('Top Referrers', 'google-analyticator') . '</p>';
+
+            # Add the referrer information
+            $this->getTopReferrers();
+
+            # Add the second column
+            echo '</td><td valign="top">';
+
+            # Add the top 5 search header
+            echo '<p style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; color: #777; font-size: 13px;">' . __('Top Searches', 'google-analyticator') . '</p>';
+
+            # Add the search information
+            $this->getTopSearches();
+
+            # Close the table
+            echo '</td></tr></table>';
+
+            # Grab the above outputs and cache it!
+            $ga_output = ob_get_flush();
+
+            // Cache the admin dashboard for 6 hours at a time. 
+            set_transient( 'ga_admin_dashboard_'. GOOGLE_ANALYTICATOR_VERSION , $ga_output, 60*60*6 );
+            $doing_transient = true;
+
         }
-        
-        # Add the header information for the visits graph
-        echo '<p class="ga_visits_title" style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; margin-top: 0px; color: #777; font-size: 13px;">' . __('Visits Over the Past 30 Days', 'google-analyticator') . '</p>';
-        
-        # Add the sparkline for the past 30 days
-        $this->getVisitsGraph();
-        
-        # Add the summary header
-        echo '<p style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; color: #777; font-size: 13px;">' . __('Site Usage', 'google-analyticator') . '</p>';
-        
-        # Add the visitor summary
-        $this->getSiteUsage();
-        
-        # Add the top 5 posts header
-        echo '<p style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; color: #777; font-size: 13px;">' . __('Top Pages', 'google-analyticator') . '</p>';
-        
-        # Add the top 5 posts
-        $this->getTopPages();
-        
-        # Add the tab information
-        echo '<table width="100%"><tr><td width="50%" valign="top">';
-        
-        # Add the top 5 referrers header
-        echo '<p style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; color: #777; font-size: 13px;">' . __('Top Referrers', 'google-analyticator') . '</p>';
-        
-        # Add the referrer information
-        $this->getTopReferrers();
-        
-        # Add the second column
-        echo '</td><td valign="top">';
-        
-        # Add the top 5 search header
-        echo '<p style="font-style: italic; font-family: Georgia, \'Times New Roman\', \'Bitstream Charter\', Times, serif; color: #777; font-size: 13px;">' . __('Top Searches', 'google-analyticator') . '</p>';
-        
-        # Add the search information
-        $this->getTopSearches();
-        
-        # Close the table
-        echo '</td></tr></table>';
+         
+        if( $doing_transient == false )
+            echo $ga_output;
         
         die();
     }
@@ -227,59 +241,54 @@ class GoogleAnalyticsSummary
      **/
     function getVisitsGraph()
     {
-        if (false === ($output = get_transient('ga_admin_stats_widget')) || ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) {
-            # Get the metrics needed to build the visits graph
-            $before    = date('Y-m-d', strtotime('-31 days'));
-            $yesterday = date('Y-m-d', strtotime('-1 day'));
-            
-            try {
-                $stats = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:date', 'ga:date');
-            }
-            catch (Exception $e) {
-                print 'GA Summary Widget - there was a service error ' . $e->getCode() . ':' . $e->getMessage();
-            }
-            
-            # Create a list of the data points for graphing
-            $data = '';
-            $max  = 0;
-            
-            $rows = $stats->getRows();
-            
-            # Check the size of the stats array
-            if (!isset($rows) || !is_array($rows) || count($rows) <= 0) {
-                $data = '0,0';
-            } else {
-                foreach ($rows AS $stat) {
-                    # Verify the number is numeric
-                    if (is_numeric($stat[1]))
-                        $data .= $stat[1] . ',';
-                    else
-                        $data .= '0,';
-                    
-                    # Update the max value if greater
-                    if ($max < $stat[1])
-                        $max = $stat[1];
-                    
-                }
-                
-                $yesterday_count = $rows[count($rows) - 1][1];
-                
-                # Shorten the string to remove the last comma
-                $data = substr($data, 0, -1);
-            }
-            
-            # Add a fake stat if need be
-            if (!isset($stat[1]))
-                $stat[1] = 0;
-            
-            # Output the graph
-            $output = '<script type="text/javascript">var ga_visits = [' . $data . '];</script>';
-            $output .= '<span class="ga_visits" title="' . sprintf(__('The most visits on a single day was %d. Yesterday there were %d visits.', 'google-analyticator'), $max, $yesterday_count) . '"></span>';
-            
-            # Save output for 12 hours. 
-            set_transient('ga_admin_stats_widget', $output, 60 * 60 * 12);
+        # Get the metrics needed to build the visits graph
+        $before    = date('Y-m-d', strtotime('-31 days'));
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+
+        try {
+            $stats = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:date', 'ga:date');
         }
-        
+        catch (Exception $e) {
+            print 'GA Summary Widget - there was a service error ' . $e->getCode() . ':' . $e->getMessage();
+        }
+
+        # Create a list of the data points for graphing
+        $data = '';
+        $max  = 0;
+
+        $rows = $stats->getRows();
+
+        # Check the size of the stats array
+        if (!isset($rows) || !is_array($rows) || count($rows) <= 0) {
+            $data = '0,0';
+        } else {
+            foreach ($rows AS $stat) {
+                # Verify the number is numeric
+                if (is_numeric($stat[1]))
+                    $data .= $stat[1] . ',';
+                else
+                    $data .= '0,';
+
+                # Update the max value if greater
+                if ($max < $stat[1])
+                    $max = $stat[1];
+
+            }
+
+            $yesterday_count = $rows[count($rows) - 1][1];
+
+            # Shorten the string to remove the last comma
+            $data = substr($data, 0, -1);
+        }
+
+        # Add a fake stat if need be
+        if (!isset($stat[1]))
+            $stat[1] = 0;
+
+        # Output the graph
+        $output = '<script type="text/javascript">var ga_visits = [' . $data . '];</script>';
+        $output .= '<span class="ga_visits" title="' . sprintf(__('The most visits on a single day was %d. Yesterday there were %d visits.', 'google-analyticator'), $max, $yesterday_count) . '"></span>';
+            
         echo $output;
     }
     
@@ -288,124 +297,51 @@ class GoogleAnalyticsSummary
      **/
     function getSiteUsage()
     {
-        # Get the value from the database
-        $cached  = maybe_unserialize(get_option('google_stats_siteUsage_' . $this->id));
-        $updated = false;
-        
-        # Check if the call has been made before
-        if (is_array($cached)) {
-            # Check if the last time called was within two hours, if so, mark to not retrieve and grab the stats array
-            if ($cached['lastcalled'] > (time() - 7200)) {
-                $updated = true;
-                $stats   = $cached['stats'];
-            }
-            
-        }
-        
-        # If the stats need to be updated
-        if (!$updated) {
-            # Get the metrics needed to build the usage table
-            $before    = date('Y-m-d', strtotime('-31 days'));
-            $yesterday = date('Y-m-d', strtotime('-1 day'));
-            $stats     = $this->api->getMetrics('ga:visits,ga:bounces,ga:entrances,ga:pageviews,ga:timeOnSite,ga:newVisits', $before, $yesterday);
-            
-            # Store the serialized stats in the database
-            update_option('google_stats_siteUsage_' . $this->id, array(
-                'stats' => $stats,
-                'lastcalled' => time()
-            ));
-            
-        }
-        
+        # Get the metrics needed to build the usage table
+        $before    = date('Y-m-d', strtotime('-31 days'));
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $stats     = $this->api->getMetrics('ga:visits,ga:bounces,ga:entrances,ga:pageviews,ga:timeOnSite,ga:newVisits', $before, $yesterday);
+
         # Create the site usage table
-        if (isset($stats->totalsForAllResults)) {
-?>
-		<table width="100%">
-			<tr>
-				<td width=""><strong><?php
-            echo number_format($stats->totalsForAllResults['ga:visits']);
-?></strong></td>
-				<td width=""><?php
-            _e('Visits', 'google-analyticator');
-?></td>
-				<?php
-            if ($stats->totalsForAllResults['ga:entrances'] <= 0) {
-?>
-					<td width="20%"><strong>0.00%</strong></td>
-				<?php
-            } else {
-?>
-					<td width="20%"><strong><?php
-                echo number_format(round(($stats->totalsForAllResults['ga:bounces'] / $stats->totalsForAllResults['ga:entrances']) * 100, 2), 2);
-?>%</strong></td>
-				<?php
-            }
-?>
-				<td width="30%"><?php
-            _e('Bounce Rate', 'google-analyticator');
-?></td>
-			</tr>
-			<tr>
-				<td><strong><?php
-            echo number_format($stats->totalsForAllResults['ga:pageviews']);
-?></strong></td>
-				<td><?php
-            _e('Pageviews', 'google-analyticator');
-?></td>
-				<?php
-            if ($stats->totalsForAllResults['ga:visits'] <= 0) {
-?>
-					<td><strong>00:00:00</strong></td>
-				<?php
-            } else {
-?>
-					<td><strong><?php
-                echo $this->sec2Time($stats->totalsForAllResults['ga:timeOnSite'] / $stats->totalsForAllResults['ga:visits']);
-?></strong></td>
-				<?php
-            }
-?>
-				<td><?php
-            _e('Avg. Time on Site', 'google-analyticator');
-?></td>
-			</tr>
-			<tr>
-				<?php
-            if ($stats->totalsForAllResults['ga:visits'] <= 0) {
-?>
-					<td><strong>0.00</strong></td>
-				<?php
-            } else {
-?>
-					<td><strong><?php
-                echo number_format(round($stats->totalsForAllResults['ga:pageviews'] / $stats->totalsForAllResults['ga:visits'], 2), 2);
-?></strong></td>
-				<?php
-            }
-?>
-				<td><?php
-            _e('Pages/Visit', 'google-analyticator');
-?></td>
-				<?php
-            if ($stats->totalsForAllResults['ga:visits'] <= 0) {
-?>
-					<td><strong>0.00%</strong></td>
-				<?php
-            } else {
-?>
-					<td><strong><?php
-                echo number_format(round(($stats->totalsForAllResults['ga:newVisits'] / $stats->totalsForAllResults['ga:visits']) * 100, 2), 2);
-?>%</strong></td>
-				<?php
-            }
-?>
-				<td><?php
-            _e('% New Visits', 'google-analyticator');
-?></td>
-			</tr>
-		</table>
-		<?php
-        }
+        if (isset($stats->totalsForAllResults)) { ?>
+            <table width="100%">
+                    <tr>
+                        <td width=""><strong><?php echo number_format($stats->totalsForAllResults['ga:visits']); ?></strong></td>
+                        <td width=""><?php _e('Visits', 'google-analyticator'); ?></td>
+                        <?php if ($stats->totalsForAllResults['ga:entrances'] <= 0) { ?>
+                            <td width="20%"><strong>0.00%</strong></td>
+                        <?php } else { ?>
+                            <td width="20%"><strong><?php echo number_format(round(($stats->totalsForAllResults['ga:bounces'] / $stats->totalsForAllResults['ga:entrances']) * 100, 2), 2); ?>%</strong></td>
+                        <?php } ?>
+                        <td width="30%"><?php _e('Bounce Rate', 'google-analyticator'); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong><?php echo number_format($stats->totalsForAllResults['ga:pageviews']); ?></strong></td>
+                        <td><?php _e('Pageviews', 'google-analyticator'); ?></td>
+                        <?php if ($stats->totalsForAllResults['ga:visits'] <= 0) { ?>
+                            <td><strong>00:00:00</strong></td>
+                        <?php } else { ?>
+                            <td><strong><?php echo $this->sec2Time($stats->totalsForAllResults['ga:timeOnSite'] / $stats->totalsForAllResults['ga:visits']); ?></strong></td>
+                        <?php } ?>
+                        <td><?php _e('Avg. Time on Site', 'google-analyticator'); ?></td>
+                    </tr>
+                    <tr>
+                        <?php if ($stats->totalsForAllResults['ga:visits'] <= 0) { ?>
+                            <td><strong>0.00</strong></td>
+                        <?php } else { ?>
+                            <td><strong><?php echo number_format(round($stats->totalsForAllResults['ga:pageviews'] / $stats->totalsForAllResults['ga:visits'], 2), 2); ?></strong></td>
+                        <?php } ?>
+                            <td><?php _e('Pages/Visit', 'google-analyticator'); ?></td>
+                        <?php if ($stats->totalsForAllResults['ga:visits'] <= 0) { ?>
+                            <td><strong>0.00%</strong></td>
+                        <?php } else { ?>
+                            <td><strong><?php echo number_format(round(($stats->totalsForAllResults['ga:newVisits'] / $stats->totalsForAllResults['ga:visits']) * 100, 2), 2); ?>%</strong></td>
+                            <td><?php _e('% New Visits', 'google-analyticator'); ?></td>
+                        <?php } ?>
+                    </tr>
+            </table>
+    <?php }
+            
     }
     
     /**
@@ -413,48 +349,23 @@ class GoogleAnalyticsSummary
      **/
     function getTopPages()
     {
-        # Get the value from the database
-        $cached  = maybe_unserialize(get_option('google_stats_topPages_' . $this->id));
-        $updated = false;
-        
-        # Check if the call has been made before
-        if (is_array($cached)) {
-            # Check if the last time called was within two hours, if so, mark to not retrieve and grab the stats array
-            if ($cached['lastcalled'] > (time() - 7200)) {
-                $updated = true;
-                $stats   = $cached['stats'];
-            }
-            
-        }
-        
-        # If the stats need to be updated
-        if (!$updated) {
-            # Get the metrics needed to build the top pages
-            $before    = date('Y-m-d', strtotime('-31 days'));
-            $yesterday = date('Y-m-d', strtotime('-1 day'));
-            $stats     = $this->api->getMetrics('ga:pageviews', $before, $yesterday, 'ga:pageTitle,ga:pagePath', '-ga:pageviews', 'ga:pagePath!=/', 10); //'ga:pagePath!%3D%2F'
-            
-            # Store the serialized stats in the database
-            update_option('google_stats_topPages_' . $this->id, array(
-                'stats' => $stats,
-                'lastcalled' => time()
-            ));
-            
-        }
-        
+        # Get the metrics needed to build the top pages
+        $before    = date('Y-m-d', strtotime('-31 days'));
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $stats     = $this->api->getMetrics('ga:pageviews', $before, $yesterday, 'ga:pageTitle,ga:pagePath', '-ga:pageviews', 'ga:pagePath!=/', 10); //'ga:pagePath!%3D%2F'
         $rows = $stats->getRows();
-        
+
         # Check the size of the stats array
         if (count($rows) <= 0 || !is_array($rows)) {
-            echo '<p>' . __('There is no data for view.', 'google-analyticator') . '</p>';
+            $return = '<p>' . __('There is no data for view.', 'google-analyticator') . '</p>';
         } else {
             # Build the top pages list
-            echo '<ol>';
-            
+            $return = '<ol>';
+
             # Set variables needed to correct (not set) bug
             $new_stats    = array();
             $notset_stats = array();
-            
+
             # Loop through each stat and create a new array
             foreach ($rows AS $stat) {
                 # If the stat is not set
@@ -466,7 +377,7 @@ class GoogleAnalyticsSummary
                     $new_stats[$stat[1]] = $stat;
                 }
             }
-            
+
             # Loop through all the (not set) stats and attempt to add them to their correct stat
             foreach ($notset_stats AS $stat) {
                 # If the stat has a "partner"
@@ -477,34 +388,35 @@ class GoogleAnalyticsSummary
                     # Stat goes to the ether since we couldn't find a partner (if anyone reads this and has a suggestion to improve, let me know)
                 }
             }
-            
+
             # Renew new_stats back to stats
             $stats = $new_stats;
-            
+
             # Sort the stats array, since adding the (not set) items may have changed the order
             usort($stats, array(
                 $this,
                 'statSort'
             ));
-            
+
             # Since we can no longer rely on the API as a limiter, we need to keep track of this ourselves
             $stat_count = 0;
-            
+
             # Loop through each stat for display
             foreach ($stats AS $stat) {
-                echo '<li><a href="' . esc_url($stat[1]) . '">' . esc_html($stat[0]) . '</a> - ' . number_format($stat[2]) . ' ' . __('Views', 'google-analyticator') . '</li>';
-                
+                $return .= '<li><a href="' . esc_url($stat[1]) . '">' . esc_html($stat[0]) . '</a> - ' . number_format($stat[2]) . ' ' . __('Views', 'google-analyticator') . '</li>';
+
                 # Increase the stat counter
                 $stat_count++;
-                
+
                 # Stop at 5
                 if ($stat_count >= 5)
                     break;
             }
-            
+
             # Finish the list
-            echo '</ol>';
+            $return .= '</ol>';
         }
+        echo $return; 
     }
     
     /**
@@ -512,49 +424,24 @@ class GoogleAnalyticsSummary
      **/
     function getTopReferrers()
     {
-        # Get the value from the database
-        $cached  = maybe_unserialize(get_option('google_stats_topReferrers_' . $this->id));
-        $updated = false;
-        
-        # Check if the call has been made before
-        if (is_array($cached)) {
-            # Check if the last time called was within two hours, if so, mark to not retrieve and grab the stats array
-            if ($cached['lastcalled'] > (time() - 7200)) {
-                $updated = true;
-                $stats   = $cached['stats'];
-            }
-            
-        }
-        
-        # If the stats need to be updated
-        if (!$updated) {
-            # Get the metrics needed to build the top referrers
-            $before    = date('Y-m-d', strtotime('-31 days'));
-            $yesterday = date('Y-m-d', strtotime('-1 day'));
-            $stats     = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:source,ga:medium', '-ga:visits', 'ga:medium==referral', '5');
-            
-            # Store the serialized stats in the database
-            update_option('google_stats_topReferrers_' . $this->id, array(
-                'stats' => $stats,
-                'lastcalled' => time()
-            ));
-            
-        }
-        
+        # Get the metrics needed to build the top referrers
+        $before    = date('Y-m-d', strtotime('-31 days'));
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $stats     = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:source,ga:medium', '-ga:visits', 'ga:medium==referral', '5');
         $rows = $stats->getRows();
-        
+
         # Check the size of the stats array
         if (count($rows) <= 0 || !is_array($rows)) {
             echo '<p>' . __('There is no data for view.', 'google-analyticator') . '</p>';
         } else {
             # Build the top pages list
             echo '<ol>';
-            
+
             # Loop through each stat
             foreach ($rows AS $stat) {
                 echo '<li><strong>' . esc_html($stat[0]) . '</strong> - ' . number_format($stat[2]) . ' ' . __('Visits', 'google-analyticator') . '</li>';
             }
-            
+
             # Finish the list
             echo '</ol>';
         }
@@ -565,49 +452,22 @@ class GoogleAnalyticsSummary
      **/
     function getTopSearches()
     {
-        # Get the value from the database
-        $cached  = maybe_unserialize(get_option('google_stats_topSearches_' . $this->id));
-        $updated = false;
-        
-        # Check if the call has been made before
-        if (is_array($cached)) {
-            # Check if the last time called was within two hours, if so, mark to not retrieve and grab the stats array
-            if ($cached['lastcalled'] > (time() - 7200)) {
-                $updated = true;
-                $stats   = $cached['stats'];
-            }
-            
-        }
-        
-        # If the stats need to be updated
-        if (!$updated) {
-            # Get the metrics needed to build the top searches
-            $before    = date('Y-m-d', strtotime('-31 days'));
-            $yesterday = date('Y-m-d', strtotime('-1 day'));
-            $stats     = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:keyword', '-ga:visits', 'ga:keyword!=(not set)', '5'); //'ga:keyword!=(not_set)'
-            
-            # Store the serialized stats in the database
-            update_option('google_stats_topSearches_' . $this->id, array(
-                'stats' => $stats,
-                'lastcalled' => time()
-            ));
-            
-        }
-        
-        $rows = $stats->getRows();
-        
+        # Get the metrics needed to build the top searches
+        $before    = date('Y-m-d', strtotime('-31 days'));
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $stats     = $this->api->getMetrics('ga:visits', $before, $yesterday, 'ga:keyword', '-ga:visits', 'ga:keyword!=(not set)', '5'); //'ga:keyword!=(not_set)'
+        $rows      = $stats->getRows();
+
         # Check the size of the stats array
         if (count($rows) <= 0 || !is_array($rows)) {
             echo '<p>' . __('There is no data for view.', 'google-analyticator') . '</p>';
         } else {
             # Build the top pages list
             echo '<ol>';
-            
             # Loop through each stat
             foreach ($rows AS $stat) {
                 echo '<li><strong>' . esc_html($stat[0]) . '</strong> - ' . number_format($stat[1]) . ' ' . __('Visits', 'google-analyticator') . '</li>';
             }
-            
             # Finish the list
             echo '</ol>';
         }
@@ -666,8 +526,4 @@ class GoogleAnalyticsSummary
             return false;
         }
     }
-    
-    
-    
-    
 } // END class 
