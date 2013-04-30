@@ -121,7 +121,7 @@ class GoogleAnalyticsSummary
 						
 				function getAnalytics(){
                                 
-                                        console.log( 'Start getAnalytics();' );
+//                                        console.log( 'Start getAnalytics();' );
 					// Grab the widget data
 					jQuery.ajax({
 						type: 'post',
@@ -140,7 +140,7 @@ class GoogleAnalyticsSummary
 							// Hide the loading message
 							jQuery('#google-analytics-summary .inside small').remove();
 							
-                                                        console.log(html);
+//                                                        console.log(html);
                                                         
 							// Place the widget data in the area
 							jQuery('#google-analytics-summary .inside .target').html(html);
