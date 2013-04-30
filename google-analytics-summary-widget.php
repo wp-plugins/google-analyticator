@@ -224,7 +224,6 @@ class GoogleAnalyticsSummary
 					<option selected="selected" value="30">Past 30 days</option>
 					<option value="60">Past 60 days</option>
 					<option value="1">Yesterday</option>
-					<option value="0">Today</option>
 				</select></p>';
         echo '<div class="flotcontainer" style="height: 230px;width:100%;"> </div>';
         echo '<div class="target" style="display: none;"></div>';
