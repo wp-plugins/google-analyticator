@@ -2,8 +2,8 @@
 Contributors: VideoUserManuals
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 3.2
-Tested up to: 3.5
-Stable tag: 6.4.3
+Tested up to: 3.5.1
+Stable tag: 6.4.4
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
@@ -58,6 +58,14 @@ For any support issues, please use the official WordPress support forums.
 6. An example of a front-end widget configuration.
 
 == Changelog ==
+
+= 6.4.4 =
+* Added point tooltip. 
+* removed jquery.sparkline.min.js
+* added jquery.flot.min.js
+* added 30 days, 60 days and yesterday selection
+* removed line google-analytics-summary-widget.php line 222
+* Use un-minified JS if script debug on. Props simonwheatley
 
 = 6.4.3 =
 * Fixes over strict validation on one field where not required causing PHP Errors. Thanks for head start jeremyclarke. 
