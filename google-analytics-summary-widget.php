@@ -28,9 +28,9 @@ class GoogleAnalyticsSummary
             'addTopJs'
         ));
         
-		$this->qa_selecteddate = isset( $_REQUEST['qa_selecteddate'] ) ? wp_filter_kses( $_REQUEST['qa_selecteddate'] ) : '30';
+        $this->qa_selecteddate = isset( $_REQUEST['qa_selecteddate'] ) ? wp_filter_kses( $_REQUEST['qa_selecteddate'] ) : '31';
         $this->date_before    = date('Y-m-d', strtotime( '-'.$this->qa_selecteddate.' days', strtotime( current_time( 'mysql' ) ) ) );
-        $this->date_yesterday = date('Y-m-d', strtotime( current_time( 'mysql' ) ) );
+        $this->date_yesterday = date('Y-m-d', strtotime( '-1 days', strtotime( current_time( 'mysql' ) ) ) );
 		
         add_action( 'wp_ajax_ga_stats_widget', array( $this, 'ajaxWidget' ) );
     }
