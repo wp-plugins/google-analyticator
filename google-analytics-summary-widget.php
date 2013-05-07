@@ -19,11 +19,11 @@ class GoogleAnalyticsSummary
             $this,
             'addDashboardWidget'
         ));
-        add_action('admin_print_scripts-index.php', array(
+        add_action('admin_footer', array(
             $this,
             'addJavascript'
         ));
-        add_action('admin_head-index.php', array(
+        add_action('admin_footer-index.php', array(
             $this,
             'addTopJs'
         ));
@@ -55,7 +55,7 @@ class GoogleAnalyticsSummary
     function addJavascript()
     {
         # Include the Sparklines graphing library
-        wp_enqueue_script('jquery-flot', plugins_url('/google-analyticator/jquery.flot.min.js'), array(
+        wp_enqueue_script('flot', plugins_url('/google-analyticator/jquery.flot.min.js'), array(
             'jquery'
         ), '1.5.1');
     }
@@ -77,7 +77,7 @@ class GoogleAnalyticsSummary
 						if (previousPoint != item.dataIndex) {
 							previousPoint = item.dataIndex;
 			
-							jQuery("#tooltip").remove();
+							jQuery("#vumtooltip").remove();
 							
 							var x = item.datapoint[0];
 							var y = item.datapoint[1];      
@@ -85,14 +85,14 @@ class GoogleAnalyticsSummary
 						}
 					}
 					else {
-						jQuery("#tooltip").remove();
+						jQuery("#vumtooltip").remove();
 						previousPoint = null;
 					}
 				});
 			};
 			
 			function showTooltip(x, y, contents) {
-				jQuery('<div id="tooltip">' + contents + '</div>').css({
+				jQuery('<div id="vumtooltip">' + contents + '</div>').css({
 					position: 'absolute',
 					display: 'none',
 					top: y + 5,
@@ -239,6 +239,8 @@ class GoogleAnalyticsSummary
 
         # If WP_DEBUG is true,.
 		
+        $doing_transient = false; 
+        
         if ( ( defined('WP_DEBUG') && WP_DEBUG ) || ( false === ( $ga_output = get_transient( 'ga_admin_dashboard_'. GOOGLE_ANALYTICATOR_VERSION  . $this->qa_selecteddate) ) ) ) {
             ob_start();
             # Attempt to login and get the current account
@@ -307,7 +309,7 @@ class GoogleAnalyticsSummary
 			$ga_output = get_transient( 'ga_admin_dashboard_'. GOOGLE_ANALYTICATOR_VERSION . $this->qa_selecteddate , $ga_output);	
 		}
          
-        if( ! defined('WP_DEBUG') || ( defined( 'WP_DEBUG' ) &&  WP_DEBUG === false ) )
+        if( ! $doing_transient )
             echo $ga_output;
         
         die();
