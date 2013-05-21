@@ -2,10 +2,10 @@
 /*
  * Plugin Name: Google Analyticator
  * Version: 6.4.4.3
- * Plugin URI: http://wordpress.org/extend/plugins/google-analyticator/
+ * Plugin URI: http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=readme-txt
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin you need to authenticate with Google, then select your domain and you're set.
- * Author: Video User Manuals
- * Author URI: http://www.videousermanuals.com
+ * Author: Video User Manuals Pty Ltd
+ * Author URI: http://www.videousermanuals.com/?utm_campaign=analyticator&utm_medium=plugin&utm_source=readme-txt
  * Text Domain: google-analyticator
  */
 
