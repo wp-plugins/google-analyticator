@@ -777,49 +777,104 @@ function ga_options_page() {
                 </form>
 
 
-<?php  if (!get_option('wpm_o_user_id')): ?>
-    <img src="<?php echo plugins_url('ga-plugin-advert.jpg', __FILE__ ); ?>" alt="Google Analytics Getting It Right" />
-    <form accept-charset="utf-8" action="https://app.getresponse.com/add_contact_webform.html" method="post" onsubmit="return quickValidate()" target="_blank">
-    <div style="display: none;">
-        <input type="hidden" name="webform_id" value="416798" />
-    </div>
-    <table style="text-align:center;margin-left: 20px;">
-    <tr>
-    <td><label class="previewLabel" for="awf_field-37978044"><strong>Name: </strong></label><input id="sub_name" type="text" name="name" class="text"  tabindex="500" value="" /></td>
-    <td><label class="previewLabel" for="awf_field-37978045"><strong>Email: </strong></label> <input class="text" id="sub_email" type="text" name="email" tabindex="501"  value="" /></td>
-    <td><span class="submit"><input name="submit" type="image" alt="submit" tabindex="502" src="<?php echo plugins_url('download-button.png', __FILE__); ?>" width="157" height="40" style="background: none; border: 0;" /></span></td>
-    </tr>
-    <tr>
-    <td colspan="3" style="padding-top: 20px;">
-    <a title="Privacy Policy" href="http://www.getresponse.com/permission-seal?lang=en" target="_blank"><img src="<?php echo plugins_url('privacy.png', __FILE__); ?>"  alt="" title="" /></a>
-    </td>
-    </tr>
-    </table>
-    </form>
-<?php endif;?>
+<table border="0" width="600">
+<tbody>
+<tr>
+<td>
+<h1 style="text-align: center;line-height: 30px;">FREE <span style="color: #ff0000;"><strong>GOOGLE ANALYTICS</strong></span> WEBINAR<br />June 11, 2013 – 7 PM ET/ 4 PM PT<br /><strong></h1>
+</td>
+</tr>
+<tr>
+<td>
+<h2 style="text-align: center;">“YES! I Want to Get More Leads And Sales from my Website!”</h2>
+<p style="text-align: center;">Enter your name and email for FREE ACCESS to this life-changing webinar!<br />
+<form action="https://www2.gotomeeting.com/en_US/island/webinar/registration.flow" method="post" target="_blank">
+<input type="hidden" name="Form" value="webinarRegistrationForm" />
+<input type="hidden" name="WebinarKey" value="376603273" />
+<table class="webinar-optin" style="margin: 10px auto 10px auto;">
+   <tr><th scope="row">First Name:</th><td><input type="text" name="Name_First" id="firstname" value="" size="15" /></td></tr>
+   <tr><th scope="row">Last Name:</th><td><input type="text" name="Name_Last" id="lastname" value="" size="15" /></td></tr>
+   <tr><th scope="row">Email:</th><td><input type="text" name="Email" id="email" value="" size="25" /></td></tr>
+</table>
+<div align="center"><input name="registration.submit.button" type="submit" value="Register Me for the Webinar"></div>
+</form><span style="display:none;"><!-- AWeber Web Form Generator 3.0 -->
 
-<script type="text/javascript">
-function quickValidate()
-{
-        if (! jQuery('#sub_name').val() )
-            {
-                alert('Your Name is required');
-                return false;
-            }
-        if(! jQuery('#sub_email').val() )
-            {
-                alert('Your Email is required');
-                return false;
-            }
+<form method="post" class="af-form-wrapper webinaroptin[2132]" action="http://www.aweber.com/scripts/addlead.pl" target="_blank">
 
-            return true;
+<div style="display: none;">
 
-}
-</script>
+<input type="hidden" name="meta_web_form_id" value="683784747">
 
-		</div>
-		</form>
+<input type="hidden" name="meta_split_id" value="">
 
+<input type="hidden" name="listname" value="gtw062013">
+
+<input type="hidden" name="redirect" value="http://www.aweber.com/thankyou-coi.htm?m=text" id="redirect_19ae5ba365d384e86c5c14228099b4f5">
+
+
+
+<input type="hidden" name="meta_adtracking" value="WebAnalytics_Webinar_-_Video_User_Manuals">
+
+<input type="hidden" name="meta_message" value="1001">
+
+<input type="hidden" name="meta_required" value="name,email">
+
+
+
+<input type="hidden" name="meta_tooltip" value="">
+
+</div>
+
+<div id="af-form-683784747" class="af-form"><div id="af-body-683784747" class="af-body af-standards">
+
+<div class="af-element">
+
+<label class="previewLabel" for="awf_field-49589708">Name: </label>
+
+<div class="af-textWrap">
+
+<input id="awf_field-49589708" type="text" name="name" class="text firstname" value="" tabindex="500">
+
+</div>
+
+<div class="af-clear"></div></div>
+
+<div class="af-element">
+
+<label class="previewLabel" for="awf_field-49589709">Email: </label>
+
+<div class="af-textWrap"><input class="text email" id="awf_field-49589709" type="text" name="email" value="" tabindex="501">
+
+</div><div class="af-clear"></div>
+
+</div>
+
+<div class="af-element buttonContainer">
+
+<input name="submit" class="submit" type="submit" value="Submit" tabindex="502">
+
+<div class="af-clear"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</form>
+
+
+
+<!-- /AWeber Web Form Generator 3.0 --></span></p>
+</td>
+</tr>
+<tr>
+<td>
+<h3 style="text-align: center;">June 11, 2013 – 7 PM ET/ 4 PM PT</h3>
+</td>
+</tr>
+</tbody>
+</table>
 <?php
 }
 
