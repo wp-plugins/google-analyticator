@@ -798,7 +798,26 @@ function ga_options_page() {
     </tr>
     </table>
     </form>
+
+    <script type="text/javascript">
+	function quickValidate()
+	{
+	        if (! jQuery('#sub_name').val() )
+	            {
+	                alert('Your Name is required');
+	                return false;
+	            }
+	        if(! jQuery('#sub_email').val() )
+	            {
+	                alert('Your Email is required');
+	                return false;
+	            }
+
+	            return true;
+	}
+	</script>
 <?php endif;?>
+
 
 <?php
 }
