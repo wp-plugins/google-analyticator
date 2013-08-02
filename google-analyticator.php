@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.4.4.3
+ * Version: 6.4.5
  * Plugin URI: http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=readme-txt
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin you need to authenticate with Google, then select your domain and you're set.
  * Author: Video User Manuals Pty Ltd
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.4.4.3');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.4.5');
 
 define('GOOGLE_ANALYTICATOR_CLIENTID', '1007949979410.apps.googleusercontent.com');
 define('GOOGLE_ANALYTICATOR_CLIENTSECRET', 'q06U41XDXtzaXD14E-KO1hti'); //don't worry - this don't need to be secret in our case
@@ -25,6 +25,9 @@ define("key_ga_uid", "ga_uid", true);
 define("key_ga_status", "ga_status", true);
 define("key_ga_admin", "ga_admin_status", true);
 define("key_ga_admin_disable", "ga_admin_disable", true);
+define("key_ga_remarketing", 'ga_enable_remarketing', true );
+define("key_ga_track_login", "key_ga_track_login", true );
+define("key_ga_show_ad", "key_ga_show_ad", true );
 define("key_ga_admin_role", "ga_admin_role", true);
 define("key_ga_dashboard_role", "ga_dashboard_role", true);
 define("key_ga_adsense", "ga_adsense", true);
@@ -61,6 +64,7 @@ add_option(key_ga_admin, ga_admin_default, '');
 add_option(key_ga_admin_disable, ga_admin_disable_default, '');
 add_option(key_ga_admin_role, array('administrator'), '');
 add_option(key_ga_dashboard_role, array('administrator'), '');
+add_option(key_ga_show_ad, '1' );
 add_option(key_ga_adsense, ga_adsense_default, '');
 add_option(key_ga_extra, ga_extra_default, '');
 add_option(key_ga_extra_after, ga_extra_after_default, '');
@@ -107,7 +111,10 @@ function ga_admin_init() {
 
 # Add the core Google Analytics script, with a high priority to ensure last script for async tracking
 add_action('wp_head', 'add_google_analytics',99);
-add_action('login_head', 'add_google_analytics', 999999);
+
+// ONly track WP login if requested.
+if( get_option( key_ga_track_login ) )
+    add_action('login_head', 'add_google_analytics', 99);
 
 # Initialize outbound link tracking
 add_action('init', 'ga_outgoing_links');
@@ -370,6 +377,15 @@ function ga_options_page() {
 
                 // Update the widgets option
 		update_option(key_ga_annon, wp_filter_kses( $_POST[key_ga_annon] ) );
+                
+                // Update enable remarketing
+                update_option(key_ga_remarketing, wp_filter_kses( $_POST[key_ga_remarketing] ) );
+
+                // Update key_ga_hide_ad
+                update_option(key_ga_show_ad, wp_filter_kses( $_POST[key_ga_show_ad] ) );
+
+                // Update enable tracking login
+                update_option(key_ga_track_login, wp_filter_kses( $_POST[key_ga_track_login] ) );
 
                 
 		// Give an updated message
@@ -386,7 +402,7 @@ function ga_options_page() {
 
 		<div class="wrap">
 
-		<h2><?php _e('Google Analyticator Settings', 'google-analyticator'); ?></h2>
+		<h2><?php _e('Google Analyticator Settings', 'google-analyticator'); ?></h2>		
 		<form method="post" action="<?php echo admin_url('options-general.php?page=google-analyticator.php');?>">
 			<?php
 			# Add a nonce
@@ -403,6 +419,13 @@ function ga_options_page() {
 				<?php _e('Google Analytics integration is currently enabled, but you did not enter a UID. Tracking will not occur.', 'google-analyticator'); ?>
 				</div>
 			<?php } ?>
+
+			<div id="vumga-container" style="position:relative;">
+			<div id="vumga-sidebar" style="position: absolute; top: 0; right: 0; width: 250px; border: 1px solid #ccc; padding: 20px;">
+				<a href="http://www.videousermanuals.com/rd/ga-webinar/" target="_blank"><img src="<?php echo plugins_url('ga-plugin-advert-sidebar.png', __FILE__ ); ?>" alt="Learn More" title="Learn More" /></a>
+			</div>
+			
+			<div style="margin-right: 320px;">
 			<table class="form-table" cellspacing="2" cellpadding="5" width="100%">
 
                             <tr>
@@ -567,6 +590,56 @@ function ga_options_page() {
 						echo "</select>\n";
 						?>
 						<p  class="setting-description"><?php _e('Selecting the "Remove" option will physically remove the tracking code from logged in users. Selecting the "Use \'admin\' variable" option will assign a variable called \'admin\' to logged in users. This option will allow Google Analytics\' site overlay feature to work, but you will have to manually configure Google Analytics to exclude tracking from pageviews with the \'admin\' variable.', 'google-analyticator'); ?></p>
+					</td>
+				</tr>
+                                <tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label><?php _e('Enable remarketing', 'google-analyticator'); ?>:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_remarketing."' id='".key_ga_remarketing."'>\n";
+
+                                                echo "<option value='0'";
+						if(get_option(key_ga_remarketing) == '0' )
+							echo" selected='selected'";
+						echo ">" . __('No', 'google-analyticator') . "</option>\n";
+
+                                                
+						echo "<option value='1'";
+						if(get_option(key_ga_remarketing) == '1' )
+							echo " selected='selected'";
+						echo ">" . __('Yes', 'google-analyticator') . "</option>\n";
+
+						
+						echo "</select>\n";
+
+						?>
+						<p  class="setting-description"><?php _e( 'In order to use remarketing, <a href="https://support.google.com/analytics/answer/2611270" target="_blank">please make sure you complete this checklist from Google</a>', 'google-analyticator'); ?></p>
+					</td>
+				</tr>
+                                <tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label><?php _e('Track WordPress Login Page', 'google-analyticator'); ?>:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_track_login."' id='".key_ga_track_login."'>\n";
+
+                                                echo "<option value='1'";
+						if(get_option(key_ga_track_login) == '1' )
+							echo " selected='selected'";
+						echo ">" . __('Yes', 'google-analyticator') . "</option>\n";
+
+                                                echo "<option value='0'";
+						if(get_option(key_ga_track_login) == '0' )
+							echo" selected='selected'";
+						echo ">" . __('No', 'google-analyticator') . "</option>\n";
+
+						echo "</select>\n";
+
+						?>
+						<p  class="setting-description"><?php _e( 'This will track all access to wp-login.php', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
                                 <tr>
@@ -742,6 +815,32 @@ function ga_options_page() {
 						<p  class="setting-description"><?php _e('Disabling this option will completely remove the Dashboard Summary widget and the theme Stats widget. Use this option if you would prefer to not see the widgets.', 'google-analyticator'); ?></p>
 					</td>
 				</tr>
+                                
+                                <tr>
+					<th width="30%" valign="top" style="padding-top: 10px;">
+						<label for="<?php echo key_ga_widgets; ?>"><?php _e('Display Ad', 'google-analyticator'); ?>:</label>
+					</th>
+					<td>
+						<?php
+						echo "<select name='".key_ga_show_ad."' id='".key_ga_show_ad."'>\n";
+
+						echo "<option value='1'";
+						if(get_option(key_ga_show_ad) == '1')
+							echo " selected='selected'";
+						echo ">" . __('Yes', 'google-analyticator') . "</option>\n";
+
+						echo "<option value='0' ";
+						if(get_option(key_ga_show_ad) == '0')
+							echo" selected='selected'";
+						echo ">" . __('No', 'google-analyticator') . "</option>\n";
+
+						echo "</select>\n";
+						?>
+						<p  class="setting-description"><?php _e('You can disbale the ad on the admin dashboard.', 'google-analyticator'); ?></p>
+					</td>
+				</tr>
+                                 
+                                 
                                 <tr<?php if(!$useAuth){echo ' style="display:none"';}?>>
 					<th width="30%" valign="top" style="padding-top: 10px;">
 						<label for="<?php echo key_ga_dashboard_role ?>"><?php _e('User roles that can see the dashboard widget', 'google-analyticator'); ?>:</label>
@@ -775,49 +874,10 @@ function ga_options_page() {
                         <a href="<?php echo admin_url('/options-general.php?page=ga_reset'); ?>"><?php _e('Deauthorize &amp; Reset Google Analyticator.', 'google-analyticator'); ?></a>
 
                 </form>
+            </div>
 
-                 </form>
- 
- 
-<?php  if (!get_option('wpm_o_user_id')): ?>
-    <img src="<?php echo plugins_url('ga-plugin-advert.jpg', __FILE__ ); ?>" alt="Google Analytics Getting It Right" />
-    <form accept-charset="utf-8" action="https://app.getresponse.com/add_contact_webform.html" method="post" onsubmit="return quickValidate()" target="_blank">
-    <div style="display: none;">
-        <input type="hidden" name="webform_id" value="416798" />
-    </div>
-    <table style="text-align:center;margin-left: 20px;">
-    <tr>
-    <td><label class="previewLabel" for="awf_field-37978044"><strong>Name: </strong></label><input id="sub_name" type="text" name="name" class="text"  tabindex="500" value="" /></td>
-    <td><label class="previewLabel" for="awf_field-37978045"><strong>Email: </strong></label> <input class="text" id="sub_email" type="text" name="email" tabindex="501"  value="" /></td>
-    <td><span class="submit"><input name="submit" type="image" alt="submit" tabindex="502" src="<?php echo plugins_url('download-button.png', __FILE__); ?>" width="157" height="40" style="background: none; border: 0;" /></span></td>
-    </tr>
-    <tr>
-    <td colspan="3" style="padding-top: 20px;">
-    <a title="Privacy Policy" href="http://www.getresponse.com/permission-seal?lang=en" target="_blank"><img src="<?php echo plugins_url('privacy.png', __FILE__); ?>"  alt="" title="" /></a>
-    </td>
-    </tr>
-    </table>
-    </form>
-
-    <script type="text/javascript">
-	function quickValidate()
-	{
-	        if (! jQuery('#sub_name').val() )
-	            {
-	                alert('Your Name is required');
-	                return false;
-	            }
-	        if(! jQuery('#sub_email').val() )
-	            {
-	                alert('Your Email is required');
-	                return false;
-	            }
-
-	            return true;
-	}
-	</script>
-<?php endif;?>
-
+			</div><!-- end wrap -->
+		</div><!-- end vumga-container -->
 
 <?php
 }
@@ -972,8 +1032,12 @@ function add_google_analytics()
 
 	(function() {
 		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		<?php if( get_option( key_ga_remarketing ) ) : ?>
+                ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+                <?php else: ?>
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		<?php endif; ?>
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	})();
 </script>
 <?php

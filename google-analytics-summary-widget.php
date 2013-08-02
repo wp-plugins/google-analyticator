@@ -298,6 +298,7 @@ class GoogleAnalyticsSummary
             # Close the table
             echo '</td></tr></table>';
 
+           
             # Grab the above outputs and cache it!
             $ga_output = ob_get_flush();
 
@@ -311,6 +312,13 @@ class GoogleAnalyticsSummary
          
         if( ! $doing_transient )
             echo $ga_output;
+      
+        if(  get_option( key_ga_show_ad ) ) {
+        echo '<p style="text-align:center">
+                <a href="http://www.videousermanuals.com/rd/ga-dashboard/" target="_BLANK">
+                    Learn how to use Google Analytics <br />
+                    To remove the guess work from your business </a></p>';
+        }
         
         die();
     }
