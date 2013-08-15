@@ -422,7 +422,7 @@ function ga_options_page() {
 
 			<div id="vumga-container" style="position:relative;">
 			<div id="vumga-sidebar" style="position: absolute; top: 0; right: 0; width: 250px; border: 1px solid #ccc; padding: 20px;">
-				<a href="http://www.videousermanuals.com/rd/ga-webinar/" target="_blank"><img src="<?php echo plugins_url('ga-plugin-advert-sidebar.png', __FILE__ ); ?>" alt="Learn More" title="Learn More" /></a>
+				<a href="http://get.videousermanuals.com/ga-pro/?utm_campaign=analyticatorpro&utm_medium=plugin&utm_source=settings" target="_blank"><img src="<?php echo plugins_url('gapro-plugin-advert-sidebar.png', __FILE__ ); ?>" alt="Learn More" title="Learn More" /></a>
 			</div>
 			
 			<div style="margin-right: 320px;">
