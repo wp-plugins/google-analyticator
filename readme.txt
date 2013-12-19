@@ -3,7 +3,7 @@ Contributors: VideoUserManuals
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 3.2
 Tested up to: 3.8
-Stable tag: 6.4.7
+Stable tag: 6.4.7.1
 
 Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
 
