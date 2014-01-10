@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.4.7.2
+ * Version: 6.4.7.3
  * Plugin URI: http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=readme-txt
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin you need to authenticate with Google, then select your domain and you're set.
  * Author: Video User Manuals Pty Ltd
@@ -9,7 +9,7 @@
  * Text Domain: google-analyticator
  */
 
-define('GOOGLE_ANALYTICATOR_VERSION', '6.4.7.2');
+define('GOOGLE_ANALYTICATOR_VERSION', '6.4.7.3');
 
 define('GOOGLE_ANALYTICATOR_CLIENTID', '1007949979410.apps.googleusercontent.com');
 define('GOOGLE_ANALYTICATOR_CLIENTSECRET', 'q06U41XDXtzaXD14E-KO1hti'); //don't worry - this don't need to be secret in our case
@@ -306,20 +306,27 @@ function ga_options_page() {
 
                 update_option('ga_defaults', 'no');
 
+                // Get our domains array, and match the UID to the value
+                $domains = stripslashes( $_POST['ga_domain_names'] );
+                $all_domains = unserialize( $domains );
+                update_option( 'ga_domain_name', $all_domains[ $_POST[key_ga_uid] ] );
 
-		// Update the status
+                // Update the status
 		$ga_status = wp_filter_kses( $_POST[key_ga_status] );
 		if (($ga_status != ga_enabled) && ($ga_status != ga_disabled))
 			$ga_status = ga_status_default;
 		update_option(key_ga_status, $ga_status);
 
-		// Update Hiding UID
-		$ga_disable_gasites = wp_filter_kses( $_POST[key_ga_disable_gasites] );
+		// Update Hiding UID (if set)
+                if( isset( $_POST[key_ga_disable_gasites] ) ) {
+                    
+                    $ga_disable_gasites = wp_filter_kses( $_POST[key_ga_disable_gasites] );
 	
-		if (!$ga_disable_gasites)
+                    if (!$ga_disable_gasites)
 			$ga_disable_gasites = ga_disable_gasites_default;
 	
-		update_option(key_ga_disable_gasites, $ga_disable_gasites);
+                    update_option(key_ga_disable_gasites, $ga_disable_gasites);
+                }
 		
 		// Update the Analytic Snippet
 		//define("key_ga_analytic_snippet", "ga_analytic_snippet", true);
@@ -497,7 +504,7 @@ if(!$addons){?>
       </tr>
       <tr id="ga_ajax_accounts">
         <th valign="top" style="padding-top: 10px;"> <label for="<?php echo key_ga_uid; ?>"> 
-            <?php _e('Google Analytics UID', 'google-analyticator'); ?>
+            <?php _e('Analytics Account', 'google-analyticator'); ?>
             :</label>
         </th>
         <td>
@@ -526,6 +533,9 @@ if(!$addons){?>
                             
                             echo '</select>';
 
+                            // Need a copy of the array, so we can store the domain name too (for visual purposes)
+                            echo '<input type="hidden" name="ga_domain_names" value=\'' . serialize( $uids ) . '\' />';
+                            
                         else:
 
                             echo '<input type="text" name="'.key_ga_uid.'" value="'. get_option( key_ga_uid ) .'" />';
@@ -534,7 +544,7 @@ if(!$addons){?>
                         ?><br />
                         <input type="checkbox" name="<?php echo key_ga_disable_gasites?>" id="<?php echo key_ga_disable_gasites?>"<?php if(get_option(key_ga_disable_gasites) == ga_enabled){?> checked="checked"<?php }?> /> <?php _e('Hide Google Analytics UID after saving', 'google-analyticator'); ?>
          	<?php }else{
-			?>Video User Manuals - To change this, you must <a href="<?php echo admin_url('/options-general.php?page=ga_reset'); ?>">deauthorize and reset the plugin</a>
+			?><?php echo get_option( 'ga_domain_name' ); ?> - To change this, you must <a href="<?php echo admin_url('/options-general.php?page=ga_reset'); ?>">deauthorize and reset the plugin</a>
 			 <input type="hidden" name="<?php echo key_ga_disable_gasites?>" value="<?php echo ga_enabled?>" /><input type="hidden" name="<?php echo key_ga_uid?>" value="<?php echo get_option(key_ga_uid)?>" />
 			<?php
 			}?>               
