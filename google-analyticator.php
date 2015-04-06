@@ -4,8 +4,8 @@
  * Version: 6.4.8
  * Plugin URI: http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=readme-txt
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin you need to authenticate with Google, then select your domain and you're set.
- * Author: Video User Manuals Pty Ltd
- * Author URI: http://www.videousermanuals.com/?utm_campaign=analyticator&utm_medium=plugin&utm_source=readme-txt
+ * Author: Google Analyticator
+ * Author URI: https://github.com/GoogleAnalyticator/google-analyticator
  * Text Domain: google-analyticator
  */
 

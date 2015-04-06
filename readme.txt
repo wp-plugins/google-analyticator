@@ -1,5 +1,5 @@
 === Google Analyticator ===
-Contributors: VideoUserManuals
+Contributors: VideoUserManuals, cfoellmann, benjmay
 Tags: stats, statistics, google, analytics, google analytics, tracking, widget
 Requires at least: 3.2
 Tested up to: 4.2
