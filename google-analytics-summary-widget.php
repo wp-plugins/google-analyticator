@@ -315,7 +315,7 @@ class GoogleAnalyticsSummary
       
         if(  get_option( key_ga_show_ad ) ) {
         echo '<p style="text-align:center">
-                Use the <a target="_blank" href="https://wordpress.org/plugins/sumome">SumoMe plugin</a> to get more traffic</p>';
+                [Use the <a target="_blank" href="https://wordpress.org/plugins/sumome">SumoMe plugin</a> to get more traffic]</p>';
         }
         
         die();
