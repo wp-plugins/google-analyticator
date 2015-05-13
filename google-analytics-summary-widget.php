@@ -315,9 +315,7 @@ class GoogleAnalyticsSummary
       
         if(  get_option( key_ga_show_ad ) ) {
         echo '<p style="text-align:center">
-                <a href="http://www.videousermanuals.com/rd/ga-dashboard/" target="_BLANK">
-                    Learn how to use Google Analytics <br />
-                    To remove the guess work from your business </a></p>';
+                Use the <a target="_blank" href="https://wordpress.org/plugins/sumome">SumoMe plugin</a> to get more traffic</p>';
         }
         
         die();

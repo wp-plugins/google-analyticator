@@ -1,19 +1,17 @@
 === Google Analyticator ===
 Contributors: VideoUserManuals
-Tags: stats, statistics, google, analytics, google analytics, tracking, widget
+Tags: stats, statistics, google, analytics, dashboard, google analytics, tracking, widget, marketing,pageviews,visits
 Requires at least: 3.2
-Tested up to: 4.0
+Tested up to: 4.2
 Stable tag: 6.4.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Adds the necessary JavaScript code to enable Google Analytics. Includes widgets for Analytics data display.
+Easily view your Google Analytics and real-time statistics inside WordPress! Makes it super simple to add your tracking code too.
 
 == Description ==
 
-Google Analyticator is back! Google Analyticator adds the necessary JavaScript code to enable Google Analytics logging on any WordPress blog. This eliminates the need to edit your template code to begin logging. Google Analyticator also includes several widgets for displaying Analytics data in the admin and on your blog.
-
-For a video explaining the simple installation process, please [visit the new home of Google Analyticator](http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=description).
+Google Analyticator makes it super easy to view Google Analytics within your WordPress dashboard. This eliminates the need to edit your template code to begin logging. Google Analyticator also includes several widgets for displaying Analytics data in the admin and on your blog.
 
 = Features =
 
@@ -34,9 +32,7 @@ Google Analyticator Has the Following Features:
 - Ability to hide Google UID dropdown
 - Translations - Polish, Turkish, Dutch and Spanish
 
-For more information, visit the [Google Analyticator plugin page](http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=description).
-
-If you have a great idea on how to improve the plugin, we would love to hear from you at the [Google Analyticator Feature Request page](http://www.videousermanuals.com/google-analyticator/feature-request/?utm_campaign=analyticator&utm_medium=plugin&utm_source=description)
+Check out our other plugin for getting more traffic [here](http://bit.ly/1PhVdpI).
 
 A big thank you from the whole community to [Ronald](http://ronaldheft.com/) for all the hard work he put into this plugin.
 
@@ -46,8 +42,6 @@ Polish - Michał Mleczko from http://michalmleczko.waw.pl/
 Turkish - Cansın Çağan Acarer from http://www.35pixel.com/
 
 == Installation ==
-
-Please visit the new home of [Google Analyticator](http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=description) for installation information.
 
 If you are updating, you will need to Authenticate your site again, so it will work with the new Google API
 
