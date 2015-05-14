@@ -593,7 +593,8 @@ if(!$addons){?>
 						</td>
       </tr>
 	  <tr>
-			<th><a href="../index.php">Click here</a> to go to your dashboard and view your Google Analytics</th>
+			<td>View your Dashboard</td>
+			<td><a href="../wp-admin/index.php">Click here</a></td>
 	  </tr>
       <tr>
         <td colspan="2" style="padding-left:0"><h3>
