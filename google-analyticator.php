@@ -484,7 +484,12 @@ function ga_options_page() {
     <?php
 $addons = get_option("gapro_addons");
 if(!$addons){?>
-    <div id="vumga-sidebar" style="position: absolute; top: 0; right: 0; width: 250px; border: 1px solid #ccc; padding: 20px; background:#FFFFFF"> <a href="http://get.videousermanuals.com/ga-pro/?utm_campaign=analyticatorpro&utm_medium=plugin&utm_source=settings" target="_blank"><img src="<?php echo plugins_url('gapro-plugin-advert-sidebar.png', __FILE__ ); ?>" alt="Learn More" title="Learn More" /></a> </div>
+    <div id="vumga-sidebar" style="position: absolute; top: 40px; right: 0; width: 250px; border: 1px solid #ccc; padding: 20px; background:#FFFFFF"> 
+		<h3 style="text-align:center">Support us</h3>
+		<p>1- Check out our <a target="_blank" href="https://wordpress.org/plugins/sumome">SumoMe plugin</a></p>
+		<p>2- <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/google-analyticator">Leave a :) Review</a></p>	
+		<p>3- Have a great day!</p>
+	</div>
     <?php }?>
     <div style="margin-right: 320px;">
     <table class="form-table" cellspacing="2" cellpadding="5" width="100%">
@@ -587,6 +592,9 @@ if(!$addons){?>
 					  </p>
 						</td>
       </tr>
+	  <tr>
+			<th><a href="../index.php">Click here</a> to go to your dashboard and view your Google Analytics</th>
+	  </tr>
       <tr>
         <td colspan="2" style="padding-left:0"><h3>
             <?php _e('Tracking Settings', 'google-analyticator'); ?>
