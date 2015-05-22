@@ -489,8 +489,6 @@ if(!$addons){?>
 		<p>1- Check out our <a target="_blank" href="https://wordpress.org/plugins/sumome">SumoMe plugin</a></p>
 		<p>2- <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/google-analyticator">Leave a :) Review</a></p>	
 		<p>3- Have a great day!</p>
-	</div>
-	<div id="vumga-sidebar" style="position: absolute; top: 40px; right: 0; width: 250px; border: 1px solid #ccc; padding: 20px; background:#FFFFFF"> 
 		<h3 style="text-align:center">Show off your analytics</h3>
 		<p>Use short code <b>[analytics]</b> anywhere on your site to show your analytics.</p>
 
