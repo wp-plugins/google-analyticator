@@ -595,6 +595,29 @@ if(!$addons){?>
 					  </p>
 						</td>
       </tr>
+      <tr>
+        <th valign="top" style="padding-top: 10px;"> <label for="<?php echo key_ga_widgets; ?>">
+            <?php _e('Support us', 'google-analyticator'); ?>:</label>
+        </th>
+        <td><?php
+						echo "<select name='".key_ga_show_ad."' id='".key_ga_show_ad."'>\n";
+
+						echo "<option value='1'";
+						if(get_option(key_ga_show_ad) == '1')
+							echo " selected='selected'";
+						echo ">" . __('Yes', 'google-analyticator') . "</option>\n";
+
+						echo "<option value='0' ";
+						if(get_option(key_ga_show_ad) == '0')
+							echo" selected='selected'";
+						echo ">" . __('No', 'google-analyticator') . "</option>\n";
+
+						echo "</select>\n";
+						?>
+          <p  class="setting-description">
+            <?php _e('You can disable our link on the admin dashboard.', 'google-analyticator'); ?>
+          </p></td>
+      </tr>
 	  <tr>
 			<td>View your Dashboard</td>
 			<td><a href="../wp-admin/index.php">Click here</a></td>
@@ -943,29 +966,6 @@ if(!$addons){?>
 						?>
           <p  class="setting-description">
             <?php _e('Disabling this option will completely remove the Dashboard Summary widget and the theme Stats widget. Use this option if you would prefer to not see the widgets.', 'google-analyticator'); ?>
-          </p></td>
-      </tr>
-      <tr>
-        <th valign="top" style="padding-top: 10px;"> <label for="<?php echo key_ga_widgets; ?>">
-            <?php _e('Display Ad', 'google-analyticator'); ?>:</label>
-        </th>
-        <td><?php
-						echo "<select name='".key_ga_show_ad."' id='".key_ga_show_ad."'>\n";
-
-						echo "<option value='1'";
-						if(get_option(key_ga_show_ad) == '1')
-							echo " selected='selected'";
-						echo ">" . __('Yes', 'google-analyticator') . "</option>\n";
-
-						echo "<option value='0' ";
-						if(get_option(key_ga_show_ad) == '0')
-							echo" selected='selected'";
-						echo ">" . __('No', 'google-analyticator') . "</option>\n";
-
-						echo "</select>\n";
-						?>
-          <p  class="setting-description">
-            <?php _e('You can disable the ad on the admin dashboard.', 'google-analyticator'); ?>
           </p></td>
       </tr>
       <tr<?php if(!$useAuth){echo ' style="display:none"';}?>>
