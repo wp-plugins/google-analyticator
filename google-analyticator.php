@@ -615,13 +615,16 @@ if(!$addons){?>
 						echo "</select>\n";
 						?>
           <p  class="setting-description">
-            <?php _e('You can disable our link on the admin dashboard.', 'google-analyticator'); ?>
+            <?php _e('Show our link on the admin dashboard. Pretty please.', 'google-analyticator'); ?>
           </p></td>
       </tr>
 	  <tr>
-			<td>View your Dashboard</td>
+			<td><b>View your Dashboard</b></td>
 			<td><a href="../wp-admin/index.php">Click here</a></td>
 	  </tr>
+	<p class="submit">
+      <input type="submit" class="button button-primary" name="info_update" value="<?php _e('Save Changes', 'google-analyticator'); ?>" />
+    </p>
       <tr>
         <td colspan="2" style="padding-left:0"><h3>
             <?php _e('Tracking Settings', 'google-analyticator'); ?>
