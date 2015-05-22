@@ -1,6 +1,6 @@
 === Google Analyticator ===
 Contributors: VideoUserManuals
-Tags: google analytics plugin, stats, statistics, google, analytics, dashboard, google analytics, tracking, widget, marketing,pageviews,visits, webstats
+Tags: google analytics plugin, stats, statistics, google, analytics, dashboard, google analytics, tracking, widget, marketing,pageviews,visits, web stats, javascript
 Requires at least: 3.2
 Tested up to: 4.2
 Stable tag: 6.4.9
