@@ -490,7 +490,7 @@ if(!$addons){?>
 		<p>2- <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/google-analyticator">Leave a :) Review</a></p>	
 		<p>3- Have a great day!</p>
 		<h3 style="text-align:center">Show off your analytics</h3>
-		<p>Use short code <b>[analytics]</b> anywhere on your site to show your analytics.</p>
+		<p>Use short code <b>[analytics]</b> anywhere on your site to show your analytics publicly.</p>
 
 	</div>
     <?php }?>

@@ -48,7 +48,13 @@ Turkish - Cansın Çağan Acarer from http://www.35pixel.com/
 
 == Installation ==
 
-If you are updating, you will need to Authenticate your site again, so it will work with the new Google API
+1. Install the plugin and activate it.
+2. Click to connect to Google Analytics and login.
+3. Copy and paste your Google Authentication code and hit Save and Continue.
+4. Choose the Analytics Account you want in the drop down.
+5. Enable Google Analytics logging. 
+6. Scroll to the bottom and save.
+7. Then go to your Dashboard to see your stats.
 
 == Frequently Asked Questions ==
 
