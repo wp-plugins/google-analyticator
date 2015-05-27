@@ -8,10 +8,14 @@
  **/
 class GoogleStatsWidget extends WP_Widget
 {
-	function GoogleStatsWidget() {
+	function GoogleStatsWidget($options = array('shortcode' => FALSE)) {
 		$widget_ops = array('classname' => 'widget_google_stats', 'description' => __("Displays Stat Info From Google Analytics", 'google-analyticator') );
 		$control_ops = array('width' => 400, 'height' => 400);
 		$this->WP_Widget('googlestats', __('Google Analytics Stats', 'google-analyticator'), $widget_ops, $control_ops);
+	
+		if ($options['shortcode']) {
+			$this->widget();
+		}
 	}
 	
 	function widget($args, $instance) {
@@ -143,7 +147,7 @@ class GoogleStatsWidget extends WP_Widget
 	 **/
 	function beginWidget($font_color = '000', $widget_background_color = 'FFF')
 	{
-		echo '<table style="width:auto!important;border-width:2px;border-color:#' . $font_color . ';border-style:solid;background:#' . $widget_background_color . ';"><tr>';
+		echo '<table style="width:auto!important;border-width:2px;border-color:#' . $font_color . ';border-style:solid;background:#' . $widget_background_color . ';margin-bottom:0;"><tr>';
 	}
 
 	/**
@@ -179,7 +183,9 @@ class GoogleStatsWidget extends WP_Widget
 		echo '</tr></table>';
 
 		// The following is used to displayed the "Powered By Google Anayltics" text.
-		echo '<div style="font-size:9px;color:#666666;margin-top:0px;font-family:Verdana;">Powered By <a href="http://google.com/analytics/" title="Google Analytics" style="text-decoration:none;"><img src="' . plugins_url('/google-analyticator/ga_logo.png') . '" alt="Google Analytics" style="border:0px;position:relative;top:4px;" /></a></div></div>';
+		if (get_option(key_ga_show_ad) == '1') {
+			echo '<div style="font-size:9px;color:#666666;margin-top:0px;font-family:Verdana;">Powered By <a href="https://wordpress.org/plugins/google-analyticator/" title="Google Analyticator for Wordpress" style="text-decoration:none;" target="_blank"><img src="' . plugins_url('/google-analyticator/ga_logo.png') . '" alt="Google Analytics" style="border:0px;position:relative;top:4px;" /></a></div></div>';
+		}
 	}
 
 	/**
