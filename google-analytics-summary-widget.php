@@ -13,10 +13,8 @@ class GoogleAnalyticsSummary
     /**
      * Start the process of including the widget
      **/
-    function GoogleAnalyticsSummary($options = array('shortcode' => FALSE))
+    function GoogleAnalyticsSummary($shortcode = FALSE)
     {
-        $this->options = $options;
-
         add_action('wp_dashboard_setup', array(
             $this,
             'addDashboardWidget'
@@ -30,30 +28,26 @@ class GoogleAnalyticsSummary
             'addTopJs'
         ));
 
-        /*
-        if ($this->options['shortcode']) {
+        if ($shortcode) {
             // For shortcode
             add_action('wp_footer', array(
                 $this,
                 'addJavascript'
             ));
 
-            add_action('wp_head', array(
+            add_action('wp_footer', array(
                 $this,
                 'addTopJs'
             ));
+
+            add_action( 'wp_ajax_nopriv_ga_stats_widget', array( $this, 'ajaxWidget' ) );
         }
-        */
 
         $this->qa_selecteddate = isset( $_REQUEST['qa_selecteddate'] ) ? wp_filter_kses( $_REQUEST['qa_selecteddate'] ) : '31';
         $this->date_before    = date('Y-m-d', strtotime( '-'.$this->qa_selecteddate.' days', strtotime( current_time( 'mysql' ) ) ) );
         $this->date_yesterday = date('Y-m-d', strtotime( '-1 days', strtotime( current_time( 'mysql' ) ) ) );
 		
         add_action( 'wp_ajax_ga_stats_widget', array( $this, 'ajaxWidget' ) );
-
-        if ($options['shortcode']) {
-            add_action( 'wp_ajax_nopriv_ga_stats_widget', array( $this, 'ajaxWidget' ) );
-        }
     }
     
     /**
@@ -86,16 +80,12 @@ class GoogleAnalyticsSummary
      **/
     function addTopJs()
     {
-        print_r($this->options);
-
+        wp_enqueue_script( 'jquery' );
         ?>
-
-
             <style type="text/css">
                 #google-analytics-summary .legend table {width:auto;border:0;margin:0;}
             </style>
     		<script type="text/javascript">
-    		
     			//Tooltip 
     			jQuery.fn.UseTooltip = function () {
     				var previousPoint = null;
