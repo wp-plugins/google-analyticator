@@ -151,8 +151,8 @@ function add_ga_option_page() {
 
 
 	if(ga_get_active_addons() == false){
-		$plugin_page = add_options_page(__('Google Analyticator Settings', 'google-analyticator'), 'Google Analytics', 'manage_options', basename(__FILE__), 'ga_settings_page');
-		add_action('load-'.$plugin_page, 'ga_pre_load' );
+		//$plugin_page = add_options_page(__('Google Analyticator Settings', 'google-analyticator'), 'Google Analytics', 'manage_options', basename(__FILE__), 'ga_settings_page');
+		//add_action('load-'.$plugin_page, 'ga_pre_load' );
 	}
 	   $activate_page = add_submenu_page( null, 'Activation', 'Google Analytics', 'manage_options', 'ga_activate' , 'ga_activate');
 	   $reset_page = add_submenu_page(null, 'Reset', 'Reset', 'activate_plugins', 'ga_reset', 'ga_reset' );
@@ -311,6 +311,11 @@ function ga_settings_page(){
 	ga_options_page();
 }
 function ga_options_page() {
+	add_thickbox();
+
+	if (array_key_exists('ga_analyticator_global_notification', $_GET) && $_GET['ga_analyticator_global_notification'] == 0) {
+        update_option('ga_analyticator_global_notification', 0);
+	}
 
 	// If we are a postback, store the options
 	if (isset($_POST['info_update'])) {
@@ -468,6 +473,14 @@ function ga_options_page() {
 		
 	?>
 <div class="wrap">
+    <style type="text/css">
+            #ga_analyticator_global_notification a.button:active {vertical-align:baseline;}
+    </style>
+    <div id="ga_analyticator_global_notification" class="updated" style="border:3px solid #317A96;position:relative;background:##3c9cc2;background-color:#3c9cc2;color:#ffffff;height:70px;">
+        <p style="font-size:16px;line-height:50px;">
+                <?php _e('Grow your site faster!'); ?> &nbsp;<a style="background-color: #6267BE;border-color: #3C3F76;" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=sumome&TB_iframe=true&width=743&height=500'); ?>" class="thickbox button button-primary">Get SumoMe WordPress Plugin</a>
+        </p>
+    </div>
   <form method="post" action="<?php echo ga_analyticator_setting_url();?>">
     <?php
 			# Add a nonce
@@ -1283,7 +1296,7 @@ function ga_current_user_is($roles)
 }
 
 function ga_analyticator_setting_url(){
-	return ( ga_get_active_addons() == false) ? admin_url("options-general.php?page=google-analyticator.php") : admin_url("admin.php?page=ga-pro-experiment.php");
+	return ( ga_get_active_addons() == false) ? admin_url("admin.php?page=google-analyticator") : admin_url("admin.php?page=ga-pro-experiment.php");
 }
 
 function ga_get_active_addons(){
@@ -1356,3 +1369,43 @@ function ga_analyticator_counter_shortcode( $atts ) {
 add_shortcode( 'analytics', 'ga_analyticator_shortcode' );
 add_shortcode( 'analytics-counter', 'ga_analyticator_counter_shortcode' );
 
+add_option('ga_analyticator_global_notification', 1);
+
+function ga_analyticator_global_notice() {
+	if (in_array(substr(basename($_SERVER['REQUEST_URI']), 0, 11), array('plugins.php', 'index.php')) && get_option('ga_analyticator_global_notification') == 1) {
+		?>
+			<style type="text/css">
+				#ga_analyticator_global_notification a.button:active {vertical-align:baseline;}
+			</style>
+			<div class="updated" id="ga_analyticator_global_notification" style="border:3px solid #317A96;position:relative;background:##3c9cc2;background-color:#3c9cc2;color:#ffffff;height:70px;">
+				<a class="notice-dismiss" href="<?php echo admin_url('admin.php?page=google-analyticator&ga_analyticator_global_notification=0'); ?>" style="right:165px;top:0;"></a>
+				<a href="<?php echo admin_url('admin.php?page=google-analyticator&ga_analyticator_global_notification=0'); ?>" style="position:absolute;top:9px;right:15px;color:#ffffff;">Dismiss and go to settings</a>
+				<p style="font-size:16px;line-height:50px;">
+					<?php _e('Grow your site faster!'); ?> &nbsp;<a style="background-color: #6267BE;border-color: #3C3F76;" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=sumome&TB_iframe=true&width=743&height=500'); ?>" class="thickbox button button-primary">Get SumoMe WordPress Plugin</a>
+				</p>
+	        </div>
+		<?php
+	}
+}
+add_action( 'admin_notices', 'ga_analyticator_global_notice' );
+
+function ga_analyticator_deactivate() {
+	delete_option('ga_analyticator_global_notification');
+}
+register_deactivation_hook( __FILE__, 'ga_analyticator_deactivate' );
+
+function ga_analyticator_other_plugins_page() {
+	include(plugin_dir_path( __FILE__ ).'/other_plugins.php');
+}
+
+function ga_analyticator_top_level_menu() {
+	$menu_page = add_menu_page( 'Google Analytics', 'Google Analytics', 'manage_options', 'google-analyticator', 'ga_settings_page', 'dashicons-chart-line');
+	add_action('load-'.$menu_page, 'ga_pre_load' );
+	add_submenu_page( 'google-analyticator', 'Other Plugins', 'Other Plugins', 'manage_options', 'google-analyticator-other-plugins', 'ga_analyticator_other_plugins_page');
+
+	$activate_page = add_submenu_page( null, 'Activation', 'Google Analytics', 'manage_options', 'ga_activate' , 'ga_activate');
+	$reset_page = add_submenu_page(null, 'Reset', 'Reset', 'activate_plugins', 'ga_reset', 'ga_reset' );
+   	add_action('load-'.$reset_page, 'ga_do_reset' );
+}
+
+add_action( 'admin_menu', 'ga_analyticator_top_level_menu' );
