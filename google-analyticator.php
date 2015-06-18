@@ -270,37 +270,40 @@ function ga_filter_plugin_actions($links) {
 
 function ga_do_reset()
 {
-    global $wpdb;
-    
-    // Delete all GA options.
-    delete_option(key_ga_status);
-    delete_option(key_ga_disable_gasites);
-    delete_option(key_ga_analytic_snippet);
-    delete_option(key_ga_uid);
-    delete_option(key_ga_admin);
-    delete_option(key_ga_admin_disable);
-    delete_option(key_ga_admin_role);
-    delete_option(key_ga_dashboard_role);
-    delete_option(key_ga_adsense);
-    delete_option(key_ga_extra);
-    delete_option(key_ga_extra_after);
-    delete_option(key_ga_event);
-    delete_option(key_ga_outbound);
-    delete_option(key_ga_outbound_prefix);
-    delete_option(key_ga_enhanced_link_attr);
-    delete_option(key_ga_downloads);
-    delete_option(key_ga_downloads_prefix);
-    delete_option(key_ga_widgets);
-    delete_option(key_ga_annon);
-    delete_option('ga_defaults');
-    delete_option('ga_google_token');
-    delete_option('ga_google_authtoken');
-    delete_option('ga_profileid');
-    delete_transient('ga_admin_stats_widget');
-    
-    // Need to remove cached items from GA widgets 
-    $wpdb->query( "delete from $wpdb->options where `option_name` like 'google_stats_visitsGraph_%'");
- 
+	// Check to make sure referer is same as host.
+	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'])) {
+		global $wpdb;
+
+	    // Delete all GA options.
+	    delete_option(key_ga_status);
+	    delete_option(key_ga_disable_gasites);
+	    delete_option(key_ga_analytic_snippet);
+	    delete_option(key_ga_uid);
+	    delete_option(key_ga_admin);
+	    delete_option(key_ga_admin_disable);
+	    delete_option(key_ga_admin_role);
+	    delete_option(key_ga_dashboard_role);
+	    delete_option(key_ga_adsense);
+	    delete_option(key_ga_extra);
+	    delete_option(key_ga_extra_after);
+	    delete_option(key_ga_event);
+	    delete_option(key_ga_outbound);
+	    delete_option(key_ga_outbound_prefix);
+	    delete_option(key_ga_enhanced_link_attr);
+	    delete_option(key_ga_downloads);
+	    delete_option(key_ga_downloads_prefix);
+	    delete_option(key_ga_widgets);
+	    delete_option(key_ga_annon);
+	    delete_option('ga_defaults');
+	    delete_option('ga_google_token');
+	    delete_option('ga_google_authtoken');
+	    delete_option('ga_profileid');
+	    delete_transient('ga_admin_stats_widget');
+
+	    // Need to remove cached items from GA widgets 
+	    $wpdb->query( "delete from $wpdb->options where `option_name` like 'google_stats_visitsGraph_%'");
+	}
+
     wp_redirect( admin_url( 'options-general.php?page=ga_activate' ) );
     exit;
 }
