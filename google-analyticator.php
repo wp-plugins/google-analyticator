@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.4.9.3
+ * Version: 6.4.9.4
  * Plugin URI: http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=readme-txt
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin you need to authenticate with Google, then select your domain and you're set.
  * Author: SumoMe
@@ -263,46 +263,45 @@ function ga_filter_plugin_actions($links) {
 	$new_links = array();
 
 	$new_links[] = '<a href="' . ga_analyticator_setting_url() .'">' . __('Settings', 'google-analyticator') . '</a>';
-        $new_links[] = '<a href="' . admin_url('options-general.php?page=ga_reset">') . __('Reset', 'google-analyticator') . '</a>';
+        $new_links[] = '<a href="' . wp_nonce_url( admin_url('options-general.php?page=ga_reset'), 'ga-reset' ) .'">'. __('Reset', 'google-analyticator') . '</a>';
 
 	return array_merge($new_links, $links);
 }
 
 function ga_do_reset()
 {
+	global $wpdb;
 	// Check to make sure referer is same as host.
-	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST'])) {
-		global $wpdb;
+	check_admin_referer( 'ga-reset' );
 
-	    // Delete all GA options.
-	    delete_option(key_ga_status);
-	    delete_option(key_ga_disable_gasites);
-	    delete_option(key_ga_analytic_snippet);
-	    delete_option(key_ga_uid);
-	    delete_option(key_ga_admin);
-	    delete_option(key_ga_admin_disable);
-	    delete_option(key_ga_admin_role);
-	    delete_option(key_ga_dashboard_role);
-	    delete_option(key_ga_adsense);
-	    delete_option(key_ga_extra);
-	    delete_option(key_ga_extra_after);
-	    delete_option(key_ga_event);
-	    delete_option(key_ga_outbound);
-	    delete_option(key_ga_outbound_prefix);
-	    delete_option(key_ga_enhanced_link_attr);
-	    delete_option(key_ga_downloads);
-	    delete_option(key_ga_downloads_prefix);
-	    delete_option(key_ga_widgets);
-	    delete_option(key_ga_annon);
-	    delete_option('ga_defaults');
-	    delete_option('ga_google_token');
-	    delete_option('ga_google_authtoken');
-	    delete_option('ga_profileid');
-	    delete_transient('ga_admin_stats_widget');
+    // Delete all GA options.
+    delete_option(key_ga_status);
+    delete_option(key_ga_disable_gasites);
+    delete_option(key_ga_analytic_snippet);
+    delete_option(key_ga_uid);
+    delete_option(key_ga_admin);
+    delete_option(key_ga_admin_disable);
+    delete_option(key_ga_admin_role);
+    delete_option(key_ga_dashboard_role);
+    delete_option(key_ga_adsense);
+    delete_option(key_ga_extra);
+    delete_option(key_ga_extra_after);
+    delete_option(key_ga_event);
+    delete_option(key_ga_outbound);
+    delete_option(key_ga_outbound_prefix);
+    delete_option(key_ga_enhanced_link_attr);
+    delete_option(key_ga_downloads);
+    delete_option(key_ga_downloads_prefix);
+    delete_option(key_ga_widgets);
+    delete_option(key_ga_annon);
+    delete_option('ga_defaults');
+    delete_option('ga_google_token');
+    delete_option('ga_google_authtoken');
+    delete_option('ga_profileid');
+    delete_transient('ga_admin_stats_widget');
 
-	    // Need to remove cached items from GA widgets 
-	    $wpdb->query( "delete from $wpdb->options where `option_name` like 'google_stats_visitsGraph_%'");
-	}
+    // Need to remove cached items from GA widgets 
+    $wpdb->query( "delete from $wpdb->options where `option_name` like 'google_stats_visitsGraph_%'");
 
     wp_redirect( admin_url( 'options-general.php?page=ga_activate' ) );
     exit;
