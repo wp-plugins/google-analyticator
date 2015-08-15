@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Google Analyticator
- * Version: 6.4.9.4
+ * Version: 6.4.9.5
  * Plugin URI: http://www.videousermanuals.com/google-analyticator/?utm_campaign=analyticator&utm_medium=plugin&utm_source=readme-txt
  * Description: Adds the necessary JavaScript code to enable <a href="http://www.google.com/analytics/">Google's Analytics</a>. After enabling this plugin you need to authenticate with Google, then select your domain and you're set.
  * Author: SumoMe
@@ -475,14 +475,17 @@ function ga_options_page() {
 		
 	?>
 <div class="wrap">
-    <style type="text/css">
+	<?php if (get_option('ga_analyticator_global_notification') == 1): ?>
+		<style type="text/css">
             #ga_analyticator_global_notification a.button:active {vertical-align:baseline;}
-    </style>
-    <div id="ga_analyticator_global_notification" class="updated" style="border:3px solid #317A96;position:relative;background:##3c9cc2;background-color:#3c9cc2;color:#ffffff;height:70px;">
-        <p style="font-size:16px;line-height:50px;">
-                <?php _e('Grow your site faster!'); ?> &nbsp;<a style="background-color: #6267BE;border-color: #3C3F76;" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=sumome&TB_iframe=true&width=743&height=500'); ?>" class="thickbox button button-primary">Get SumoMe WordPress Plugin</a>
-        </p>
-    </div>
+	    </style>
+	    <div id="ga_analyticator_global_notification" class="updated" style="border:3px solid #317A96;position:relative;background:##3c9cc2;background-color:#3c9cc2;color:#ffffff;height:70px;">
+	        <a class="notice-dismiss" href="<?php echo admin_url('admin.php?page=google-analyticator&ga_analyticator_global_notification=0'); ?>" style="right:10px;top:0;"></a>
+	        <p style="font-size:16px;line-height:50px;">
+	                <?php _e('Grow your site faster!'); ?> &nbsp;<a style="background-color: #6267BE;border-color: #3C3F76;" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=sumome&TB_iframe=true&width=743&height=500'); ?>" class="thickbox button button-primary">Get SumoMe WordPress Plugin</a>
+	        </p>
+	    </div>
+	<?php endif ?>
   <form method="post" action="<?php echo ga_analyticator_setting_url();?>">
     <?php
 			# Add a nonce
@@ -1389,7 +1392,7 @@ function ga_analyticator_global_notice() {
 		<?php
 	}
 }
-add_action( 'admin_notices', 'ga_analyticator_global_notice' );
+//add_action( 'admin_notices', 'ga_analyticator_global_notice' );
 
 function ga_analyticator_deactivate() {
 	delete_option('ga_analyticator_global_notification');
